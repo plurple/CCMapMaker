@@ -1,6 +1,15 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 
+bool CheckMouseInBounds(sf::Vector2i mousePos, sf::RectangleShape rect)
+{
+    sf::Vector2f rectPos = rect.getPosition();
+    sf::Vector2f rectSize = rect.getSize();
+
+    return mousePos.x > rectPos.x && mousePos.x < rectPos.x + rectSize.x &&
+        mousePos.y > rectPos.y && mousePos.y < rectPos.y + rectSize.y;
+}
+
 int main()
 {
     sf::Clock clock;
@@ -87,19 +96,13 @@ int main()
         sf::Vector2i localPosition = sf::Mouse::getPosition(window);
 
         if (mouse_effect_time > sf::seconds(0.3f) && sf::Mouse::isButtonPressed(sf::Mouse::Button::Left) &&
-            localPosition.x > sizeBox.getPosition().x &&
-            localPosition.x < sizeBox.getPosition().x + sizeBox.getSize().x &&
-            localPosition.y > sizeBox.getPosition().y &&
-            localPosition.y < sizeBox.getPosition().y + sizeBox.getSize().y)
+            CheckMouseInBounds(localPosition, sizeBox))
         {
             largeSprite = !largeSprite;
             mouse_effect_time = sf::Time::Zero;
         }
         if (mouse_effect_time > sf::seconds(0.3f) && sf::Mouse::isButtonPressed(sf::Mouse::Button::Left) &&
-            localPosition.x > textBox.getPosition().x &&
-            localPosition.x < textBox.getPosition().x + textBox.getSize().x &&
-            localPosition.y > textBox.getPosition().y &&
-            localPosition.y < textBox.getPosition().y + textBox.getSize().y)
+            CheckMouseInBounds(localPosition, textBox))
         {
             textActive = true;
             mouse_effect_time = sf::Time::Zero;
