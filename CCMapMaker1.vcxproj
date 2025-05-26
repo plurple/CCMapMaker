@@ -146,20 +146,26 @@
     <ClCompile Include="Continent.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Manager.cpp" />
+    <ClCompile Include="Maps.cpp" />
     <ClCompile Include="Objective.cpp" />
     <ClCompile Include="Position.cpp" />
     <ClCompile Include="Reinforcement.cpp" />
     <ClCompile Include="Territory.cpp" />
+    <ClCompile Include="TextBox.cpp" />
     <ClCompile Include="Transform.cpp" />
+    <ClCompile Include="UI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Continent.h" />
     <ClInclude Include="Manager.h" />
+    <ClInclude Include="Maps.h" />
     <ClInclude Include="Objective.h" />
     <ClInclude Include="Position.h" />
     <ClInclude Include="Reinforcement.h" />
     <ClInclude Include="Territory.h" />
+    <ClInclude Include="TextBox.h" />
     <ClInclude Include="Transform.h" />
+    <ClInclude Include="UI.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
