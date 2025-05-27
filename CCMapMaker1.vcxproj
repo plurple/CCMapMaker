@@ -20,9 +20,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="UI\Button.cpp" />
     <ClCompile Include="UI\Maps.cpp" />
+    <ClCompile Include="UI\TerritoryPage.cpp" />
     <ClCompile Include="UI\TextBox.cpp" />
     <ClCompile Include="UI\UI.cpp" />
+    <ClCompile Include="UI\UIPage.cpp" />
     <ClCompile Include="XML\Continent.cpp" />
     <ClCompile Include="XML\Manager.cpp" />
     <ClCompile Include="XML\Objective.cpp" />
@@ -32,9 +35,12 @@
     <ClCompile Include="XML\Transform.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="UI\Button.h" />
     <ClInclude Include="UI\Maps.h" />
+    <ClInclude Include="UI\TerritoryPage.h" />
     <ClInclude Include="UI\TextBox.h" />
     <ClInclude Include="UI\UI.h" />
+    <ClInclude Include="UI\UIPage.h" />
     <ClInclude Include="XML\Continent.h" />
     <ClInclude Include="XML\Manager.h" />
     <ClInclude Include="XML\Objective.h" />

@@ -5,7 +5,7 @@ UI::UI() :
     selectedPage{UIPageType::Territory}, 
     uiPanel{{600,1000}},
     isLarge{ true },
-    mapCheckBox{ {50,50} },
+    mapCheckBox(font, { 1200,100 }),
     mapArrow{ (15) },
     largeArrowPos{ 1200, 110 },
     smallArrowPos{ 1250, 110 },
@@ -16,11 +16,6 @@ UI::UI() :
     uiPanel.setFillColor(grey);
 
     font.openFromFile("C:/Windows/Fonts/Arial.ttf");
-
-    mapCheckBox.setPosition({ 1200,100 });
-    mapCheckBox.setFillColor(sf::Color::Black);
-    mapCheckBox.setOutlineThickness(2.0f);
-    mapCheckBox.setOutlineColor(sf::Color::White);
 
     mapArrow.setPointCount(3);
     mapArrow.setPosition(largeArrowPos);
@@ -39,7 +34,7 @@ UI::UI() :
         UIPage* page = new UIPage(font, { 1000 + (float)i * 50, 50 }, std::to_string(i));
         uiPages.push_back(page);
     }
-    uiPages[(int)selectedPage]->SelectTab();
+    uiPages[(int)selectedPage]->tabButton.Select();
 }
 
 void UI::Draw(sf::RenderWindow& window)
@@ -50,7 +45,7 @@ void UI::Draw(sf::RenderWindow& window)
     {
         uiPages[i]->Draw(window);
     }
-    window.draw(mapCheckBox);
+    mapCheckBox.Draw(window);
     window.draw(mapArrow);
     window.draw(*largeLable);
     window.draw(*smallLable);
@@ -85,17 +80,17 @@ void UI::SwapMaps()
 
 void UI::MouseClick(sf::Vector2i mousePos)
 {
-    if (CheckMouseInBounds(mousePos, mapCheckBox))
+    if (CheckMouseInBounds(mousePos, mapCheckBox.rect))
     {
         SwapMaps();
     }
     for (int i = 0; i < (int)UIPageType::NumPageTypes; i++)
     {
-        if (CheckMouseInBounds(mousePos, uiPages[i]->tab))
+        if (CheckMouseInBounds(mousePos, uiPages[i]->tabButton.rect))
         {
-            uiPages[(int)selectedPage]->UnselectTab();
+            uiPages[(int)selectedPage]->tabButton.Unselect();
             selectedPage = (UIPageType)i;
-            uiPages[(int)selectedPage]->SelectTab();
+            uiPages[(int)selectedPage]->tabButton.Select();
         }
     }
 }

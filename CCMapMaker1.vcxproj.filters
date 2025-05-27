@@ -47,6 +47,15 @@
     <ClCompile Include="main.cpp">
       <Filter>other</Filter>
     </ClCompile>
+    <ClCompile Include="UI\UIPage.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\TerritoryPage.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\Button.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="UI\Maps.h">
@@ -78,6 +87,15 @@
     </ClInclude>
     <ClInclude Include="XML\Transform.h">
       <Filter>XML</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\UIPage.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\TerritoryPage.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\Button.h">
+      <Filter>UI</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

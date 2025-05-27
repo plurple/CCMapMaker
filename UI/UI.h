@@ -1,6 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include "Maps.h"
+#include "Button.h"
 
 enum class UIPageType
 {
@@ -26,7 +27,7 @@ public:
 	sf::Text* largeLable = nullptr;
 	sf::Text* smallLable = nullptr;
 	sf::CircleShape mapArrow;
-	sf::RectangleShape mapCheckBox;
+	Button mapCheckBox;
 	bool isLarge;
 	sf::Vector2f largeArrowPos;
 	sf::Vector2f smallArrowPos;

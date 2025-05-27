@@ -1,33 +1,18 @@
 #include "UIPage.h"
 
 UIPage::UIPage(sf::Font& font, sf::Vector2f pos, std::string lab) :
-	tab{{50,50}}
+	tabButton(font, pos, lab),
+	page{{598,798}}
 {
-	tab.setPosition(pos);
-	tab.setFillColor(sf::Color::Black);
-	tab.setOutlineThickness(2.0f);
-	tab.setOutlineColor(sf::Color::White);
-
-	label = new sf::Text(font, lab);
-	label->setPosition(pos);
+	page.setPosition({ 1000, 200 });
+	page.setFillColor(sf::Color(192, 192, 192, 0));
+	page.setOutlineThickness(2.0f);
+	page.setOutlineColor(sf::Color::White);
 }
 
 void UIPage::Draw(sf::RenderWindow& window)
 {
-	window.draw(tab);
-	window.draw(*label);
+	tabButton.Draw(window);
+	window.draw(page);
 }
 
-void UIPage::SelectTab()
-{
-	tab.setOutlineThickness(5.0f);
-	tab.setOutlineColor(sf::Color::Red);
-	label->setFillColor(sf::Color::Red);
-}
-
-void UIPage::UnselectTab()
-{
-	tab.setOutlineThickness(2.0f);
-	tab.setOutlineColor(sf::Color::White);
-	label->setFillColor(sf::Color::White);
-}
