@@ -3,7 +3,6 @@
 class TextBox
 {
 public:
-	sf::Vector2f position;
 	sf::RectangleShape box;
 	sf::Text* displayText;
 	std::string text;
