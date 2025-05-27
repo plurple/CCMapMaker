@@ -1,7 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
-#include "UI.h"
-#include "TextBox.h"
+#include "UI/UI.h"
+#include "UI/TextBox.h"
 
 int main()
 {

@@ -18,6 +18,31 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="UI\Maps.cpp" />
+    <ClCompile Include="UI\TextBox.cpp" />
+    <ClCompile Include="UI\UI.cpp" />
+    <ClCompile Include="XML\Continent.cpp" />
+    <ClCompile Include="XML\Manager.cpp" />
+    <ClCompile Include="XML\Objective.cpp" />
+    <ClCompile Include="XML\Position.cpp" />
+    <ClCompile Include="XML\Reinforcement.cpp" />
+    <ClCompile Include="XML\Territory.cpp" />
+    <ClCompile Include="XML\Transform.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="UI\Maps.h" />
+    <ClInclude Include="UI\TextBox.h" />
+    <ClInclude Include="UI\UI.h" />
+    <ClInclude Include="XML\Continent.h" />
+    <ClInclude Include="XML\Manager.h" />
+    <ClInclude Include="XML\Objective.h" />
+    <ClInclude Include="XML\Position.h" />
+    <ClInclude Include="XML\Reinforcement.h" />
+    <ClInclude Include="XML\Territory.h" />
+    <ClInclude Include="XML\Transform.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
@@ -142,31 +167,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="Continent.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="Manager.cpp" />
-    <ClCompile Include="Maps.cpp" />
-    <ClCompile Include="Objective.cpp" />
-    <ClCompile Include="Position.cpp" />
-    <ClCompile Include="Reinforcement.cpp" />
-    <ClCompile Include="Territory.cpp" />
-    <ClCompile Include="TextBox.cpp" />
-    <ClCompile Include="Transform.cpp" />
-    <ClCompile Include="UI.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Continent.h" />
-    <ClInclude Include="Manager.h" />
-    <ClInclude Include="Maps.h" />
-    <ClInclude Include="Objective.h" />
-    <ClInclude Include="Position.h" />
-    <ClInclude Include="Reinforcement.h" />
-    <ClInclude Include="Territory.h" />
-    <ClInclude Include="TextBox.h" />
-    <ClInclude Include="Transform.h" />
-    <ClInclude Include="UI.h" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
