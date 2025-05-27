@@ -9,7 +9,8 @@ enum class UIPageType
 	Position,
 	Objective,
 	Reinforcement,
-	Transform
+	Transform,
+	NumPageTypes
 };
 
 class UIPage;
@@ -22,8 +23,18 @@ public:
 	UIPageType selectedPage;
 	Maps maps;
 	sf::Font font;
+	sf::Text* largeLable = nullptr;
+	sf::Text* smallLable = nullptr;
+	sf::CircleShape mapArrow;
+	sf::RectangleShape mapCheckBox;
+	bool isLarge;
+	sf::Vector2f largeArrowPos;
+	sf::Vector2f smallArrowPos;
+
 	UI();
-	bool CheckMouseInBounds(sf::Vector2i mousePos, sf::RectangleShape rect);
 	void Draw(sf::RenderWindow &window);
+	bool CheckMouseInBounds(sf::Vector2i mousePos, sf::RectangleShape rect);
+	void SwapMaps();
+	void MouseClick(sf::Vector2i mousePos);
 };
 

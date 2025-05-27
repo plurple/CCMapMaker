@@ -21,16 +21,13 @@ int main()
 
         textbox.Update(window, clockElapsed);
 
-        sf::Vector2i localPosition = sf::Mouse::getPosition(window);
+        sf::Vector2i mousePos = sf::Mouse::getPosition(window);
 
         if (mouse_effect_time > sf::seconds(0.3f) && sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
         {
             mouse_effect_time = sf::Time::Zero;
-            if(ui.CheckMouseInBounds(localPosition, ui.maps.mapCheckBox))
-            {
-                ui.maps.SwapMaps();
-            }
-            textbox.active = ui.CheckMouseInBounds(localPosition, textbox.box);
+            ui.MouseClick(mousePos);
+            textbox.active = ui.CheckMouseInBounds(mousePos, textbox.box);
         }
 
         window.clear(); 
