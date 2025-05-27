@@ -25,4 +25,5 @@ public:
 
 	Maps(sf::Font &font);
 	void SwapMaps();
+	void Draw(sf::RenderWindow& window);
 };

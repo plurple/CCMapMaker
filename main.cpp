@@ -8,53 +8,18 @@ int main()
     UI ui;
     sf::Clock clock;
 
-    sf::RenderWindow window(sf::VideoMode({ 1600, 1000 }), "SFML works!");
+    sf::RenderWindow window(sf::VideoMode({ 1600, 1000 }), "CC Map Maker");
 
     TextBox textbox({1050, 155}, ui.font);
     
     while (window.isOpen())
     {
-        while (const std::optional event = window.pollEvent())
-        {
-            if (event->is<sf::Event::Closed>())
-                window.close();
-            if (textbox.active)
-            {
-                if (const auto* TextEntered = event->getIf<sf::Event::TextEntered>())
-                {
-                    if (std::isprint(TextEntered->unicode))
-                        textbox.text += TextEntered->unicode;
-                }
-                if (const auto* KeyPressed = event->getIf<sf::Event::KeyPressed>())
-                {
-                    if (KeyPressed->scancode == sf::Keyboard::Scancode::Backspace)
-                    {
-                        if (!textbox.text.empty())
-                            textbox.text.pop_back();
-                    }
-                    if (KeyPressed->scancode == sf::Keyboard::Scancode::Enter)
-                    {
-                        textbox.active = false;
-                    }
-                }
-            }
-        }
-        static sf::Time text_effect_time;
         static sf::Time mouse_effect_time;
-        static bool show_cursor;
 
         sf::Time clockElapsed = clock.restart();
-        text_effect_time += clockElapsed;
         mouse_effect_time += clockElapsed;
 
-        if (text_effect_time >= sf::seconds(0.5f))
-        {
-            show_cursor = !show_cursor;
-            text_effect_time = sf::Time::Zero;
-        }
-        if (!textbox.active) show_cursor = false;
-
-        textbox.displayText->setString(textbox.text + (show_cursor ? '_' : ' '));
+        textbox.Update(window, clockElapsed);
 
         sf::Vector2i localPosition = sf::Mouse::getPosition(window);
 
@@ -69,9 +34,8 @@ int main()
         }
 
         window.clear(); 
-        ui.DrawUI(window);
-        window.draw(textbox.box);
-        window.draw(*textbox.displayText);
+        ui.Draw(window);
+        textbox.Draw(window);
         window.display();
     }
 }

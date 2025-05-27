@@ -24,6 +24,6 @@ public:
 	sf::Font font;
 	UI();
 	bool CheckMouseInBounds(sf::Vector2i mousePos, sf::RectangleShape rect);
-	void DrawUI(sf::RenderWindow &window);
+	void Draw(sf::RenderWindow &window);
 };
 

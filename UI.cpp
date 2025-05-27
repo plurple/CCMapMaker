@@ -12,14 +12,10 @@ UI::UI() :
     font.openFromFile("C:/Windows/Fonts/Arial.ttf");
 }
 
-void UI::DrawUI(sf::RenderWindow& window)
+void UI::Draw(sf::RenderWindow& window)
 {
-    window.draw(maps.isLarge ? *maps.largeMap.mapSprite : *maps.smallMap.mapSprite);
     window.draw(uiPanel);
-    window.draw(maps.mapCheckBox);
-    window.draw(maps.mapArrow);
-    window.draw(*maps.largeLable);
-    window.draw(*maps.smallLable);
+    maps.Draw(window);
 }
 
 bool UI::CheckMouseInBounds(sf::Vector2i mousePos, sf::RectangleShape rect)

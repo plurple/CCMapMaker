@@ -53,3 +53,12 @@ void Maps::SwapMaps()
     mapArrow.scale({ 1, -1 });
     isLarge = !isLarge;
 }
+
+void Maps::Draw(sf::RenderWindow& window)
+{
+    window.draw(isLarge ? *largeMap.mapSprite : *smallMap.mapSprite);
+    window.draw(mapCheckBox);
+    window.draw(mapArrow);
+    window.draw(*largeLable);
+    window.draw(*smallLable);
+}

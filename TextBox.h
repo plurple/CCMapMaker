@@ -10,5 +10,7 @@ public:
 	bool active;
 
 	TextBox(sf::Vector2f pos, sf::Font& font);
+	void Update(sf::RenderWindow& window, sf::Time timePassed);
+	void Draw(sf::RenderWindow& window);
 };
 
