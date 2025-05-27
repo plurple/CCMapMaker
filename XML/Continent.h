@@ -22,9 +22,9 @@ public:
 	std::vector<BonusData> bonuses;
 	std::vector<unsigned int> territories;
 	std::vector<unsigned int> continents;
-	std::vector<unsigned int> mandatory;
-	std::vector<unsigned int> blocker;
-	std::vector<MultiplierData> multiplier;
+	std::vector<unsigned int> mandatory; //this will be an index in the territories vector
+	std::vector<unsigned int> blocker; //this will be an index in the territories vector
+	std::vector<MultiplierData> multiplier; //this will be an index in the territories vector
 	std::vector<unsigned int> overrides;
 };
 

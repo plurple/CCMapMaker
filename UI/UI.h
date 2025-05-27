@@ -8,6 +8,7 @@ enum class UIPageType
 	Territory,
 	Continent,
 	Position,
+	Requirements,
 	Objective,
 	Reinforcement,
 	Transform,

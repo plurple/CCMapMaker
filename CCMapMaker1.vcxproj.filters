@@ -12,6 +12,9 @@
     <Filter Include="other">
       <UniqueIdentifier>{49c781c9-fb10-4e55-b73a-1568863f5181}</UniqueIdentifier>
     </Filter>
+    <Filter Include="UI\Utility">
+      <UniqueIdentifier>{25b464bf-0a61-4fbd-9b5d-0f5822d26650}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="XML\Continent.cpp">
@@ -38,9 +41,6 @@
     <ClCompile Include="UI\UI.cpp">
       <Filter>UI</Filter>
     </ClCompile>
-    <ClCompile Include="UI\TextBox.cpp">
-      <Filter>UI</Filter>
-    </ClCompile>
     <ClCompile Include="UI\Maps.cpp">
       <Filter>UI</Filter>
     </ClCompile>
@@ -53,15 +53,30 @@
     <ClCompile Include="UI\TerritoryPage.cpp">
       <Filter>UI</Filter>
     </ClCompile>
+    <ClCompile Include="UI\ContinentPage.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
     <ClCompile Include="UI\Button.cpp">
+      <Filter>UI\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\TextBox.cpp">
+      <Filter>UI\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\TransformPage.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\PositionPage.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\ObjectivePage.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\ReinforcementPage.cpp">
       <Filter>UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="UI\Maps.h">
-      <Filter>UI</Filter>
-    </ClInclude>
-    <ClInclude Include="UI\TextBox.h">
       <Filter>UI</Filter>
     </ClInclude>
     <ClInclude Include="UI\UI.h">
@@ -94,7 +109,25 @@
     <ClInclude Include="UI\TerritoryPage.h">
       <Filter>UI</Filter>
     </ClInclude>
+    <ClInclude Include="UI\ContinentPage.h">
+      <Filter>UI</Filter>
+    </ClInclude>
     <ClInclude Include="UI\Button.h">
+      <Filter>UI\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\TextBox.h">
+      <Filter>UI\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\TransformPage.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\PositionPage.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\ObjectivePage.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\ReinforcementPage.h">
       <Filter>UI</Filter>
     </ClInclude>
   </ItemGroup>

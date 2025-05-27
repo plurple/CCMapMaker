@@ -1,6 +1,12 @@
 #pragma once
 #include "UIPage.h"
-#include "Button.h"
+
+struct Condition
+{
+	sf::Text* territory;
+	Button addCondition;
+	sf::Text* condition;
+};
 
 class TerritoryEntry
 {
@@ -12,7 +18,8 @@ class TerritoryEntry
 	sf::Text* yLabel;
 	TextBox yBox;
 	sf::Text* connectionLabel;
-	sf::Text* connections;
+	std::vector<Condition> territories;
+	sf::Text* bombardments;
 	Button Killer;
 	sf::Text* neutralLabel;
 	TextBox neutralBox;
@@ -26,6 +33,10 @@ public:
 	Button borders;
 	Button Bombardments;
 	Button Other;
+	Button addTerritory;
+	Button showContinents;
+	Button conditions;
+	Button linkCoordinates;
 	std::vector<TerritoryEntry> entries;
 };
 

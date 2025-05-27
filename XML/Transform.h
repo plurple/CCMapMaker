@@ -52,7 +52,7 @@ struct ConditionData
 class Transform
 {
 public:
-	TransformType transType;
+	TransformType transformType;
 	ApplyTo apply;
 	int inc;
 	unsigned int amount;
