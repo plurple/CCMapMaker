@@ -6,10 +6,13 @@ class Button
 public:
 	sf::RectangleShape rect;
 	sf::Text* label = nullptr;
+	bool selected;
 
-	Button(sf::Font& font, sf::Vector2f pos, std::string lab = "");
+	Button(sf::Font& font, sf::Vector2f pos, sf::Vector2f dimensions = { 50,50 }, 
+		std::string lab = "", bool select = false);
 	void Draw(sf::RenderWindow& window);
 	void Select();
 	void Unselect();
+	void Toggle();
 };
 

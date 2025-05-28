@@ -1,7 +1,8 @@
 #include "TextBox.h"
+#include "UI.h"
 
-TextBox::TextBox(sf::Vector2f pos, sf::Font& font) :
-	box{ {400, 32} },
+TextBox::TextBox(sf::Font& font, sf::Vector2f pos, sf::Vector2f boxSize) :
+	box{ boxSize },
 	active{false},
 	text{""}
 {
@@ -14,46 +15,19 @@ TextBox::TextBox(sf::Vector2f pos, sf::Font& font) :
 	displayText->setPosition({ pos.x, pos.y-5});
 }
 
-void TextBox::Update(sf::RenderWindow& window, sf::Time timePassed)
+void TextBox::Update(sf::RenderWindow& window, sf::Time timePassed, 
+    std::string keyPressed, bool backspace, bool enter, bool showCursor)
 {
-    while (const std::optional event = window.pollEvent())
+    if (active)
     {
-        if (event->is<sf::Event::Closed>())
-            window.close();
-        if (active)
-        {
-            if (const auto* TextEntered = event->getIf<sf::Event::TextEntered>())
-            {
-                if (std::isprint(TextEntered->unicode))
-                    text += TextEntered->unicode;
-            }
-            if (const auto* KeyPressed = event->getIf<sf::Event::KeyPressed>())
-            {
-                if (KeyPressed->scancode == sf::Keyboard::Scancode::Backspace)
-                {
-                    if (!text.empty())
-                        text.pop_back();
-                }
-                if (KeyPressed->scancode == sf::Keyboard::Scancode::Enter)
-                {
-                    active = false;
-                }
-            }
-        }
+        text += keyPressed;
+        if (backspace && !text.empty())
+            text.pop_back();
+        if (enter)
+            active = false;       
     }
 
-    static sf::Time text_effect_time;
-    static bool show_cursor;
-    text_effect_time += timePassed;
-
-    if (text_effect_time >= sf::seconds(0.5f))
-    {
-        show_cursor = !show_cursor;
-        text_effect_time = sf::Time::Zero;
-    }
-    if (!active) show_cursor = false;
-
-    displayText->setString(text + (show_cursor ? '|' : ' '));
+    displayText->setString(text + (active && showCursor ? '|' : ' '));
 }
 
 void TextBox::Draw(sf::RenderWindow& window)

@@ -22,7 +22,7 @@ public:
 	bool killer;
 	int bonus;
 
-	Territory() {};
+	//Territory() {};
 	/*todo move the positions and such both together and seperatly
 	convert large coord to small and vice versa*/
 };

@@ -1,15 +1,17 @@
 #include "Button.h"
 
-Button::Button(sf::Font& font, sf::Vector2f pos, std::string lab) :
-	rect{{50,50}}
+Button::Button(sf::Font& font, sf::Vector2f pos, 
+	sf::Vector2f dimensions, std::string lab, bool select) :
+	rect{dimensions},
+	selected{select}
 {
 	rect.setPosition(pos);
 	rect.setFillColor(sf::Color::Black);
-	rect.setOutlineThickness(2.0f);
-	rect.setOutlineColor(sf::Color::White);
 
 	label = new sf::Text(font, lab);
-	label->setPosition(pos);
+	label->setPosition({ pos.x +5, pos.y-5 });
+
+	selected ? Select() : Unselect();
 }
 
 void Button::Draw(sf::RenderWindow& window)
@@ -20,6 +22,7 @@ void Button::Draw(sf::RenderWindow& window)
 
 void Button::Select()
 {
+	selected = true;
 	rect.setOutlineThickness(5.0f);
 	rect.setOutlineColor(sf::Color::Red);
 	label->setFillColor(sf::Color::Red);
@@ -27,7 +30,13 @@ void Button::Select()
 
 void Button::Unselect()
 {
+	selected = false;
 	rect.setOutlineThickness(2.0f);
 	rect.setOutlineColor(sf::Color::White);
 	label->setFillColor(sf::Color::White);
+}
+
+void Button::Toggle()
+{
+	selected ? Unselect() : Select();
 }

@@ -10,16 +10,37 @@ int main()
 
     sf::RenderWindow window(sf::VideoMode({ 1600, 1000 }), "CC Map Maker");
 
-    TextBox textbox({1050, 155}, ui.font);
-    
     while (window.isOpen())
     {
+        bool backspace = false, enter = false;
+        std::string keyPressed;
+        while (const std::optional event = window.pollEvent())
+        {
+            if (event->is<sf::Event::Closed>())
+                window.close();
+            if (const auto* TextEntered = event->getIf<sf::Event::TextEntered>())
+            {
+                if (std::isprint(TextEntered->unicode))
+                    keyPressed += TextEntered->unicode;
+            }
+            if (const auto* KeyPressed = event->getIf<sf::Event::KeyPressed>())
+            {
+                if (KeyPressed->scancode == sf::Keyboard::Scancode::Backspace)
+                {
+                    backspace = true;
+                }
+                if (KeyPressed->scancode == sf::Keyboard::Scancode::Enter)
+                {
+                    enter = true;
+                }
+            }
+        }
+
         static sf::Time mouse_effect_time;
 
         sf::Time clockElapsed = clock.restart();
         mouse_effect_time += clockElapsed;
-
-        textbox.Update(window, clockElapsed);
+        ui.Update(window, clockElapsed, keyPressed, backspace, enter);
 
         sf::Vector2i mousePos = sf::Mouse::getPosition(window);
 
@@ -27,12 +48,10 @@ int main()
         {
             mouse_effect_time = sf::Time::Zero;
             ui.MouseClick(mousePos);
-            textbox.active = ui.CheckMouseInBounds(mousePos, textbox.box);
         }
 
         window.clear(); 
         ui.Draw(window);
-        textbox.Draw(window);
         window.display();
     }
 }

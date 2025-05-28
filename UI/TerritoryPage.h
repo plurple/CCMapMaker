@@ -27,16 +27,32 @@ class TerritoryEntry
 	TextBox bonusBox;
 };
 
+enum class TerritoryView
+{
+	Borders,
+	Bombardments,
+	Conditions,
+	Extras,
+	NumViews
+};
+
 class TerritoryPage : public UIPage
 {
 public:
-	Button borders;
-	Button Bombardments;
-	Button Other;
 	Button addTerritory;
 	Button showContinents;
-	Button conditions;
 	Button linkCoordinates;
+	std::vector<Button> territoryViews;
+	TerritoryView selectedView;
 	std::vector<TerritoryEntry> entries;
+
+	TerritoryPage(sf::Font& font, sf::Vector2f tabPos, sf::Vector2f tabSize,
+		std::string tabLabel, sf::Vector2f buttonBoxSize); 
+	void Draw(sf::RenderWindow& window, bool selected) override;
+	void MouseClick(sf::Vector2i mousePos) override;
+	void Update(sf::RenderWindow& window, sf::Time timePassed, 
+		std::string keyPressed, bool backspace, bool enter, 
+		bool showCursor) override;
+
 };
 
