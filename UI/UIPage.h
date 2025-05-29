@@ -9,6 +9,7 @@ public:
 	Button tabButton;
 	sf::RectangleShape page;
 	sf::RectangleShape buttonBox;
+	float pageTop;
 
 	//ScrollBar scrollbar;
 

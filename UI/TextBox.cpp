@@ -1,10 +1,10 @@
 #include "TextBox.h"
 #include "UI.h"
 
-TextBox::TextBox(sf::Vector2f pos, sf::Vector2f boxSize) :
+TextBox::TextBox(sf::Vector2f pos, sf::Vector2f boxSize, std::string defaultText) :
 	box{ boxSize },
 	active{false},
-	text{""}
+	text{defaultText}
 {
 	box.setPosition(pos);
 	box.setFillColor(sf::Color::Black);

@@ -3,10 +3,19 @@
 
 class PositionEntry
 {
+public:
 	sf::RectangleShape borderBox;
 	sf::Text* territoryName;
 	sf::Text* startLabel;
 	TextBox startBox;
+	bool selected;
+
+	PositionEntry(float entryTop);
+	void Draw(sf::RenderWindow& window, bool selected);
+	void MouseClick(sf::Vector2i mousePos);
+	void Update(sf::RenderWindow& window, sf::Time timePassed,
+		std::string keyPressed, bool backspace, bool enter,
+		bool showCursor);
 };
 
 class PositionPage : public UIPage
@@ -25,6 +34,8 @@ public:
 	void Update(sf::RenderWindow& window, sf::Time timePassed, 
 		std::string keyPressed, bool backspace, bool enter, 
 		bool showCursor) override;
+
+	void AddPosition();
 
 };
 

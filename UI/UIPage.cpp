@@ -4,7 +4,8 @@ UIPage::UIPage(sf::Vector2f tabPos, sf::Vector2f tabSize,
 	std::string tabLabel, sf::Vector2f buttonBoxSize) :
 	tabButton(tabPos, tabSize, tabLabel),
 	page{{592,842}},
-	buttonBox{ buttonBoxSize }
+	buttonBox{ buttonBoxSize },
+	pageTop{158+4+4+buttonBoxSize.y}
 {
 	page.setPosition({ 1004, 154 });
 	page.setFillColor(sf::Color(192, 192, 192, 0));
