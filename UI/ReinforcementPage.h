@@ -3,6 +3,7 @@
 
 class ReinforcementEntry
 {
+public:
 	sf::RectangleShape borderBox;
 	sf::Text* lowerLabel;
 	TextBox lowerBox;
@@ -11,12 +12,21 @@ class ReinforcementEntry
 	sf::Text* divisorLabel;
 	TextBox divisorBox;
 	sf::Text* explanation;
+
+	ReinforcementEntry(float entryTop);
+	void Draw(sf::RenderWindow& window);
+	void MouseClick(sf::Vector2i mousePos);
+	void Update(sf::RenderWindow& window, sf::Time timePassed,
+		std::string keyPressed, bool backspace, bool enter,
+		bool showCursor);
 };
 
 class ReinforcementPage : public UIPage
 {
 public:
 	Button addReinforcement;
+	sf::Text* minLabel;
+	TextBox minReinforcements;
 	std::vector<ReinforcementEntry> entries;
 	ReinforcementPage(sf::Vector2f tabPos, sf::Vector2f tabSize,
 		std::string tabLabel, sf::Vector2f buttonBoxSize);
@@ -26,5 +36,6 @@ public:
 		std::string keyPressed, bool backspace, bool enter, 
 		bool showCursor) override;
 
+	void AddReinforcement();
 };
 
