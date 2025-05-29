@@ -1,5 +1,5 @@
 #pragma once
-#include <vector>
+#include <unordered_map>
 
 class Transform;
 class Reinforcement;
@@ -11,13 +11,13 @@ class Territory;
 class Manager
 {
 public:
-	std::vector<Transform*> transforms;
-	std::vector<Reinforcement*> reinforcements;
+	std::unordered_map<int, Transform*> transforms;
+	std::unordered_map<int, Reinforcement*> reinforcements;
 	int maxPositions;
-	std::vector<Position*> positions;
-	std::vector<Objective*> requirements; //by default required is 1
-	std::vector<Objective*> objectives; //by default required is all
-	std::vector<Continent*> continents;
-	std::vector<Territory*> territories;
+	std::unordered_map<int, Position*> positions;
+	std::unordered_map<int, Objective*> requirements; //by default required is 1
+	std::unordered_map<int, Objective*> objectives; //by default required is all
+	std::unordered_map<int, Continent*> continents;
+	std::unordered_map<int, Territory*> territories;
 };
 

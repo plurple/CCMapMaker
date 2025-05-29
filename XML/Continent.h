@@ -17,7 +17,6 @@ struct MultiplierData
 class Continent
 {
 public:
-	unsigned int index;
 	std::string name;
 	std::vector<BonusData> bonuses;
 	std::vector<unsigned int> territories;

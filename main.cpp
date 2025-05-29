@@ -46,6 +46,7 @@ int main()
 
         if (mouse_effect_time > sf::seconds(0.3f) && sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
         {
+            //TODO add a hover effect to buttons :D
             mouse_effect_time = sf::Time::Zero;
             ui.MouseClick(mousePos);
         }

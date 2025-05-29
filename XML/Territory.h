@@ -12,7 +12,6 @@ struct BorderData
 class Territory
 {
 public:
-	unsigned int index;
 	std::string name;
 	sf::Vector2u smallPos;
 	sf::Vector2u LargePos;
