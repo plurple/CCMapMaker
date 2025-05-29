@@ -12,7 +12,7 @@ public:
 
 	//ScrollBar scrollbar;
 
-	UIPage(sf::Font& font, sf::Vector2f tabPos, sf::Vector2f tabSize, 
+	UIPage(sf::Vector2f tabPos, sf::Vector2f tabSize, 
 		std::string tabLabel, sf::Vector2f buttonBoxSize);
 	virtual void Draw(sf::RenderWindow& window, bool selected);
 	virtual void MouseClick(sf::Vector2i mousePos) = 0;

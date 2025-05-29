@@ -1,14 +1,15 @@
 #include "Button.h"
+#include "UI.h"
 
-Button::Button(sf::Font& font, sf::Vector2f pos, 
-	sf::Vector2f dimensions, std::string lab, bool select) :
+Button::Button(sf::Vector2f pos, sf::Vector2f dimensions,
+	std::string lab, bool select) :
 	rect{dimensions},
 	selected{select}
 {
 	rect.setPosition(pos);
 	rect.setFillColor(sf::Color::Black);
 
-	label = new sf::Text(font, lab);
+	label = new sf::Text(UI::font, lab);
 	label->setPosition({ pos.x +5, pos.y-5 });
 
 	selected ? Select() : Unselect();

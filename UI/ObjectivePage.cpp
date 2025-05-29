@@ -1,12 +1,12 @@
 #include "ObjectivePage.h"
 #include "UI.h"
 
-ObjectivePage::ObjectivePage(sf::Font& font, sf::Vector2f tabPos, 
+ObjectivePage::ObjectivePage(sf::Vector2f tabPos, 
 	sf::Vector2f tabSize, std::string tabLabel, sf::Vector2f buttonBoxSize) :
-	UIPage(font, tabPos, tabSize, tabLabel, buttonBoxSize),
+	UIPage(tabPos, tabSize, tabLabel, buttonBoxSize),
     isObjective{ true },
-	addObjective(font, { 1051, 170 }, { 200, 30 }, "Add Objective"),
-	showContinents(font, { 1311, 170 }, { 240, 30 }, "Show Continents")
+	addObjective({ 1051, 170 }, { 200, 30 }, "Add Objective"),
+	showContinents({ 1311, 170 }, { 240, 30 }, "Show Continents")
 {
     if (tabLabel == "Requirements")
     {

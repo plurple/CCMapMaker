@@ -21,7 +21,7 @@ public:
 	Button showContinents;
 	bool isObjective;
 	std::vector<ObjectiveEntry> entries;
-	ObjectivePage(sf::Font& font, sf::Vector2f tabPos, sf::Vector2f tabSize,
+	ObjectivePage(sf::Vector2f tabPos, sf::Vector2f tabSize,
 		std::string tabLabel, sf::Vector2f buttonBoxSize);
 	void Draw(sf::RenderWindow& window, bool selected) override;
 	void MouseClick(sf::Vector2i mousePos) override;

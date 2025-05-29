@@ -1,18 +1,18 @@
 #include "ContinentPage.h"
 #include "UI.h"
 
-ContinentPage::ContinentPage(sf::Font& font, sf::Vector2f tabPos,
+ContinentPage::ContinentPage(sf::Vector2f tabPos,
 	sf::Vector2f tabSize, std::string tabLabel, sf::Vector2f buttonBoxSize) :
-	UIPage(font, tabPos, tabSize, tabLabel, buttonBoxSize),
+	UIPage(tabPos, tabSize, tabLabel, buttonBoxSize),
 	selectedView{ ContinentView::Basic },
-	addContinent(font, { 1076, 215 }, { 200, 30 }, "Add Continent"),
-	showContinents(font, { 1286, 215 }, { 240, 30 }, "Show Continents")
+	addContinent({ 1076, 215 }, { 200, 30 }, "Add Continent"),
+	showContinents({ 1286, 215 }, { 240, 30 }, "Show Continents")
 {
-	Button Basic(font, { 1076, 170 }, { 85, 30 }, "Basic", true);
+	Button Basic({ 1076, 170 }, { 85, 30 }, "Basic", true);
 	continentViews.push_back(Basic);
-	Button overrides(font, { 1208, 170 }, { 130, 30 }, "Overides");
+	Button overrides({ 1208, 170 }, { 130, 30 }, "Overides");
 	continentViews.push_back(overrides);
-	Button advanced(font, { 1381, 170 }, { 145, 30 }, "Advanced");
+	Button advanced({ 1381, 170 }, { 145, 30 }, "Advanced");
 	continentViews.push_back(advanced);
 }
 

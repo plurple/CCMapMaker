@@ -1,13 +1,13 @@
 #include "PositionPage.h"
 #include "UI.h"
 
-PositionPage::PositionPage(sf::Font& font, sf::Vector2f tabPos, 
+PositionPage::PositionPage(sf::Vector2f tabPos, 
 	sf::Vector2f tabSize, std::string tabLabel, sf::Vector2f buttonBoxSize) :
-	UIPage(font, tabPos, tabSize, tabLabel, buttonBoxSize),
-	addPosition(font, { 1070, 170 }, { 185, 30 }, "Add Position"),
-    maxBox(font, { 1470, 170 }, { 50, 30 })
+	UIPage(tabPos, tabSize, tabLabel, buttonBoxSize),
+	addPosition({ 1070, 170 }, { 185, 30 }, "Add Position"),
+    maxBox({ 1470, 170 }, { 50, 30 })
 {
-    maxLabel = new sf::Text(font, "Max Positions:");
+    maxLabel = new sf::Text(UI::font, "Max Positions:");
     maxLabel->setPosition({ 1270, 165 });
 }
 

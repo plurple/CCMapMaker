@@ -1,10 +1,10 @@
 #include "ReinforcementPage.h"
 #include "UI.h"
 
-ReinforcementPage::ReinforcementPage(sf::Font& font, sf::Vector2f tabPos, 
+ReinforcementPage::ReinforcementPage(sf::Vector2f tabPos, 
 	sf::Vector2f tabSize, std::string tabLabel, sf::Vector2f buttonBoxSize) :
-	UIPage(font, tabPos, tabSize, tabLabel, buttonBoxSize),
-	addReinforcement(font, { 1020, 170 }, { 270, 30 }, "Add Reinforcement")
+	UIPage(tabPos, tabSize, tabLabel, buttonBoxSize),
+	addReinforcement({ 1020, 170 }, { 270, 30 }, "Add Reinforcement")
 {}
 
 void ReinforcementPage::Draw(sf::RenderWindow& window, bool selected)

@@ -7,17 +7,19 @@
 #include "TransformPage.h"
 #include "PositionPage.h"
 
+sf::Font UI::font;
+
 UI::UI() : 
     selectedPage{UIPageType::Territory}, 
     uiPanel{ {600,1000} },
     mapPanel{ {370,45} },
     tabPanel{ {592,142} },
     isLarge{ true },
-    mapCheckBox(font, { 1238,13 }, { 30,30 }),
+    mapCheckBox({ 1238,13 }, { 30,30 }),
     mapArrow{ (15) },
     largeArrowPos{ 1240, 13 },
     smallArrowPos{ 1265, 13 },
-    maps(font),
+    maps(),
     showCursor{false}
 {
     sf::Color grey(192, 192, 192);
@@ -53,19 +55,19 @@ UI::UI() :
     smallLabel = new sf::Text(font, "Small");
     smallLabel->setPosition({ 1275, 8 });
 
-    TerritoryPage* territoryPage = new TerritoryPage(font, { 1010, 60 }, { 150, 30 }, "Territories", { 584, 142 });
+    TerritoryPage* territoryPage = new TerritoryPage({ 1010, 60 }, { 150, 30 }, "Territories", { 584, 142 });
     uiPages.push_back(territoryPage);
-    ContinentPage* continentPage = new ContinentPage(font, { 1175, 60 }, { 150, 30 }, "Continents", { 584, 97 });
+    ContinentPage* continentPage = new ContinentPage({ 1175, 60 }, { 150, 30 }, "Continents", { 584, 97 });
     uiPages.push_back(continentPage);
-    ReinforcementPage* reinforcementPage = new ReinforcementPage(font, { 1340, 60 }, { 220, 30 }, "Reinforcements", { 584, 52 });
+    ReinforcementPage* reinforcementPage = new ReinforcementPage({ 1340, 60 }, { 220, 30 }, "Reinforcements", { 584, 52 });
     uiPages.push_back(reinforcementPage);
-    PositionPage* positionPage = new PositionPage(font, { 1010, 100 }, { 130, 30 }, "Positions", { 584, 52 });
+    PositionPage* positionPage = new PositionPage({ 1010, 100 }, { 130, 30 }, "Positions", { 584, 52 });
     uiPages.push_back(positionPage);
-    ObjectivePage* requirementPage = new ObjectivePage(font, { 1340, 100 }, { 200, 30 }, "Requirements", { 584, 52 });
+    ObjectivePage* requirementPage = new ObjectivePage({ 1340, 100 }, { 200, 30 }, "Requirements", { 584, 52 });
     uiPages.push_back(requirementPage);
-    ObjectivePage* objectivePage = new ObjectivePage(font, { 1175, 100 }, { 150, 30 }, "Objectives", { 584, 52 });
+    ObjectivePage* objectivePage = new ObjectivePage({ 1175, 100 }, { 150, 30 }, "Objectives", { 584, 52 });
     uiPages.push_back(objectivePage);
-    TransformPage* transformPage = new TransformPage(font, { 1400, 20 }, { 160, 30 }, "Transforms", { 584, 52 });
+    TransformPage* transformPage = new TransformPage({ 1400, 20 }, { 160, 30 }, "Transforms", { 584, 52 });
     uiPages.push_back(transformPage);
     uiPages[(int)selectedPage]->tabButton.Select();
 }

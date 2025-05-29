@@ -11,7 +11,7 @@ MapData::MapData(std::string fileName) : filePath{ fileName }, mapTexture{nullpt
     mapSprite = new sf::Sprite(*mapTexture);
 }
 
-Maps::Maps(sf::Font& font) :
+Maps::Maps() :
     largeMap("C:/Users/Matthew/Documents/Conquer club/map xml/TemplarsLarge4.17a.png"),
     smallMap("C:/Users/Matthew/Documents/Conquer club/map xml/TemplarsSmall4.17.png")
 {}

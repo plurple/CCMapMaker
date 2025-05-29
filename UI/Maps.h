@@ -16,6 +16,6 @@ public:
 	MapData largeMap;
 	MapData smallMap;
 
-	Maps(sf::Font &font);
+	Maps();
 	void Draw(sf::RenderWindow& window, bool isLarge);
 };

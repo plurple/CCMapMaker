@@ -1,21 +1,21 @@
 #include "TerritoryPage.h"
 #include "UI.h"
 
-TerritoryPage::TerritoryPage(sf::Font& font, sf::Vector2f tabPos, 
+TerritoryPage::TerritoryPage(sf::Vector2f tabPos, 
 	sf::Vector2f tabSize, std::string tabLabel, sf::Vector2f buttonBoxSize):
-	UIPage(font, tabPos, tabSize, tabLabel, buttonBoxSize),
+	UIPage(tabPos, tabSize, tabLabel, buttonBoxSize),
 	selectedView{ TerritoryView::Borders },
-	addTerritory(font, { 1066, 260 }, { 190, 30 }, "Add Territory"),
-	showContinents(font, { 1296, 215 }, { 240, 30 }, "Show Continents"),
-	linkCoordinates(font, { 1296, 260 }, { 240, 30 }, "Link Coordinates", true)
+	addTerritory({ 1066, 260 }, { 190, 30 }, "Add Territory"),
+	showContinents({ 1296, 215 }, { 240, 30 }, "Show Continents"),
+	linkCoordinates({ 1296, 260 }, { 240, 30 }, "Link Coordinates", true)
 {
-	Button borders(font, { 1066, 170 }, { 115, 30 }, "Borders", true);
+	Button borders({ 1066, 170 }, { 115, 30 }, "Borders", true);
 	territoryViews.push_back(borders);
-	Button bombardments(font, { 1201, 170 }, { 215, 30 }, "Bombardments");
+	Button bombardments({ 1201, 170 }, { 215, 30 }, "Bombardments");
 	territoryViews.push_back(bombardments);
-	Button conditions(font, { 1066, 215 }, { 150, 30 }, "Conditions");
+	Button conditions({ 1066, 215 }, { 150, 30 }, "Conditions");
 	territoryViews.push_back(conditions);
-	Button extras(font, { 1436, 170 }, { 100, 30 }, "Extras");
+	Button extras({ 1436, 170 }, { 100, 30 }, "Extras");
 	territoryViews.push_back(extras);
 }
 

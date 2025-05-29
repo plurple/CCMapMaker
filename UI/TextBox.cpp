@@ -1,7 +1,7 @@
 #include "TextBox.h"
 #include "UI.h"
 
-TextBox::TextBox(sf::Font& font, sf::Vector2f pos, sf::Vector2f boxSize) :
+TextBox::TextBox(sf::Vector2f pos, sf::Vector2f boxSize) :
 	box{ boxSize },
 	active{false},
 	text{""}
@@ -11,7 +11,7 @@ TextBox::TextBox(sf::Font& font, sf::Vector2f pos, sf::Vector2f boxSize) :
 	box.setOutlineThickness(2.0f);
 	box.setOutlineColor(sf::Color::White);
 
-	displayText = new sf::Text(font, text);
+	displayText = new sf::Text(UI::font, text);
 	displayText->setPosition({ pos.x, pos.y-5});
 }
 

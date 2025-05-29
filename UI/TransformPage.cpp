@@ -1,11 +1,11 @@
 #include "TransformPage.h"
 #include "UI.h"
 
-TransformPage::TransformPage(sf::Font& font, sf::Vector2f tabPos, 
+TransformPage::TransformPage(sf::Vector2f tabPos, 
 	sf::Vector2f tabSize, std::string tabLabel, sf::Vector2f buttonBoxSize) :
-	UIPage(font, tabPos, tabSize, tabLabel, buttonBoxSize),
-	addTransform(font, { 1051, 170 }, { 210, 30 }, "Add Transform"),
-	testTransforms(font, { 1321, 170 }, { 230, 30 }, "Test Transforms")
+	UIPage(tabPos, tabSize, tabLabel, buttonBoxSize),
+	addTransform({ 1051, 170 }, { 210, 30 }, "Add Transform"),
+	testTransforms({ 1321, 170 }, { 230, 30 }, "Test Transforms")
 {}
 
 void TransformPage::Draw(sf::RenderWindow& window, bool selected)

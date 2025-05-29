@@ -18,7 +18,7 @@ class ReinforcementPage : public UIPage
 public:
 	Button addReinforcement;
 	std::vector<ReinforcementEntry> entries;
-	ReinforcementPage(sf::Font& font, sf::Vector2f tabPos, sf::Vector2f tabSize,
+	ReinforcementPage(sf::Vector2f tabPos, sf::Vector2f tabSize,
 		std::string tabLabel, sf::Vector2f buttonBoxSize);
 	void Draw(sf::RenderWindow& window, bool selected) override;
 	void MouseClick(sf::Vector2i mousePos) override;

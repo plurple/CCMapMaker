@@ -26,7 +26,7 @@ public:
 	std::vector<UIPage*> uiPages;
 	UIPageType selectedPage;
 	Maps maps;
-	sf::Font font;
+	static sf::Font font;
 	sf::Text* mapSizeLabel;
 	sf::Text* largeLabel;
 	sf::Text* smallLabel;

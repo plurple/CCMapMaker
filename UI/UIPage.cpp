@@ -1,8 +1,8 @@
 #include "UIPage.h"
 
-UIPage::UIPage(sf::Font& font, sf::Vector2f tabPos, sf::Vector2f tabSize, 
+UIPage::UIPage(sf::Vector2f tabPos, sf::Vector2f tabSize, 
 	std::string tabLabel, sf::Vector2f buttonBoxSize) :
-	tabButton(font, tabPos, tabSize, tabLabel),
+	tabButton(tabPos, tabSize, tabLabel),
 	page{{592,842}},
 	buttonBox{ buttonBoxSize }
 {

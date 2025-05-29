@@ -8,7 +8,7 @@ public:
 	std::string text;
 	bool active;
 
-	TextBox(sf::Font& font, sf::Vector2f pos, sf::Vector2f boxSize = { 400, 32 });
+	TextBox(sf::Vector2f pos, sf::Vector2f boxSize = { 400, 32 });
 	void Update(sf::RenderWindow& window, sf::Time timePassed, 
 		std::string keyPressed, bool backspace, bool enter, 
 		bool showCursor);
