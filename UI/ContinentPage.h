@@ -1,34 +1,6 @@
 #pragma once
 #include "UIPage.h"
 
-
-class AdvancedTerritory
-{
-	sf::Text* territory;
-	Button madatory;
-	Button blocker;
-	Button multiplier;
-	TextBox factor;
-};
-
-class ContinentEntry
-{
-	sf::RectangleShape borderBox;
-	sf::Text* nameLabel;
-	TextBox nameBox;
-	sf::Text* bonusLabel;
-	TextBox bonusBox;
-	Button requiredButton;
-	sf::Text* requiredLabel;
-	TextBox requiredBox;
-	sf::Text* territoryLabel;
-	sf::Text* territories;
-	std::vector<AdvancedTerritory> advanced;
-	sf::Text* continentLabel;
-	sf::Text* overideLabel;
-	sf::Text* continents;
-};
-
 enum class ContinentView
 {
 	Basic,
@@ -36,6 +8,56 @@ enum class ContinentView
 	Advanced,
 	NumViews
 };
+
+class AdvancedTerritory
+{
+public:
+	sf::RectangleShape borderBox;
+	sf::Text* territory;
+	Button mandatory;
+	sf::Text* mandatoryLabel;
+	Button blocker;
+	sf::Text* blockerLabel;
+	Button multiplier;
+	sf::Text* multiplierLabel;
+	TextBox factor;
+	sf::Text* factorLabel;
+
+	AdvancedTerritory(float entryTop);
+	void Draw(sf::RenderWindow& window);
+	void MouseClick(sf::Vector2i mousePos);
+	void Update(sf::RenderWindow& window, sf::Time timePassed,
+		std::string keyPressed, bool backspace, bool enter,
+		bool showCursor);
+};
+
+class ContinentEntry
+{
+public:
+	sf::RectangleShape borderBox;
+	sf::Text* nameLabel;
+	TextBox nameBox;
+	sf::Text* bonusLabel;
+	TextBox bonusBox;
+	Button addBonus;
+	Button removeBonus;
+	sf::Text* requiredLabel;
+	TextBox requiredBox;
+	sf::Text* territoryLabel;
+	sf::Text* territories;
+	std::vector<AdvancedTerritory> advanced;
+	sf::Text* continentLabel;
+	sf::Text* continents;
+	bool selected;
+
+	ContinentEntry(float entryTop);
+	void Draw(sf::RenderWindow& window, ContinentView selectedView);
+	void MouseClick(sf::Vector2i mousePos, ContinentView selectedView);
+	void Update(sf::RenderWindow& window, sf::Time timePassed,
+		std::string keyPressed, bool backspace, bool enter,
+		bool showCursor, ContinentView selectedView);
+};
+
 
 class ContinentPage : public UIPage
 {
@@ -53,6 +75,8 @@ public:
 	void Update(sf::RenderWindow& window, sf::Time timePassed, 
 		std::string keyPressed, bool backspace, bool enter, 
 		bool showCursor) override;
+
+	void AddContinent();
 
 };
 
