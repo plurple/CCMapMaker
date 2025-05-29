@@ -3,6 +3,7 @@
 
 class ObjectiveEntry
 {
+public:
 	sf::RectangleShape borderBox;
 	sf::Text* nameLabel;
 	TextBox nameBox;
@@ -12,6 +13,14 @@ class ObjectiveEntry
 	sf::Text* continents;
 	sf::Text* requiredLabel;
 	TextBox numRequiredBox;
+	bool selected;
+
+	ObjectiveEntry(float entryTop, bool isObjective);
+	void Draw(sf::RenderWindow& window);
+	void MouseClick(sf::Vector2i mousePos, bool isObjective);
+	void Update(sf::RenderWindow& window, sf::Time timePassed,
+		std::string keyPressed, bool backspace, bool enter,
+		bool showCursor);
 };
 
 class ObjectivePage : public UIPage
@@ -29,5 +38,6 @@ public:
 		std::string keyPressed, bool backspace, bool enter, 
 		bool showCursor) override;
 
+	void AddObjective();
 };
 
