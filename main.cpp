@@ -40,7 +40,6 @@ int main()
 
         sf::Time clockElapsed = clock.restart();
         mouse_effect_time += clockElapsed;
-        ui.Update(window, clockElapsed, keyPressed, backspace, enter);
 
         sf::Vector2i mousePos = sf::Mouse::getPosition(window);
 
@@ -50,6 +49,8 @@ int main()
             mouse_effect_time = sf::Time::Zero;
             ui.MouseClick(mousePos);
         }
+
+        ui.Update(window, clockElapsed, keyPressed, backspace, enter);
 
         window.clear(); 
         ui.Draw(window);
