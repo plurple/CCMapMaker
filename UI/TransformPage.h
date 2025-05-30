@@ -3,38 +3,54 @@
 
 class TransformOptions
 {
-	sf::Text* label;
-	Button left;
+public:
+	sf::Text* optionLabel;
+	Button leftButton;
 	sf::CircleShape leftArrow;
-	sf::Text* option;
-	Button Right;
+	sf::Text* selectedOption;
+	Button rightButton;
 	sf::CircleShape rightArrow;
+
+	TransformOptions(float yCoord, float labelCoord, float leftCoord, 
+		float optionCoord, float rightCoord, std::string label);
+	void Draw(sf::RenderWindow& window);
+	void MouseClick(sf::Vector2i mousePos);
+	void Update(sf::RenderWindow& window, sf::Time timePassed,
+		std::string keyPressed, bool backspace, bool enter,
+		bool showCursor);
 };
 
 class TransformEntry
 {
+public:
 	sf::RectangleShape borderBox;
 	TransformOptions typeOptions;
 	TransformOptions applyOptions;
-	Button addInc;
 	TransformOptions incOptions;
-	Button addAmount;
 	sf::Text* amountLabel;
 	TextBox amountBox;
-	Button addRange;
 	sf::Text* upperLabel;
 	TextBox upperBox;
 	sf::Text* lowerLabel;
 	TextBox lowerBox;
 	Button percentage;
+	sf::Text* conditionsLabel;
+	sf::RectangleShape conditionsBox;
 	Button addCondition;
 	TransformOptions conditionTypeOptions;
 	sf::Text* idLabel;
-	TextBox idBox; //this might want to be a territory picker
+	TextBox idBox; //this might want to be a territory picker sometimes
 	TransformOptions operatorOptions;
 	TransformOptions valueOptions;
 	sf::Text* valueLabel;
 	TextBox valueBox;
+
+	TransformEntry(float entryTop);
+	void Draw(sf::RenderWindow& window);
+	void MouseClick(sf::Vector2i mousePos);
+	void Update(sf::RenderWindow& window, sf::Time timePassed,
+		std::string keyPressed, bool backspace, bool enter,
+		bool showCursor);
 };
 
 class TransformPage : public UIPage
@@ -51,5 +67,6 @@ public:
 		std::string keyPressed, bool backspace, bool enter, 
 		bool showCursor) override;
 
+	void AddTransform();
 };
 
