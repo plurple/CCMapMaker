@@ -15,7 +15,7 @@ public:
 	TextBox numRequiredBox;
 	bool selected;
 
-	ObjectiveEntry(float entryTop, bool isObjective);
+	ObjectiveEntry(sf::RenderWindow& window, sf::View& view, float entryTop, bool isObjective);
 	void Draw(sf::RenderWindow& window);
 	void MouseClick(sf::Vector2i mousePos, bool isObjective);
 	void Update(sf::RenderWindow& window, sf::Time timePassed,
@@ -38,6 +38,6 @@ public:
 		std::string keyPressed, bool backspace, bool enter, 
 		bool showCursor) override;
 
-	void AddObjective();
+	void AddObjective(sf::RenderWindow& window);
 };
 

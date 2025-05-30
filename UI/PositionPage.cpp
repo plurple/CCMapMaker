@@ -19,10 +19,14 @@ void PositionPage::Draw(sf::RenderWindow& window, bool selected)
 		addPosition.Draw(window);
 		maxBox.Draw(window);
 		if(maxLabel) window.draw(*maxLabel);
+		window.setView(scrollBar.scrollWindow);
 		for (int i = 0; i < entries.size(); i++)
 		{
 			entries[i].Draw(window, selected);
 		}
+		window.draw(page);
+		scrollBar.Draw(window);
+		window.setView(window.getDefaultView());
 	}
 }
 
@@ -30,12 +34,12 @@ void PositionPage::MouseClick(sf::RenderWindow& window, sf::Vector2i mousePos)
 {
 	if (UI::CheckMouseInBounds(mousePos, addPosition.rect))
 	{
-		AddPosition();
+		AddPosition(window);
 	}
 	maxBox.active = UI::CheckMouseInBounds(mousePos, maxBox.box);
 	for (int i = 0; i < entries.size(); i++)
 	{
-		entries[i].MouseClick(mousePos);
+		entries[i].MouseClick(sf::Vector2i(window.mapPixelToCoords(mousePos, scrollBar.scrollWindow)));
 	}
 }
 
@@ -50,30 +54,30 @@ void PositionPage::Update(sf::RenderWindow& window, sf::Time timePassed,
 	}
 }
 
-void PositionPage::AddPosition()
+void PositionPage::AddPosition(sf::RenderWindow& window)
 {
 	int numEntries = entries.size();
 	float boxSize = numEntries ? entries[numEntries - 1].borderBox.getSize().y : 0.0f;
-	PositionEntry pos{pageTop + (boxSize + 6) * numEntries};
+	PositionEntry pos{window, scrollBar.scrollWindow, 100 + (boxSize + 6) * numEntries};
 	entries.push_back(pos);
 }
 
 //-----------------------------------------------------------
 
-PositionEntry::PositionEntry(float entryTop) :
-	borderBox{{580,50}},
-	startBox({ 1525, entryTop+12 }, { 50, 30 }, "3"),
+PositionEntry::PositionEntry(sf::RenderWindow& window, sf::View& view, float entryTop) :
+	borderBox{{580,50}/*size*/},
+	startBox({ 1525, entryTop+12 }/*position*/, {50, 30}/*size*/, "3"),
 	selected{false}
 {
-	borderBox.setPosition({ 1010,entryTop });
+	borderBox.setPosition(sf::Vector2f(window.mapCoordsToPixel({ 1010,entryTop }, view)));
 	borderBox.setFillColor(sf::Color(192, 192, 192));
 	borderBox.setOutlineThickness(2.0f);
 	borderBox.setOutlineColor(sf::Color::Green);
 
 	territoryName = new sf::Text(UI::font, "Territory Name");
-	territoryName->setPosition({ 1030, entryTop+8 });
+	territoryName->setPosition(sf::Vector2f(window.mapCoordsToPixel({ 1030, entryTop+8 }, view)));
 	startLabel = new sf::Text(UI::font, "Start Size:");
-	startLabel->setPosition({ 1380, entryTop+8 });
+	startLabel->setPosition(sf::Vector2f(window.mapCoordsToPixel({ 1380, entryTop+8 }, view)));
 }
 
 void PositionEntry::Draw(sf::RenderWindow& window, bool selected)

@@ -23,7 +23,7 @@ public:
 	TextBox factor;
 	sf::Text* factorLabel;
 
-	AdvancedTerritory(float entryTop);
+	AdvancedTerritory(sf::RenderWindow& window, sf::View& view, float entryTop);
 	void Draw(sf::RenderWindow& window);
 	void MouseClick(sf::Vector2i mousePos);
 	void Update(sf::RenderWindow& window, sf::Time timePassed,
@@ -51,7 +51,7 @@ public:
 	std::vector<sf::Text*> continents;
 	bool selected;
 
-	ContinentEntry(float entryTop);
+	ContinentEntry(sf::RenderWindow& window, sf::View& view, float entryTop);
 	void Draw(sf::RenderWindow& window, ContinentView selectedView);
 	void MouseClick(sf::Vector2i mousePos, ContinentView selectedView);
 	void Update(sf::RenderWindow& window, sf::Time timePassed,
@@ -77,6 +77,6 @@ public:
 		std::string keyPressed, bool backspace, bool enter, 
 		bool showCursor) override;
 
-	void AddContinent();
+	void AddContinent(sf::RenderWindow& window);
 };
 

@@ -11,7 +11,7 @@ public:
 	Button rightButton;
 	sf::CircleShape rightArrow;
 
-	TransformOptions(float yCoord, float labelCoord, float leftCoord, 
+	TransformOptions(sf::RenderWindow& window, sf::View& view, float yCoord, float labelCoord, float leftCoord,
 		float optionCoord, float rightCoord, std::string label);
 	void Draw(sf::RenderWindow& window);
 	void MouseClick(sf::Vector2i mousePos);
@@ -45,7 +45,7 @@ public:
 	sf::Text* valueLabel;
 	TextBox valueBox;
 
-	TransformEntry(float entryTop);
+	TransformEntry(sf::RenderWindow& window, sf::View& view, float entryTop);
 	void Draw(sf::RenderWindow& window);
 	void MouseClick(sf::Vector2i mousePos);
 	void Update(sf::RenderWindow& window, sf::Time timePassed,
@@ -67,6 +67,6 @@ public:
 		std::string keyPressed, bool backspace, bool enter, 
 		bool showCursor) override;
 
-	void AddTransform();
+	void AddTransform(sf::RenderWindow& window);
 };
 

@@ -24,10 +24,14 @@ void ObjectivePage::Draw(sf::RenderWindow& window, bool selected)
 	{
 		addObjective.Draw(window);
 		showContinents.Draw(window);
+		window.setView(scrollBar.scrollWindow);
 		for (int i = 0; i < entries.size(); i++)
 		{
 			entries[i].Draw(window);
 		}
+		window.draw(page);
+		scrollBar.Draw(window);
+		window.setView(window.getDefaultView());
 	}
 }
 
@@ -41,11 +45,11 @@ void ObjectivePage::MouseClick(sf::RenderWindow& window, sf::Vector2i mousePos)
     }
     if (UI::CheckMouseInBounds(mousePos, addObjective.rect))
     {
-		AddObjective();
+		AddObjective(window);
     }
 	for (int i = 0; i < entries.size(); i++)
 	{
-		entries[i].MouseClick(mousePos, isObjective);
+		entries[i].MouseClick(sf::Vector2i(window.mapPixelToCoords(mousePos, scrollBar.scrollWindow)), isObjective);
 	}
 }
 
@@ -58,39 +62,40 @@ void ObjectivePage::Update(sf::RenderWindow& window, sf::Time timePassed,
 	}
 }
 
-void ObjectivePage::AddObjective()
+void ObjectivePage::AddObjective(sf::RenderWindow& window)
 {
 	int numEntries = entries.size();
 	float boxSize = numEntries ? entries[numEntries - 1].borderBox.getSize().y : 0.0f;
-	ObjectiveEntry pos{ pageTop + (boxSize + 6) * numEntries, isObjective };
+	ObjectiveEntry pos{window, scrollBar.scrollWindow, 100 + (boxSize + 6) * numEntries, isObjective };
 	entries.push_back(pos);
 }
 
 //-----------------------------------------------------------
 
-ObjectiveEntry::ObjectiveEntry(float entryTop, bool isObjective) :
-	borderBox{ {580,165} },
-	nameBox({ 1120, entryTop + 12 }, { 450, 30 }, "Obective Name"),
-	numRequiredBox({ 1235, entryTop + 124 }, { 50, 30 }, isObjective ? "all":"1"),
+ObjectiveEntry::ObjectiveEntry(sf::RenderWindow& window, sf::View& view, 
+	float entryTop, bool isObjective) :
+	borderBox{ {580,165} /*size*/},
+	nameBox(sf::Vector2f(window.mapCoordsToPixel({ 1120, entryTop + 12 }, view))/*position*/, { 450, 30 }/*size*/, "Obective Name"),
+	numRequiredBox(sf::Vector2f(window.mapCoordsToPixel({ 1235, entryTop + 124 }, view))/*position*/, { 50, 30 }/*size*/, isObjective ? "all":"1"),
 	selected{false}
 {
-	borderBox.setPosition({ 1010,entryTop });
+	borderBox.setPosition(sf::Vector2f(window.mapCoordsToPixel({ 1010,entryTop }, view)));
 	borderBox.setFillColor({ 192, 192, 192 });
 	borderBox.setOutlineThickness(2.0f);
 	borderBox.setOutlineColor(isObjective ? sf::Color(230, 100, 110) : sf::Color::Magenta);
 
 	nameLabel = new sf::Text(UI::font, "Name:");
-	nameLabel->setPosition({ 1020, entryTop + 8 });
+	nameLabel->setPosition(sf::Vector2f(window.mapCoordsToPixel({ 1020, entryTop + 8 }, view)));
 	territoryLabel = new sf::Text(UI::font, "Territories:");
-	territoryLabel->setPosition({ 1020, entryTop + 46 });
+	territoryLabel->setPosition(sf::Vector2f(window.mapCoordsToPixel({ 1020, entryTop + 46 }, view)));
 	territories = new sf::Text(UI::font, "Territory");
-	territories->setPosition({ 1180, entryTop + 46 });
+	territories->setPosition(sf::Vector2f(window.mapCoordsToPixel({ 1180, entryTop + 46 }, view)));
 	continentLabel = new sf::Text(UI::font, "Continents:");
-	continentLabel->setPosition({ 1020, entryTop + 84 });
+	continentLabel->setPosition(sf::Vector2f(window.mapCoordsToPixel({ 1020, entryTop + 84 }, view)));
 	continents = new sf::Text(UI::font, "Continent");
-	continents->setPosition({ 1180, entryTop + 84 });
+	continents->setPosition(sf::Vector2f(window.mapCoordsToPixel({ 1180, entryTop + 84 }, view)));
 	requiredLabel = new sf::Text(UI::font, "Num Required:");
-	requiredLabel->setPosition({ 1020, entryTop + 120 });
+	requiredLabel->setPosition(sf::Vector2f(window.mapCoordsToPixel({ 1020, entryTop + 120 }, view)));
 }
 
 void ObjectiveEntry::Draw(sf::RenderWindow& window)
