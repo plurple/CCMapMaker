@@ -1,32 +1,6 @@
 #pragma once
 #include "UIPage.h"
 
-struct Condition
-{
-	sf::Text* territory;
-	Button addCondition;
-	sf::Text* condition;
-};
-
-class TerritoryEntry
-{
-	sf::RectangleShape borderBox;
-	sf::Text* nameLabel;
-	TextBox nameBox;
-	sf::Text* xLabel;
-	TextBox xBox;
-	sf::Text* yLabel;
-	TextBox yBox;
-	sf::Text* connectionLabel;
-	std::vector<Condition> territories;
-	sf::Text* bombardments;
-	Button Killer;
-	sf::Text* neutralLabel;
-	TextBox neutralBox;
-	sf::Text* bonusLabel;
-	TextBox bonusBox;
-};
-
 enum class TerritoryView
 {
 	Borders,
@@ -35,6 +9,44 @@ enum class TerritoryView
 	Extras,
 	NumViews
 };
+
+class TerritoryEntry
+{
+public:
+	sf::RectangleShape borderBox;
+	sf::Text* nameLabel;
+	TextBox nameBox;	
+	sf::Text* coordinateLabel;
+	sf::Text* smallLabel;
+	sf::Text* largeLabel;
+	sf::Text* xSmallLabel;
+	TextBox   xSmallBox;
+	sf::Text* ySmallLabel;
+	TextBox   ySmallBox;
+	sf::Text* xLargeLabel;
+	TextBox   xLargeBox;
+	sf::Text* yLargeLabel;
+	TextBox   yLargeBox;
+	sf::Text* connectionLabel;
+	std::vector<sf::Text*> territories;
+	sf::Text* conditionLabel;
+	std::vector<sf::Text*> conditions;
+	std::vector<sf::Text*> bombardments;
+	Button killer;
+	sf::Text* neutralLabel;
+	TextBox neutralBox;
+	sf::Text* bonusLabel;
+	TextBox bonusBox;
+	bool selected;
+
+	TerritoryEntry(float entryTop, TerritoryView selectedView);
+	void Draw(sf::RenderWindow& window, TerritoryView selectedView);
+	void MouseClick(sf::Vector2i mousePos, TerritoryView selectedView);
+	void Update(sf::RenderWindow& window, sf::Time timePassed,
+		std::string keyPressed, bool backspace, bool enter,
+		bool showCursor, TerritoryView selectedView);
+};
+
 
 class TerritoryPage : public UIPage
 {
@@ -54,5 +66,6 @@ public:
 		std::string keyPressed, bool backspace, bool enter, 
 		bool showCursor) override;
 
+	void AddTerritory();
 };
 

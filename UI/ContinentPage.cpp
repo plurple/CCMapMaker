@@ -95,11 +95,9 @@ void ContinentPage::AddContinent()
 
 ContinentEntry::ContinentEntry(float entryTop) :
 	borderBox{ {580,202} },
-	addBonus({ 1410, entryTop + 50 }, { 30, 30 }, "+"),
-	removeBonus({ 1450, entryTop + 50 }, { 30, 30 }, "-"),
+	addBonus({ 1510, entryTop + 50 }, { 30, 30 }, "+"),
+	removeBonus({ 1550, entryTop + 50 }, { 30, 30 }, "-"),
 	nameBox({ 1120, entryTop + 12 }, { 450, 30 }, "Continent"),
-	bonusBox({ 1150, entryTop + 50 }, { 50, 30 }, "5"),
-	requiredBox({ 1350, entryTop + 50 }, { 50, 30 }, "all"),
 	selected{false}
 {
 	borderBox.setPosition({ 1010,entryTop });
@@ -109,18 +107,30 @@ ContinentEntry::ContinentEntry(float entryTop) :
 
 	nameLabel = new sf::Text(UI::font, "Name:");
 	nameLabel->setPosition({ 1020, entryTop + 8 });
-	bonusLabel = new sf::Text(UI::font, "Bonuses:");
-	bonusLabel->setPosition({ 1020, entryTop + 46 });
-	requiredLabel = new sf::Text(UI::font, "Required:");
-	requiredLabel->setPosition({ 1210, entryTop + 46 });
+	bonusesLabel = new sf::Text(UI::font, "Bonuses:");
+	bonusesLabel->setPosition({ 1020, entryTop + 46 });
 	territoryLabel = new sf::Text(UI::font, "Territories:");
-	territoryLabel->setPosition({ 1020, entryTop + 84 });
-	territories = new sf::Text(UI::font, "Territory");
-	territories->setPosition({ 1180, entryTop + 84 });
+	territoryLabel->setPosition({ 1020, entryTop + 84 });	
 	continentLabel = new sf::Text(UI::font, "Continents:");
 	continentLabel->setPosition({ 1020, entryTop + 120 });
-	continents = new sf::Text(UI::font, "Continent");
-	continents->setPosition({ 1180, entryTop + 120 }); 
+
+	TextBox bonusBox = TextBox({ 1250, entryTop + 50 }, { 50, 30 }, "5");
+	bonusBoxs.push_back(bonusBox);
+	TextBox requiredBox = TextBox({ 1450, entryTop + 50 }, { 50, 30 }, "");
+	requiredBoxs.push_back(requiredBox);
+
+	sf::Text* continent = new sf::Text(UI::font, "Continent");
+	continent->setPosition({ 1180, entryTop + 120 });
+	continents.push_back(continent);
+	sf::Text* territory = new sf::Text(UI::font, "Territory");
+	territory->setPosition({ 1180, entryTop + 84 });
+	territories.push_back(territory);
+	sf::Text* bonusLabel = new sf::Text(UI::font, "Bonus:");
+	bonusLabel->setPosition({ 1150, entryTop + 46 });
+	bonusLabels.push_back(bonusLabel);
+	sf::Text* requiredLabel = new sf::Text(UI::font, "Required:");
+	requiredLabel->setPosition({ 1310, entryTop + 46 });
+	requiredLabels.push_back(requiredLabel);
 
 	advanced.push_back(AdvancedTerritory(entryTop));
 }
@@ -129,18 +139,25 @@ void ContinentEntry::Draw(sf::RenderWindow& window, ContinentView selectedView)
 {
 	window.draw(borderBox);
 	window.draw(*nameLabel);
+	window.draw(*bonusesLabel);
 	nameBox.Draw(window);
-	window.draw(*bonusLabel);
-	bonusBox.Draw(window);
-	window.draw(*requiredLabel);
-	requiredBox.Draw(window);
+	for (int i = 0; i < bonusBoxs.size(); i++)
+	{
+		window.draw(*bonusLabels[i]);
+		bonusBoxs[i].Draw(window);
+		window.draw(*requiredLabels[i]);
+		requiredBoxs[i].Draw(window);
+	}
 	addBonus.Draw(window);
 	removeBonus.Draw(window);	
 	
 	if (selectedView == ContinentView::Basic)
 	{
 		window.draw(*territoryLabel);
-		window.draw(*territories);
+		for (int i = 0; i < territories.size(); i++)
+		{
+			window.draw(*territories[i]);
+		}
 	}
 	if(selectedView == ContinentView::Advanced)
 	{
@@ -153,7 +170,10 @@ void ContinentEntry::Draw(sf::RenderWindow& window, ContinentView selectedView)
 	else
 	{
 		window.draw(*continentLabel);
-		window.draw(*continents);
+		for (int i = 0; i < continents.size(); i++)
+		{
+			window.draw(*continents[i]);
+		}
 	}
 }
 
@@ -181,8 +201,11 @@ void ContinentEntry::MouseClick(sf::Vector2i mousePos, ContinentView selectedVie
 		//todo remove a bonus line.
 	}
 	nameBox.active = UI::CheckMouseInBounds(mousePos, nameBox.box);
-	bonusBox.active = UI::CheckMouseInBounds(mousePos, bonusBox.box);
-	requiredBox.active = UI::CheckMouseInBounds(mousePos, requiredBox.box);
+	for (int i = 0; i < bonusBoxs.size(); i++)
+	{
+		bonusBoxs[i].active = UI::CheckMouseInBounds(mousePos, bonusBoxs[i].box);
+		requiredBoxs[i].active = UI::CheckMouseInBounds(mousePos, requiredBoxs[i].box);
+	}
 	for (int i = 0; i < advanced.size(); i++)
 	{
 		advanced[i].MouseClick(mousePos);
@@ -195,8 +218,11 @@ void ContinentEntry::Update(sf::RenderWindow& window, sf::Time timePassed,
 {
 	//TODO make sure that you only care about numbers entered;
 	nameBox.Update(window, timePassed, keyPressed, backspace, enter, showCursor);
-	bonusBox.Update(window, timePassed, keyPressed, backspace, enter, showCursor);
-	requiredBox.Update(window, timePassed, keyPressed, backspace, enter, showCursor);
+	for (int i = 0; i < bonusBoxs.size(); i++)
+	{
+		bonusBoxs[i].Update(window, timePassed, keyPressed, backspace, enter, showCursor);
+		requiredBoxs[i].Update(window, timePassed, keyPressed, backspace, enter, showCursor);
+	}
 	for (int i = 0; i < advanced.size(); i++)
 	{
 		advanced[i].Update(window, timePassed, keyPressed, backspace, enter, showCursor);

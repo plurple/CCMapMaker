@@ -37,17 +37,18 @@ public:
 	sf::RectangleShape borderBox;
 	sf::Text* nameLabel;
 	TextBox nameBox;
-	sf::Text* bonusLabel;
-	TextBox bonusBox;
+	sf::Text* bonusesLabel;
 	Button addBonus;
 	Button removeBonus;
-	sf::Text* requiredLabel;
-	TextBox requiredBox;
+	std::vector<sf::Text*> bonusLabels;
+	std::vector<TextBox> bonusBoxs;
+	std::vector<sf::Text*> requiredLabels;
+	std::vector<TextBox> requiredBoxs;
 	sf::Text* territoryLabel;
-	sf::Text* territories;
+	std::vector<sf::Text*> territories;
 	std::vector<AdvancedTerritory> advanced;
 	sf::Text* continentLabel;
-	sf::Text* continents;
+	std::vector<sf::Text*> continents;
 	bool selected;
 
 	ContinentEntry(float entryTop);
@@ -77,6 +78,5 @@ public:
 		bool showCursor) override;
 
 	void AddContinent();
-
 };
 
