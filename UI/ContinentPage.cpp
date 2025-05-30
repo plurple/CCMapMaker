@@ -35,7 +35,7 @@ void ContinentPage::Draw(sf::RenderWindow& window, bool selected)
 	}
 }
 
-void ContinentPage::MouseClick(sf::Vector2i mousePos)
+void ContinentPage::MouseClick(sf::RenderWindow& window, sf::Vector2i mousePos)
 {
 	if (selectedView != ContinentView::Advanced)
 	{

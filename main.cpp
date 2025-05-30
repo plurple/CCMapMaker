@@ -8,16 +8,22 @@ int main()
     UI ui;
     sf::Clock clock;
 
-    sf::RenderWindow window(sf::VideoMode({ 1600, 1000 }), "CC Map Maker");
+    sf::RenderWindow window(sf::VideoMode({ 1600, 900 }), "CC Map Maker");
 
     while (window.isOpen())
     {
-        bool backspace = false, enter = false;
+        bool backspace = false, enter = false, verticle = true;
         std::string keyPressed;
+        float scrolled = 0.0f;
         while (const std::optional event = window.pollEvent())
         {
             if (event->is<sf::Event::Closed>())
                 window.close();
+            if (const auto* mouseWheelScrolled = event->getIf<sf::Event::MouseWheelScrolled>())
+            {
+                verticle = mouseWheelScrolled->wheel == sf::Mouse::Wheel::Vertical;
+                scrolled = mouseWheelScrolled->delta;
+            }
             if (const auto* TextEntered = event->getIf<sf::Event::TextEntered>())
             {
                 if (std::isprint(TextEntered->unicode))
@@ -47,7 +53,7 @@ int main()
         {
             //TODO add a hover effect to buttons :D
             mouse_effect_time = sf::Time::Zero;
-            ui.MouseClick(mousePos);
+            ui.MouseClick(window, mousePos);
         }
 
         ui.Update(window, clockElapsed, keyPressed, backspace, enter);

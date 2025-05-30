@@ -32,14 +32,18 @@ void TerritoryPage::Draw(sf::RenderWindow& window, bool selected)
 		{
 			territoryViews[i].Draw(window);
 		}
+		window.setView(scrollBar.scrollWindow);
 		for (int i = 0; i < entries.size(); i++)
 		{
 			entries[i].Draw(window, selectedView);
 		}
+		window.draw(page);
+		scrollBar.Draw(window);
+		window.setView(window.getDefaultView());
 	}
 }
 
-void TerritoryPage::MouseClick(sf::Vector2i mousePos)
+void TerritoryPage::MouseClick(sf::RenderWindow& window, sf::Vector2i mousePos)
 {
 	if (UI::CheckMouseInBounds(mousePos, linkCoordinates.rect))
 	{
@@ -62,7 +66,7 @@ void TerritoryPage::MouseClick(sf::Vector2i mousePos)
 		
 	if (UI::CheckMouseInBounds(mousePos, addTerritory.rect))
 	{
-		AddTerritory();
+		AddTerritory(window);
 	}
 	for (int i = 0; i < (int)TerritoryView::NumViews; i++)
 	{
@@ -75,7 +79,7 @@ void TerritoryPage::MouseClick(sf::Vector2i mousePos)
 	}
 	for (int i = 0; i < entries.size(); i++)
 	{
-		entries[i].MouseClick(mousePos, selectedView);
+		entries[i].MouseClick(sf::Vector2i(window.mapPixelToCoords(mousePos, scrollBar.scrollWindow)), selectedView);
 	}
 }
 
@@ -89,66 +93,66 @@ void TerritoryPage::Update(sf::RenderWindow& window, sf::Time timePassed,
 }
 
 
-void TerritoryPage::AddTerritory()
+void TerritoryPage::AddTerritory(sf::RenderWindow& window)
 {
 	int numEntries = entries.size();
 	float boxSize = numEntries ? entries[numEntries - 1].borderBox.getSize().y : 0.0f;
-	TerritoryEntry pos{ pageTop + (boxSize + 6) * numEntries, selectedView };
+	TerritoryEntry pos{window, scrollBar.scrollWindow, 10+(boxSize + 6) * numEntries, selectedView };
 	entries.push_back(pos);
 }
 
 //-----------------------------------------------------------
 
-TerritoryEntry::TerritoryEntry(float entryTop, TerritoryView selectedView) :
-	borderBox{ {580,200} },
-	killer({ 1390, entryTop + 124 }, { 100, 30 }, "Killer"),
-	nameBox({ 1120, entryTop + 12 }, { 450, 30 }, "Name"),
-	xSmallBox({ 1330, entryTop + 50 }, { 50, 30 }, "0"),
-	ySmallBox({ 1440, entryTop + 50 }, { 50, 30 }, "0"),
-	xLargeBox({ 1330, entryTop + 88 }, { 50, 30 }, "0"),
-	yLargeBox({ 1440, entryTop + 88 }, { 50, 30 }, "0"),
-	neutralBox({ 1330, entryTop + 124 }, { 50, 30 }, ""),
-	bonusBox({ 1120, entryTop + 124 }, { 50, 30 }, ""),
+TerritoryEntry::TerritoryEntry(sf::RenderWindow& window, sf::View& view, float entryTop, TerritoryView selectedView) :
+	borderBox{ {580,200} /*size*/ },
+	killer(sf::Vector2f(window.mapCoordsToPixel({ 1390, entryTop + 124 }, view))/*position*/, { 100, 30 }/*size*/, "Killer"),
+	nameBox(sf::Vector2f(window.mapCoordsToPixel({ 1120, entryTop + 12 }, view))/*position*/, { 450, 30 }/*size*/, ""),
+	xSmallBox(sf::Vector2f(window.mapCoordsToPixel({ 1330, entryTop + 50 }, view))/*position*/, { 50, 30 }/*size*/, "0"),
+	ySmallBox(sf::Vector2f(window.mapCoordsToPixel({ 1440, entryTop + 50 }, view))/*position*/, { 50, 30 }/*size*/, "0"),
+	xLargeBox(sf::Vector2f(window.mapCoordsToPixel({ 1330, entryTop + 88 }, view))/*position*/, { 50, 30 }/*size*/, "0"),
+	yLargeBox(sf::Vector2f(window.mapCoordsToPixel({ 1440, entryTop + 88 }, view))/*position*/, { 50, 30 }/*size*/, "0"),
+	neutralBox(sf::Vector2f(window.mapCoordsToPixel({ 1330, entryTop + 124 }, view))/*position*/, { 50, 30 }/*size*/, ""),
+	bonusBox(sf::Vector2f(window.mapCoordsToPixel({ 1120, entryTop + 124 }, view))/*position*/, { 50, 30 }/*size*/, ""),
 	selected{ false }
 {
-	borderBox.setPosition({ 1010,entryTop });
+	borderBox.setPosition(sf::Vector2f(window.mapCoordsToPixel({ 1010,entryTop }, view)));
 	borderBox.setFillColor(sf::Color(192, 192, 192));
 	borderBox.setOutlineThickness(2.0f);
 	borderBox.setOutlineColor({ 150, 60, 255 });
 
 	nameLabel = new sf::Text(UI::font, "Name:");
-	nameLabel->setPosition({ 1020, entryTop + 8 });
+	nameLabel->setPosition(sf::Vector2f(window.mapCoordsToPixel({ 1020, entryTop + 8 }, view)));
 	coordinateLabel = new sf::Text(UI::font, "Coordinates:");
-	coordinateLabel->setPosition({ 1020, entryTop + 46 });
+	coordinateLabel->setPosition(sf::Vector2f(window.mapCoordsToPixel({ 1020, entryTop + 46 }, view)));
 	smallLabel = new sf::Text(UI::font, "Small:");
-	smallLabel->setPosition({ 1200, entryTop + 46 });
+	smallLabel->setPosition(sf::Vector2f(window.mapCoordsToPixel({ 1200, entryTop + 46 }, view)));
 	xSmallLabel = new sf::Text(UI::font, "x:");
-	xSmallLabel->setPosition({ 1290, entryTop + 44 });
+	xSmallLabel->setPosition(sf::Vector2f(window.mapCoordsToPixel({ 1290, entryTop + 44 }, view)));
 	ySmallLabel = new sf::Text(UI::font, "y:");
-	ySmallLabel->setPosition({ 1400, entryTop + 44 });
+	ySmallLabel->setPosition(sf::Vector2f(window.mapCoordsToPixel({ 1400, entryTop + 44 }, view)));
 	largeLabel = new sf::Text(UI::font, "Large:");
-	largeLabel->setPosition({ 1200, entryTop + 84 });
+	largeLabel->setPosition(sf::Vector2f(window.mapCoordsToPixel({ 1200, entryTop + 84 }, view)));
 	xLargeLabel = new sf::Text(UI::font, "X:");
-	xLargeLabel->setPosition({ 1290, entryTop + 84 });
+	xLargeLabel->setPosition(sf::Vector2f(window.mapCoordsToPixel({ 1290, entryTop + 84 }, view)));
 	yLargeLabel = new sf::Text(UI::font, "Y:");
-	yLargeLabel->setPosition({ 1400, entryTop + 84 });
+	yLargeLabel->setPosition(sf::Vector2f(window.mapCoordsToPixel({ 1400, entryTop + 84 }, view)));
 	connectionLabel = new sf::Text(UI::font, "Territories:");
-	connectionLabel->setPosition({ 1020, entryTop + 120 });
+	connectionLabel->setPosition(sf::Vector2f(window.mapCoordsToPixel({ 1020, entryTop + 120 }, view)));
 	conditionLabel = new sf::Text(UI::font, "Condition:");
-	conditionLabel->setPosition({ 1020, entryTop + 156 });
+	conditionLabel->setPosition(sf::Vector2f(window.mapCoordsToPixel({ 1020, entryTop + 156 }, view)));
 	neutralLabel = new sf::Text(UI::font, "Neutral:");
-	neutralLabel->setPosition({ 1200, entryTop + 120 });
+	neutralLabel->setPosition(sf::Vector2f(window.mapCoordsToPixel({ 1200, entryTop + 120 }, view)));
 	bonusLabel = new sf::Text(UI::font, "Bonus:");
-	bonusLabel->setPosition({ 1020, entryTop + 120 });
+	bonusLabel->setPosition(sf::Vector2f(window.mapCoordsToPixel({ 1020, entryTop + 120 }, view)));
 
-	sf::Text* territory = new sf::Text(UI::font, "Territory");
-	territory->setPosition({ 1170, entryTop + 120 });
+	sf::Text* territory = new sf::Text(UI::font, "");
+	territory->setPosition(sf::Vector2f(window.mapCoordsToPixel({ 1170, entryTop + 120 }, view)));
 	territories.push_back(territory);
-	sf::Text* condition = new sf::Text(UI::font, "Condition");
-	condition->setPosition({ 1170, entryTop + 156 });
+	sf::Text* condition = new sf::Text(UI::font, "");
+	condition->setPosition(sf::Vector2f(window.mapCoordsToPixel({ 1170, entryTop + 156 }, view)));
 	conditions.push_back(condition);
-	sf::Text* bombardment = new sf::Text(UI::font, "Bombardment");
-	bombardment->setPosition({ 1250, entryTop + 120 });
+	sf::Text* bombardment = new sf::Text(UI::font, "");
+	bombardment->setPosition(sf::Vector2f(window.mapCoordsToPixel({ 1250, entryTop + 120 }, view)));
 	bombardments.push_back(bombardment);
 }
 

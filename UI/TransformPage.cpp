@@ -22,7 +22,7 @@ void TransformPage::Draw(sf::RenderWindow& window, bool selected)
 	}	
 }
 
-void TransformPage::MouseClick(sf::Vector2i mousePos)
+void TransformPage::MouseClick(sf::RenderWindow& window, sf::Vector2i mousePos)
 {
     if (UI::CheckMouseInBounds(mousePos, addTransform.rect))
     {

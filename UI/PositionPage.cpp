@@ -26,7 +26,7 @@ void PositionPage::Draw(sf::RenderWindow& window, bool selected)
 	}
 }
 
-void PositionPage::MouseClick(sf::Vector2i mousePos)
+void PositionPage::MouseClick(sf::RenderWindow& window, sf::Vector2i mousePos)
 {
 	if (UI::CheckMouseInBounds(mousePos, addPosition.rect))
 	{

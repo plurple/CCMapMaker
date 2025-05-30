@@ -39,7 +39,7 @@ public:
 	TextBox bonusBox;
 	bool selected;
 
-	TerritoryEntry(float entryTop, TerritoryView selectedView);
+	TerritoryEntry(sf::RenderWindow& window, sf::View& view, float entryTop, TerritoryView selectedView);
 	void Draw(sf::RenderWindow& window, TerritoryView selectedView);
 	void MouseClick(sf::Vector2i mousePos, TerritoryView selectedView);
 	void Update(sf::RenderWindow& window, sf::Time timePassed,
@@ -61,11 +61,11 @@ public:
 	TerritoryPage(sf::Vector2f tabPos, sf::Vector2f tabSize,
 		std::string tabLabel, sf::Vector2f buttonBoxSize); 
 	void Draw(sf::RenderWindow& window, bool selected) override;
-	void MouseClick(sf::Vector2i mousePos) override;
+	void MouseClick(sf::RenderWindow& window, sf::Vector2i mousePos) override;
 	void Update(sf::RenderWindow& window, sf::Time timePassed, 
 		std::string keyPressed, bool backspace, bool enter, 
 		bool showCursor) override;
 
-	void AddTerritory();
+	void AddTerritory(sf::RenderWindow& window);
 };
 

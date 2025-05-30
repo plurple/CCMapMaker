@@ -41,7 +41,7 @@ public:
 	void Draw(sf::RenderWindow &window);
 	static bool CheckMouseInBounds(sf::Vector2i mousePos, sf::RectangleShape rect);
 	void SwapMaps();
-	void MouseClick(sf::Vector2i mousePos);
+	void MouseClick(sf::RenderWindow& window, sf::Vector2i mousePos);
 	void Update(sf::RenderWindow& window, sf::Time timePassed, 
 		std::string keyPressed, bool backspace, bool enter);
 };

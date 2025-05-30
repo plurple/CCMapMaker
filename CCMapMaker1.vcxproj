@@ -26,6 +26,7 @@
     <ClCompile Include="UI\ObjectivePage.cpp" />
     <ClCompile Include="UI\PositionPage.cpp" />
     <ClCompile Include="UI\ReinforcementPage.cpp" />
+    <ClCompile Include="UI\ScrollBar.cpp" />
     <ClCompile Include="UI\TerritoryPage.cpp" />
     <ClCompile Include="UI\TextBox.cpp" />
     <ClCompile Include="UI\TransformPage.cpp" />
@@ -46,6 +47,7 @@
     <ClInclude Include="UI\ObjectivePage.h" />
     <ClInclude Include="UI\PositionPage.h" />
     <ClInclude Include="UI\ReinforcementPage.h" />
+    <ClInclude Include="UI\ScrollBar.h" />
     <ClInclude Include="UI\TerritoryPage.h" />
     <ClInclude Include="UI\TextBox.h" />
     <ClInclude Include="UI\TransformPage.h" />

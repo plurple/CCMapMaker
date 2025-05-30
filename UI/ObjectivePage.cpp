@@ -31,7 +31,7 @@ void ObjectivePage::Draw(sf::RenderWindow& window, bool selected)
 	}
 }
 
-void ObjectivePage::MouseClick(sf::Vector2i mousePos)
+void ObjectivePage::MouseClick(sf::RenderWindow& window, sf::Vector2i mousePos)
 {
     if (UI::CheckMouseInBounds(mousePos, showContinents.rect))
     {
