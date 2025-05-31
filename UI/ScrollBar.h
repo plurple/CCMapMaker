@@ -14,11 +14,16 @@ public:
 	Button rightButton;
 	sf::CircleShape rightArrow;
 	bool verticle;
-	sf::RectangleShape bar;
-	sf::RectangleShape track;
+	sf::RectangleShape verticleBar;
+	sf::RectangleShape verticleTrack;
+	bool horizontal;
+	sf::RectangleShape horizontalBar;
+	sf::RectangleShape horizontalTrack;
 	sf::View scrollWindow;
 
-	ScrollBar(sf::View view, sf::Vector2f position, sf::Vector2f size, bool vert = true);
+	ScrollBar(sf::View view, sf::Vector2f verticlePos, 
+		sf::Vector2f verticleSize, sf::Vector2f horizontalPos = { 0,0 },
+		sf::Vector2f horizontalSize = { 0, 0 }, bool vert = true, bool horiz = false);
 	void Draw(sf::RenderWindow& window);
 	void MouseClick(sf::Vector2i mousePos);
 	void Update(sf::RenderWindow& window, sf::Time timePassed,

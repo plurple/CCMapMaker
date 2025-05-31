@@ -6,9 +6,9 @@ UIPage::UIPage(sf::Vector2f tabPos, sf::Vector2f tabSize,
 	page{{592,900-158-8-buttonBoxSize.y}},
 	buttonBox{ buttonBoxSize },
 	pageTop{158+4+4+buttonBoxSize.y},
-	scrollBar(sf::View{ page.getGlobalBounds() }, { 1550, 160 }, { 40, page.getSize().y-100 })
+	scrollBar(sf::View{ page.getGlobalBounds() }, { 550, 50 }/*position*/, { 30, page.getSize().y - 100 }/*size*/)
 {
-	page.setPosition({ 1004, 154 });
+	page.setPosition({ 0, 0 });
 	page.setFillColor(sf::Color(192, 192, 192, 0));
 	page.setOutlineThickness(4.0f);
 	page.setOutlineColor(sf::Color::White);
