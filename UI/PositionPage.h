@@ -16,6 +16,8 @@ public:
 	void Update(sf::RenderWindow& window, sf::Time timePassed,
 		std::string keyPressed, bool backspace, bool enter,
 		bool showCursor);
+
+	void MoveEntry(sf::Vector2f offset);
 };
 
 class PositionPage : public UIPage

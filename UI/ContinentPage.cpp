@@ -90,8 +90,9 @@ void ContinentPage::Update(sf::RenderWindow& window, sf::Time timePassed,
 void ContinentPage::AddContinent()
 {
 	int numEntries = entries.size();
+	float topBoxY = numEntries ? entries[0].borderBox.getPosition().y : 10.0f;
 	float boxSize = numEntries ? entries[numEntries - 1].borderBox.getSize().y : 0.0f;
-	ContinentEntry pos{10 + (boxSize + 6) * numEntries };
+	ContinentEntry pos{topBoxY + (boxSize + 6) * numEntries };
 	entries.push_back(pos);
 }
 
@@ -220,6 +221,14 @@ void ContinentEntry::Update(sf::RenderWindow& window, sf::Time timePassed,
 	std::string keyPressed, bool backspace, bool enter, 
 	bool showCursor, ContinentView selectedView)
 {
+	if (enter)
+	{
+		MoveEntry({ 0, 50 });
+	}
+	if (backspace)
+	{
+		MoveEntry({ 0, -50 });
+	}
 	//TODO make sure that you only care about numbers entered;
 	nameBox.Update(window, timePassed, keyPressed, backspace, enter, showCursor);
 	for (int i = 0; i < bonusBoxs.size(); i++)
@@ -230,6 +239,46 @@ void ContinentEntry::Update(sf::RenderWindow& window, sf::Time timePassed,
 	for (int i = 0; i < advanced.size(); i++)
 	{
 		advanced[i].Update(window, timePassed, keyPressed, backspace, enter, showCursor);
+	}
+}
+
+void ContinentEntry::MoveEntry(sf::Vector2f offset)
+{
+	borderBox.move(offset);
+	nameLabel->move(offset);
+	nameBox.MoveBox(offset);
+	bonusesLabel->move(offset);
+	addBonus.MoveButton(offset);
+	removeBonus.MoveButton(offset);
+	for (int i = 0; i < bonusLabels.size(); i++)
+	{
+		bonusLabels[i]->move(offset);
+	}
+	for (int i = 0; i < bonusBoxs.size(); i++)
+	{
+		bonusBoxs[i].MoveBox(offset);
+	}
+	for (int i = 0; i < requiredLabels.size(); i++)
+	{
+		requiredLabels[i]->move(offset);
+	}
+	for (int i = 0; i < requiredBoxs.size(); i++)
+	{
+		requiredBoxs[i].MoveBox(offset);
+	}
+	territoryLabel->move(offset);
+	for (int i = 0; i < territories.size(); i++)
+	{
+		territories[i]->move(offset);
+	}
+	for (int i = 0; i < advanced.size(); i++)
+	{
+		advanced[i].Move(offset);
+	}
+	continentLabel->move(offset);
+	for (int i = 0; i < continents.size(); i++)
+	{
+		continents[i]->move(offset);
 	}
 }
 
@@ -306,4 +355,18 @@ void AdvancedTerritory::Update(sf::RenderWindow& window, sf::Time timePassed,
 	//TODO make sure that you only care about numbers entered;
 	if(multiplier.selected)
 		factor.Update(window, timePassed, keyPressed, backspace, enter, showCursor);
+}
+
+void AdvancedTerritory::Move(sf::Vector2f offset)
+{
+	borderBox.move(offset);
+	territory->move(offset);
+	mandatory.MoveButton(offset);
+	mandatoryLabel->move(offset);
+	blocker.MoveButton(offset);
+	blockerLabel->move(offset);
+	multiplier.MoveButton(offset);
+	multiplierLabel->move(offset);
+	factor.MoveBox(offset);
+	factorLabel->move(offset);
 }

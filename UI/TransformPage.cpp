@@ -56,8 +56,9 @@ void TransformPage::Update(sf::RenderWindow& window, sf::Time timePassed,
 void TransformPage::AddTransform()
 {
 	int numEntries = entries.size();
+	float topBoxY = numEntries ? entries[0].borderBox.getPosition().y : 10.0f;
 	float boxSize = numEntries ? entries[numEntries - 1].borderBox.getSize().y : 0.0f;
-	TransformEntry pos{ 10+(boxSize + 6) * numEntries};
+	TransformEntry pos{ topBoxY + (boxSize + 6) * numEntries};
 	entries.push_back(pos);
 }
 
@@ -158,6 +159,14 @@ void TransformEntry::Update(sf::RenderWindow& window, sf::Time timePassed,
 	std::string keyPressed, bool backspace, bool enter,
 	bool showCursor)
 {
+	if (enter)
+	{
+		MoveEntry({ 0, 50 });
+	}
+	if (backspace)
+	{
+		MoveEntry({ 0, -50 });
+	}
 	//TODO make sure that you only care about numbers entered;
 	typeOptions.Update(window, timePassed, keyPressed, backspace, enter, showCursor);
 	applyOptions.Update(window, timePassed, keyPressed, backspace, enter, showCursor);
@@ -170,6 +179,31 @@ void TransformEntry::Update(sf::RenderWindow& window, sf::Time timePassed,
 	lowerBox.Update(window, timePassed, keyPressed, backspace, enter, showCursor);
 	idBox.Update(window, timePassed, keyPressed, backspace, enter, showCursor);
 	valueBox.Update(window, timePassed, keyPressed, backspace, enter, showCursor);
+}
+
+void TransformEntry::MoveEntry(sf::Vector2f offset)
+{
+	borderBox.move(offset);
+	typeOptions.MoveOption(offset);
+	applyOptions.MoveOption(offset);
+	incOptions.MoveOption(offset);
+	amountLabel->move(offset);
+	amountBox.MoveBox(offset);
+	upperLabel->move(offset);
+	upperBox.MoveBox(offset);
+	lowerLabel->move(offset);
+	lowerBox.MoveBox(offset);
+	percentage.MoveButton(offset);
+	conditionsLabel->move(offset);
+	conditionsBox.move(offset);
+	addCondition.MoveButton(offset);
+	conditionTypeOptions.MoveOption(offset);
+	idLabel->move(offset);
+	idBox.MoveBox(offset); //this might want to be a territory picker sometimes
+	operatorOptions.MoveOption(offset);
+	valueOptions.MoveOption(offset);
+	valueLabel->move(offset);
+	valueBox.MoveBox(offset);
 }
 
 //-----------------------------------------------------------
@@ -224,3 +258,13 @@ void TransformOptions::MouseClick(sf::Vector2i mousePos)
 void TransformOptions::Update(sf::RenderWindow& window, sf::Time timePassed,
 	std::string keyPressed, bool backspace, bool enter, bool showCursor)
 {}
+
+void TransformOptions::MoveOption(sf::Vector2f offset)
+{
+	optionLabel->move(offset);
+	leftButton.MoveButton(offset);
+	leftArrow.move(offset);
+	selectedOption->move(offset);
+	rightButton.MoveButton(offset);
+	rightArrow.move(offset);
+}

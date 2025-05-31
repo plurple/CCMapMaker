@@ -35,3 +35,9 @@ void TextBox::Draw(sf::RenderWindow& window)
     window.draw(box);
     window.draw(*displayText);
 }
+
+void TextBox::MoveBox(sf::Vector2f offset)
+{
+    box.move(offset);
+    displayText->move(offset);
+}

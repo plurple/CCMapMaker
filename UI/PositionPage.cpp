@@ -57,8 +57,9 @@ void PositionPage::Update(sf::RenderWindow& window, sf::Time timePassed,
 void PositionPage::AddPosition()
 {
 	int numEntries = entries.size();
+	float topBoxY = numEntries ? entries[0].borderBox.getPosition().y : 10.0f;
 	float boxSize = numEntries ? entries[numEntries - 1].borderBox.getSize().y : 0.0f;
-	PositionEntry pos{10 + (boxSize + 6) * numEntries};
+	PositionEntry pos{topBoxY + (boxSize + 6) * numEntries};
 	entries.push_back(pos);
 }
 
@@ -109,6 +110,22 @@ void PositionEntry::MouseClick(sf::Vector2i mousePos)
 void PositionEntry::Update(sf::RenderWindow& window, sf::Time timePassed,
 	std::string keyPressed, bool backspace, bool enter, bool showCursor)
 {
+	if (enter)
+	{
+		MoveEntry({ 0, 50 });
+	}
+	if (backspace)
+	{
+		MoveEntry({ 0, -50 });
+	}
 	//TODO make sure that you only care about numbers entered;
 	startBox.Update(window, timePassed, keyPressed, backspace, enter, showCursor);
+}
+
+void PositionEntry::MoveEntry(sf::Vector2f offset)
+{
+	borderBox.move(offset);
+	territoryName->move(offset);
+	startLabel->move(offset);
+	startBox.MoveBox(offset);
 }

@@ -8,6 +8,7 @@
 #include "PositionPage.h"
 
 sf::Font UI::font;
+sf::Vector2u UI::windowSize{ 1600, 900 };
 
 UI::UI() : 
     selectedPage{UIPageType::Territory}, 

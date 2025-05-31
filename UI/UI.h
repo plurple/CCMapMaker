@@ -27,6 +27,7 @@ public:
 	UIPageType selectedPage;
 	Maps maps;
 	static sf::Font font;
+	static sf::Vector2u windowSize;
 	sf::Text* mapSizeLabel;
 	sf::Text* largeLabel;
 	sf::Text* smallLabel;

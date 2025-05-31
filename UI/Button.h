@@ -5,7 +5,7 @@ class Button
 {
 public:
 	sf::RectangleShape rect;
-	sf::Text* label = nullptr;
+	sf::Text* label;
 	bool selected;
 
 	Button(sf::Vector2f pos, sf::Vector2f dimensions = { 50,50 }, 
@@ -14,5 +14,6 @@ public:
 	void Select();
 	void Unselect();
 	void Toggle();
+	void MoveButton(sf::Vector2f offset);
 };
 

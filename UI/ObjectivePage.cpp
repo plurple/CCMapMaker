@@ -65,8 +65,9 @@ void ObjectivePage::Update(sf::RenderWindow& window, sf::Time timePassed,
 void ObjectivePage::AddObjective()
 {
 	int numEntries = entries.size();
+	float topBoxY = numEntries ? entries[0].borderBox.getPosition().y : 10.0f;
 	float boxSize = numEntries ? entries[numEntries - 1].borderBox.getSize().y : 0.0f;
-	ObjectiveEntry pos{ 10 + (boxSize + 6) * numEntries, isObjective };
+	ObjectiveEntry pos{ topBoxY + (boxSize + 6) * numEntries, isObjective };
 	entries.push_back(pos);
 }
 
@@ -132,7 +133,28 @@ void ObjectiveEntry::MouseClick(sf::Vector2i mousePos, bool isObjective)
 void ObjectiveEntry::Update(sf::RenderWindow& window, sf::Time timePassed,
 	std::string keyPressed, bool backspace, bool enter, bool showCursor)
 {
+	if (enter)
+	{
+		MoveEntry({ 0, 50 });
+	}
+	if (backspace)
+	{
+		MoveEntry({ 0, -50 });
+	}
 	//TODO make sure that you only care about numbers entered;
 	nameBox.Update(window, timePassed, keyPressed, backspace, enter, showCursor);
 	numRequiredBox.Update(window, timePassed, keyPressed, backspace, enter, showCursor);
+}
+
+void ObjectiveEntry::MoveEntry(sf::Vector2f offset)
+{
+	borderBox.move(offset);
+	nameLabel->move(offset);
+	nameBox.MoveBox(offset);
+	territoryLabel->move(offset);
+	territories->move(offset);
+	continentLabel->move(offset);
+	continents->move(offset);
+	requiredLabel->move(offset);
+	numRequiredBox.MoveBox(offset);
 }

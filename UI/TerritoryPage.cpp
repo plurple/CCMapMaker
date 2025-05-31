@@ -96,8 +96,9 @@ void TerritoryPage::Update(sf::RenderWindow& window, sf::Time timePassed,
 void TerritoryPage::AddTerritory()
 {
 	int numEntries = entries.size();
+	float topBoxY = numEntries ? entries[0].borderBox.getPosition().y : 10.0f;
 	float boxSize = numEntries ? entries[numEntries - 1].borderBox.getSize().y : 0.0f;
-	TerritoryEntry pos{10+(boxSize + 6) * numEntries, selectedView };
+	TerritoryEntry pos{ topBoxY + (boxSize + 6) * numEntries, selectedView };
 	entries.push_back(pos);
 }
 
@@ -241,6 +242,14 @@ void TerritoryEntry::Update(sf::RenderWindow& window, sf::Time timePassed,
 	std::string keyPressed, bool backspace, bool enter,
 	bool showCursor, TerritoryView selectedView)
 {
+	if (enter)
+	{
+		MoveEntry({ 0, 50 });
+	}
+	if (backspace)
+	{
+		MoveEntry({ 0, -50 });
+	}
 	//TODO make sure that you only care about numbers entered;
 	nameBox.Update(window, timePassed, keyPressed, backspace, enter, showCursor);
 	xSmallBox.Update(window, timePassed, keyPressed, backspace, enter, showCursor);
@@ -252,4 +261,41 @@ void TerritoryEntry::Update(sf::RenderWindow& window, sf::Time timePassed,
 		neutralBox.Update(window, timePassed, keyPressed, backspace, enter, showCursor);
 		bonusBox.Update(window, timePassed, keyPressed, backspace, enter, showCursor);
 	}
+}
+
+void TerritoryEntry::MoveEntry(sf::Vector2f offset)
+{
+	borderBox.move(offset);
+	nameLabel->move(offset);
+	nameBox.MoveBox(offset);
+	coordinateLabel->move(offset);
+	smallLabel->move(offset);
+	largeLabel->move(offset);
+	xSmallLabel->move(offset);
+	xSmallBox.MoveBox(offset);
+	ySmallLabel->move(offset);
+	ySmallBox.MoveBox(offset);
+	xLargeLabel->move(offset);
+	xLargeBox.MoveBox(offset);
+	yLargeLabel->move(offset);
+	yLargeBox.MoveBox(offset);
+	connectionLabel->move(offset);
+	for (int i = 0; i < territories.size(); i++)
+	{
+		territories[i]->move(offset);
+	}
+	conditionLabel->move(offset);
+	for (int i = 0; i < conditions.size(); i++)
+	{
+		conditions[i]->move(offset);
+	}
+	for (int i = 0; i < bombardments.size(); i++)
+	{
+		bombardments[i]->move(offset);
+	}
+	killer.MoveButton(offset);
+	neutralLabel->move(offset);
+	neutralBox.MoveBox(offset);
+	bonusLabel->move(offset);
+	bonusBox.MoveBox(offset);
 }

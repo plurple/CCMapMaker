@@ -13,5 +13,6 @@ public:
 		std::string keyPressed, bool backspace, bool enter, 
 		bool showCursor);
 	void Draw(sf::RenderWindow& window);
+	void MoveBox(sf::Vector2f offset);
 };
 

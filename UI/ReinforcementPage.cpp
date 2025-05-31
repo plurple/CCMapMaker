@@ -56,8 +56,9 @@ void ReinforcementPage::Update(sf::RenderWindow& window, sf::Time timePassed,
 void ReinforcementPage::AddReinforcement()
 {
 	int numEntries = entries.size();
+	float topBoxY = numEntries ? entries[0].borderBox.getPosition().y : 10.0f;
 	float boxSize = numEntries ? entries[numEntries - 1].borderBox.getSize().y : 0.0f;
-	ReinforcementEntry pos{10 + (boxSize + 6) * numEntries };
+	ReinforcementEntry pos{topBoxY + (boxSize + 6) * numEntries };
 	entries.push_back(pos);
 }
 
@@ -106,8 +107,28 @@ void ReinforcementEntry::MouseClick(sf::Vector2i mousePos)
 void ReinforcementEntry::Update(sf::RenderWindow& window, sf::Time timePassed,
 	std::string keyPressed, bool backspace, bool enter, bool showCursor)
 {
+	if (enter)
+	{
+		MoveEntry({ 0, 50 });
+	}
+	if (backspace)
+	{
+		MoveEntry({ 0, -50 });
+	}
 	//TODO make sure that you only care about numbers entered;
 	lowerBox.Update(window, timePassed, keyPressed, backspace, enter, showCursor);
 	upperBox.Update(window, timePassed, keyPressed, backspace, enter, showCursor);
 	divisorBox.Update(window, timePassed, keyPressed, backspace, enter, showCursor);
+}
+
+void ReinforcementEntry::MoveEntry(sf::Vector2f offset)
+{
+	borderBox.move(offset);
+	lowerLabel->move(offset);
+	lowerBox.MoveBox(offset);
+	upperLabel->move(offset);
+	upperBox.MoveBox(offset);
+	divisorLabel->move(offset);
+	divisorBox.MoveBox(offset);
+	explanation->move(offset);
 }

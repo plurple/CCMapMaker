@@ -8,7 +8,7 @@ int main()
     UI ui;
     sf::Clock clock;
 
-    sf::RenderWindow window(sf::VideoMode({ 1600, 900 }), "CC Map Maker");
+    sf::RenderWindow window(sf::VideoMode(UI::windowSize), "CC Map Maker");
 
     while (window.isOpen())
     {

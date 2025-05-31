@@ -29,6 +29,9 @@ public:
 	void Update(sf::RenderWindow& window, sf::Time timePassed,
 		std::string keyPressed, bool backspace, bool enter,
 		bool showCursor);
+
+	void Move(sf::Vector2f offset);
+	void SwapView();
 };
 
 class ContinentEntry
@@ -57,6 +60,9 @@ public:
 	void Update(sf::RenderWindow& window, sf::Time timePassed,
 		std::string keyPressed, bool backspace, bool enter,
 		bool showCursor, ContinentView selectedView);
+
+	void MoveEntry(sf::Vector2f offset);
+	void swapView();
 };
 
 

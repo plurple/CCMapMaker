@@ -10,7 +10,6 @@ public:
 	Button tabButton;
 	sf::RectangleShape page;
 	sf::RectangleShape buttonBox;
-	float pageTop;
 	ScrollBar scrollBar;
 
 	UIPage(sf::Vector2f tabPos, sf::Vector2f tabSize, 

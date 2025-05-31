@@ -41,3 +41,9 @@ void Button::Toggle()
 {
 	selected ? Unselect() : Select();
 }
+
+void Button::MoveButton(sf::Vector2f offset)
+{
+	rect.move(offset);
+	label->move(offset);
+}
