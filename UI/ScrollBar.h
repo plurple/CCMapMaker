@@ -30,5 +30,7 @@ public:
 	void Update(sf::RenderWindow& window, sf::Time timePassed,
 		std::string keyPressed, bool backspace, bool enter, bool showCursor);
 
+	void BarSize(sf::Vector2f contentSize);
+	void MoveBar(sf::Vector2f contentSize);
 };
 

@@ -86,6 +86,8 @@ void ObjectivePage::Update(sf::RenderWindow& window, sf::Time timePassed,
 	else
 	{
 		scrollBar.currentScroll.y += scrolled;
+		if (entries.size())
+			scrollBar.MoveBar({ 0, 10 + (entries[0].borderBox.getSize().y + 6) * (entries.size()) });
 	}
 
 	for (int i = 0; i < entries.size(); i++)
@@ -102,6 +104,7 @@ void ObjectivePage::AddObjective()
 	float boxSize = numEntries ? entries[numEntries - 1].borderBox.getSize().y : 0.0f;
 	ObjectiveEntry pos{ topBoxY + (boxSize + 6) * numEntries, isObjective };
 	entries.push_back(pos);
+	scrollBar.BarSize({ 0, 10 + (entries[0].borderBox.getSize().y + 6) * (numEntries + 1) });
 }
 
 //-----------------------------------------------------------

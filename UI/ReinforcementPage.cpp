@@ -76,6 +76,8 @@ void ReinforcementPage::Update(sf::RenderWindow& window, sf::Time timePassed,
 	else
 	{
 		scrollBar.currentScroll.y += scrolled;
+		if (entries.size())
+			scrollBar.MoveBar({ 0, 10 + (entries[0].borderBox.getSize().y + 6) * (entries.size()) });
 	}
 
 	minReinforcements.Update(window, timePassed, keyPressed, backspace, enter, showCursor);
@@ -93,6 +95,7 @@ void ReinforcementPage::AddReinforcement()
 	float boxSize = numEntries ? entries[numEntries - 1].borderBox.getSize().y : 0.0f;
 	ReinforcementEntry pos{topBoxY + (boxSize + 6) * numEntries };
 	entries.push_back(pos);
+	scrollBar.BarSize({ 0, 10 + (entries[0].borderBox.getSize().y + 6) * (numEntries + 1) });
 }
 
 //-----------------------------------------------------------
