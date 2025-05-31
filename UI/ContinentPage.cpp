@@ -71,6 +71,7 @@ void ContinentPage::MouseClick(sf::RenderWindow& window, sf::Vector2i mousePos)
 			//todo overides view swap continet list.
 		}
 	}
+	scrollBar.MouseClick(sf::Vector2i(window.mapPixelToCoords(mousePos, scrollBar.scrollWindow)));
 	for (int i = 0; i < entries.size(); i++)
 	{
 		entries[i].MouseClick(sf::Vector2i(window.mapPixelToCoords(mousePos, scrollBar.scrollWindow)), selectedView);
@@ -85,7 +86,32 @@ void ContinentPage::Update(sf::RenderWindow& window, sf::Time timePassed,
 	mouseOnPage = UI::CheckMouseInBounds(sf::Vector2i(window.mapPixelToCoords(sf::Mouse::getPosition(window), scrollBar.scrollWindow)), page);
 
 	if (!verticle || !mouseOnPage)
+	{
 		scrolled = 0.0f;
+	}
+	else
+	{
+		scrolled *= 7;
+	}
+
+	if (enter)
+	{
+		scrolled += 50;
+	}
+	if (backspace)
+	{
+		scrolled -= 50;
+	}
+	if (scrolled == 0.0f)
+	{
+		float topBoxY = entries.size() ? entries[0].borderBox.getPosition().y : scrollBar.currentScroll.y;
+		if (scrollBar.currentScroll.y != topBoxY)
+			scrolled = scrollBar.currentScroll.y - topBoxY;
+	}
+	else
+	{
+		scrollBar.currentScroll.y += scrolled;
+	}
 
 	for (int i = 0; i < entries.size(); i++)
 	{
@@ -229,15 +255,7 @@ void ContinentEntry::Update(sf::RenderWindow& window, sf::Time timePassed,
 	std::string keyPressed, bool backspace, bool enter, 
 	bool showCursor, ContinentView selectedView, float scrolled)
 {
-	if (enter)
-	{
-		MoveEntry({ 0, 50 });
-	}
-	if (backspace)
-	{
-		MoveEntry({ 0, -50 });
-	}
-	MoveEntry({ 0, scrolled*7 });
+	MoveEntry({ 0, scrolled });
 	//TODO make sure that you only care about numbers entered;
 	nameBox.Update(window, timePassed, keyPressed, backspace, enter, showCursor);
 	for (int i = 0; i < bonusBoxs.size(); i++)

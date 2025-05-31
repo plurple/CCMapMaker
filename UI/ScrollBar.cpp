@@ -1,4 +1,5 @@
 #include "ScrollBar.h"
+#include "UI.h"
 
 ScrollBar::ScrollBar(sf::View view, sf::Vector2f verticlePos,
 	sf::Vector2f verticleSize, sf::Vector2f horizontalPos,
@@ -17,7 +18,8 @@ ScrollBar::ScrollBar(sf::View view, sf::Vector2f verticlePos,
 	horizontal{ horiz },
 	horizontalBar{ horizontalSize },
 	horizontalTrack{ horizontalSize },
-	scrollWindow{view}
+	scrollWindow{view},
+	currentScroll{0, 10}
 {
 	upArrow.setPointCount(3);
 	upArrow.setPosition({ verticlePos.x, verticlePos.y-33});
@@ -58,7 +60,6 @@ ScrollBar::ScrollBar(sf::View view, sf::Vector2f verticlePos,
 
 void ScrollBar::Draw(sf::RenderWindow& window)
 {
-
 	if (verticle)
 	{
 		window.draw(verticleTrack);
@@ -76,5 +77,31 @@ void ScrollBar::Draw(sf::RenderWindow& window)
 		rightButton.Draw(window);
 		window.draw(leftArrow);
 		window.draw(rightArrow);
+	}
+}
+
+void ScrollBar::MouseClick(sf::Vector2i mousePos)
+{
+	if (verticle)
+	{
+		if (UI::CheckMouseInBounds(mousePos, upButton.rect))
+		{
+			currentScroll.y -= 50;
+		}
+		if (UI::CheckMouseInBounds(mousePos, downButton.rect))
+		{
+			currentScroll.y += 50;
+		}
+	}
+	if (horizontal)
+	{
+		if (UI::CheckMouseInBounds(mousePos, leftButton.rect))
+		{
+			currentScroll.x -= 50;
+		}
+		if (UI::CheckMouseInBounds(mousePos, rightButton.rect))
+		{
+			currentScroll.x += 50;
+		}
 	}
 }

@@ -20,6 +20,7 @@ public:
 	sf::RectangleShape horizontalBar;
 	sf::RectangleShape horizontalTrack;
 	sf::View scrollWindow;
+	sf::Vector2f currentScroll;
 
 	ScrollBar(sf::View view, sf::Vector2f verticlePos, 
 		sf::Vector2f verticleSize, sf::Vector2f horizontalPos = { 0,0 },
