@@ -59,7 +59,7 @@ public:
 	void MouseClick(sf::Vector2i mousePos, ContinentView selectedView);
 	void Update(sf::RenderWindow& window, sf::Time timePassed,
 		std::string keyPressed, bool backspace, bool enter,
-		bool showCursor, ContinentView selectedView);
+		bool showCursor, ContinentView selectedView, float scrolled);
 
 	void MoveEntry(sf::Vector2f offset);
 	void swapView();
@@ -81,7 +81,7 @@ public:
 	void MouseClick(sf::RenderWindow& window, sf::Vector2i mousePos) override;
 	void Update(sf::RenderWindow& window, sf::Time timePassed, 
 		std::string keyPressed, bool backspace, bool enter, 
-		bool showCursor) override;
+		bool showCursor, bool verticle, float scrolled) override;
 
 	void AddContinent();
 };

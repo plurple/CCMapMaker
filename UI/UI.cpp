@@ -135,7 +135,9 @@ void UI::MouseClick(sf::RenderWindow& window, sf::Vector2i mousePos)
     uiPages[(int)selectedPage]->MouseClick(window, mousePos);
 }
 
-void UI::Update(sf::RenderWindow& window, sf::Time timePassed, std::string keyPressed, bool backspace, bool enter)
+void UI::Update(sf::RenderWindow& window, sf::Time timePassed, 
+    std::string keyPressed, bool backspace, bool enter, bool verticle, 
+    float scrolled)
 {
     static sf::Time text_effect_time;
     text_effect_time += timePassed;
@@ -146,5 +148,6 @@ void UI::Update(sf::RenderWindow& window, sf::Time timePassed, std::string keyPr
         text_effect_time = sf::Time::Zero;
     }
 
-    uiPages[(int)selectedPage]->Update(window, timePassed, keyPressed, backspace, enter, showCursor);
+    uiPages[(int)selectedPage]->Update(window, timePassed, keyPressed, 
+        backspace, enter, showCursor, verticle, scrolled);
 }

@@ -84,11 +84,17 @@ void TerritoryPage::MouseClick(sf::RenderWindow& window, sf::Vector2i mousePos)
 }
 
 void TerritoryPage::Update(sf::RenderWindow& window, sf::Time timePassed, 
-	std::string keyPressed, bool backspace, bool enter, bool showCursor)
+	std::string keyPressed, bool backspace, bool enter, bool showCursor,
+	bool verticle, float scrolled)
 {
+	mouseOnPage = UI::CheckMouseInBounds(sf::Vector2i(window.mapPixelToCoords(sf::Mouse::getPosition(window), scrollBar.scrollWindow)), page);
+
+	if (!verticle || !mouseOnPage)
+		scrolled = 0.0f;
+
 	for (int i = 0; i < entries.size(); i++)
 	{
-		entries[i].Update(window, timePassed, keyPressed, backspace, enter, showCursor, selectedView);
+		entries[i].Update(window, timePassed, keyPressed, backspace, enter, showCursor, selectedView, scrolled);
 	}
 }
 
@@ -240,7 +246,7 @@ void TerritoryEntry::MouseClick(sf::Vector2i mousePos, TerritoryView selectedVie
 
 void TerritoryEntry::Update(sf::RenderWindow& window, sf::Time timePassed,
 	std::string keyPressed, bool backspace, bool enter,
-	bool showCursor, TerritoryView selectedView)
+	bool showCursor, TerritoryView selectedView, float scrolled)
 {
 	if (enter)
 	{
@@ -250,6 +256,7 @@ void TerritoryEntry::Update(sf::RenderWindow& window, sf::Time timePassed,
 	{
 		MoveEntry({ 0, -50 });
 	}
+	MoveEntry({ 0, scrolled * 7 });
 	//TODO make sure that you only care about numbers entered;
 	nameBox.Update(window, timePassed, keyPressed, backspace, enter, showCursor);
 	xSmallBox.Update(window, timePassed, keyPressed, backspace, enter, showCursor);

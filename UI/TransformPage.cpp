@@ -44,11 +44,17 @@ void TransformPage::MouseClick(sf::RenderWindow& window, sf::Vector2i mousePos)
 }
 
 void TransformPage::Update(sf::RenderWindow& window, sf::Time timePassed,
-    std::string keyPressed, bool backspace, bool enter, bool showCursor)
+    std::string keyPressed, bool backspace, bool enter, bool showCursor,
+	bool verticle, float scrolled)
 {
+	mouseOnPage = UI::CheckMouseInBounds(sf::Vector2i(window.mapPixelToCoords(sf::Mouse::getPosition(window), scrollBar.scrollWindow)), page);
+
+	if (!verticle || !mouseOnPage)
+		scrolled = 0.0f;
+
 	for (int i = 0; i < entries.size(); i++)
 	{
-		entries[i].Update(window, timePassed, keyPressed, backspace, enter, showCursor);
+		entries[i].Update(window, timePassed, keyPressed, backspace, enter, showCursor, scrolled);
 	}
 }
 
@@ -157,7 +163,7 @@ void TransformEntry::MouseClick(sf::Vector2i mousePos)
 
 void TransformEntry::Update(sf::RenderWindow& window, sf::Time timePassed,
 	std::string keyPressed, bool backspace, bool enter,
-	bool showCursor)
+	bool showCursor, float scrolled)
 {
 	if (enter)
 	{
@@ -167,6 +173,8 @@ void TransformEntry::Update(sf::RenderWindow& window, sf::Time timePassed,
 	{
 		MoveEntry({ 0, -50 });
 	}
+	MoveEntry({ 0, scrolled * 7 });
+
 	//TODO make sure that you only care about numbers entered;
 	typeOptions.Update(window, timePassed, keyPressed, backspace, enter, showCursor);
 	applyOptions.Update(window, timePassed, keyPressed, backspace, enter, showCursor);

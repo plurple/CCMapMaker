@@ -6,6 +6,7 @@ UIPage::UIPage(sf::Vector2f tabPos, sf::Vector2f tabSize,
 	tabButton(tabPos, tabSize, tabLabel),
 	page{{592,UI::windowSize.y-158-8-buttonBoxSize.y}},
 	buttonBox{ buttonBoxSize },
+	mouseOnPage{false},
 	scrollBar(sf::View{ page.getGlobalBounds() }, { 555, 50 }/*position*/, { 30, page.getSize().y - 100 }/*size*/)
 {
 	page.setPosition({ 0, 0 });

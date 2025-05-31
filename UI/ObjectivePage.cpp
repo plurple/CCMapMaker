@@ -54,11 +54,18 @@ void ObjectivePage::MouseClick(sf::RenderWindow& window, sf::Vector2i mousePos)
 }
 
 void ObjectivePage::Update(sf::RenderWindow& window, sf::Time timePassed, 
-    std::string keyPressed, bool backspace, bool enter, bool showCursor)
+    std::string keyPressed, bool backspace, bool enter, bool showCursor, 
+	bool verticle, float scrolled)
 {
+	mouseOnPage = UI::CheckMouseInBounds(sf::Vector2i(window.mapPixelToCoords(sf::Mouse::getPosition(window), scrollBar.scrollWindow)), page);
+
+	if (!verticle || !mouseOnPage)
+		scrolled = 0.0f;
+
 	for (int i = 0; i < entries.size(); i++)
 	{
-		entries[i].Update(window, timePassed, keyPressed, backspace, enter, showCursor);
+		entries[i].Update(window, timePassed, keyPressed, backspace, enter,
+		showCursor, scrolled);
 	}
 }
 
@@ -131,7 +138,8 @@ void ObjectiveEntry::MouseClick(sf::Vector2i mousePos, bool isObjective)
 }
 
 void ObjectiveEntry::Update(sf::RenderWindow& window, sf::Time timePassed,
-	std::string keyPressed, bool backspace, bool enter, bool showCursor)
+	std::string keyPressed, bool backspace, bool enter, bool showCursor,
+	float scrolled)
 {
 	if (enter)
 	{
@@ -141,6 +149,7 @@ void ObjectiveEntry::Update(sf::RenderWindow& window, sf::Time timePassed,
 	{
 		MoveEntry({ 0, -50 });
 	}
+	MoveEntry({ 0, scrolled * 7 });
 	//TODO make sure that you only care about numbers entered;
 	nameBox.Update(window, timePassed, keyPressed, backspace, enter, showCursor);
 	numRequiredBox.Update(window, timePassed, keyPressed, backspace, enter, showCursor);

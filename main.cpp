@@ -56,7 +56,7 @@ int main()
             ui.MouseClick(window, mousePos);
         }
 
-        ui.Update(window, clockElapsed, keyPressed, backspace, enter);
+        ui.Update(window, clockElapsed, keyPressed, backspace, enter, verticle, scrolled);
 
         window.clear(); 
         ui.Draw(window);

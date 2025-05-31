@@ -18,7 +18,7 @@ public:
 	void MouseClick(sf::Vector2i mousePos);
 	void Update(sf::RenderWindow& window, sf::Time timePassed,
 		std::string keyPressed, bool backspace, bool enter,
-		bool showCursor);
+		bool showCursor, float scrolled);
 	void MoveEntry(sf::Vector2f offset);
 };
 
@@ -35,7 +35,7 @@ public:
 	void MouseClick(sf::RenderWindow& window, sf::Vector2i mousePos) override;
 	void Update(sf::RenderWindow& window, sf::Time timePassed, 
 		std::string keyPressed, bool backspace, bool enter, 
-		bool showCursor) override;
+		bool showCursor, bool verticle, float scrolled) override;
 
 	void AddReinforcement();
 };
