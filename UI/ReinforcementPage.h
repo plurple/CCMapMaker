@@ -13,7 +13,7 @@ public:
 	TextBox divisorBox;
 	sf::Text* explanation;
 
-	ReinforcementEntry(sf::RenderWindow& window, sf::View& view, float entryTop);
+	ReinforcementEntry(float entryTop);
 	void Draw(sf::RenderWindow& window);
 	void MouseClick(sf::Vector2i mousePos);
 	void Update(sf::RenderWindow& window, sf::Time timePassed,
@@ -36,6 +36,6 @@ public:
 		std::string keyPressed, bool backspace, bool enter, 
 		bool showCursor) override;
 
-	void AddReinforcement(sf::RenderWindow& window);
+	void AddReinforcement();
 };
 

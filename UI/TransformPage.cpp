@@ -30,7 +30,7 @@ void TransformPage::MouseClick(sf::RenderWindow& window, sf::Vector2i mousePos)
 {
     if (UI::CheckMouseInBounds(mousePos, addTransform.rect))
     {
-		AddTransform(window);
+		AddTransform();
     }
 	if (UI::CheckMouseInBounds(mousePos, testTransforms.rect))
 	{
@@ -53,55 +53,55 @@ void TransformPage::Update(sf::RenderWindow& window, sf::Time timePassed,
 }
 
 
-void TransformPage::AddTransform(sf::RenderWindow& window)
+void TransformPage::AddTransform()
 {
 	int numEntries = entries.size();
 	float boxSize = numEntries ? entries[numEntries - 1].borderBox.getSize().y : 0.0f;
-	TransformEntry pos{window, scrollBar.scrollWindow, 100+(boxSize + 6) * numEntries};
+	TransformEntry pos{ 10+(boxSize + 6) * numEntries};
 	entries.push_back(pos);
 }
 
 //-----------------------------------------------------------
 
-TransformEntry::TransformEntry(sf::RenderWindow& window, sf::View& view, float entryTop) :
+TransformEntry::TransformEntry(float entryTop) :
 	borderBox{ {580,288} /*size*/},
 	conditionsBox{ {572,116} /*size*/ },
-	percentage(sf::Vector2f(window.mapCoordsToPixel({ 1540, entryTop + 96 }, view))/*position*/, { 35, 30 }/*size*/, "%"),
-	addCondition(sf::Vector2f(window.mapCoordsToPixel({ 1200, entryTop + 132 }, view))/*position*/, { 205, 30 }/*size*/, "Add Condition"),
-	amountBox(sf::Vector2f(window.mapCoordsToPixel({ 1140, entryTop + 96 }, view))/*position*/, { 70, 30 }/*size*/, ""),
-	upperBox(sf::Vector2f(window.mapCoordsToPixel({ 1320, entryTop + 96 }, view))/*position*/, { 50, 30 }/*size*/, ""),
-	lowerBox(sf::Vector2f(window.mapCoordsToPixel({ 1480, entryTop + 96 }, view))/*position*/, { 50, 30 }/*size*/, ""),
-	idBox(sf::Vector2f(window.mapCoordsToPixel({ 1370, entryTop +  176}, view))/*position*/, { 50, 30 }/*size*/, ""),
-	valueBox(sf::Vector2f(window.mapCoordsToPixel({ 1500, entryTop + 208 }, view))/*position*/, { 50, 30 }/*size*/, ""),
-	typeOptions(window, view, entryTop + 12, 1020, 1100, 1140, 1260, "Type:"),
-	applyOptions(window, view, entryTop + 46, 1020, 1150, 1190, 1310, "Apply To:"),
-	incOptions(window, view, entryTop + 12, 1320, 1380, 1420, 1540, "Inc:"),
-	conditionTypeOptions(window, view, entryTop + 172, 1020, 1100, 1140, 1260, "Type:"),
-	operatorOptions(window, view, entryTop + 208, 1020, 1150, 1190, 1310, "Operator:"),
-	valueOptions(window, view, entryTop + 244, 1020, 1120, 1160, 1280, "Value:")
+	percentage({ 540, entryTop + 96 }/*position*/, { 35, 30 }/*size*/, "%"),
+	addCondition({ 200, entryTop + 132 }/*position*/, { 205, 30 }/*size*/, "Add Condition"),
+	amountBox({ 140, entryTop + 96 }/*position*/, { 70, 30 }/*size*/, ""),
+	upperBox({ 320, entryTop + 96 }/*position*/, { 50, 30 }/*size*/, ""),
+	lowerBox({ 480, entryTop + 96 }/*position*/, { 50, 30 }/*size*/, ""),
+	idBox({ 370, entryTop +  176}/*position*/, { 50, 30 }/*size*/, ""),
+	valueBox({ 500, entryTop + 208 }/*position*/, { 50, 30 }/*size*/, ""),
+	typeOptions(entryTop + 12, 20, 100, 140, 260, "Type:"),
+	applyOptions(entryTop + 46, 20, 150, 190, 310, "Apply To:"),
+	incOptions(entryTop + 12, 320, 380, 420, 540, "Inc:"),
+	conditionTypeOptions(entryTop + 172, 20, 100, 140, 260, "Type:"),
+	operatorOptions(entryTop + 208, 20, 150, 190, 310, "Operator:"),
+	valueOptions(entryTop + 244, 20, 120, 160, 280, "Value:")
 {
-	borderBox.setPosition(sf::Vector2f(window.mapCoordsToPixel({ 1010, entryTop }, view)));
+	borderBox.setPosition({ 10, entryTop });
 	borderBox.setFillColor(sf::Color(192, 192, 192));
 	borderBox.setOutlineThickness(2.0f);
 	borderBox.setOutlineColor(sf::Color::Blue);
 
-	conditionsBox.setPosition(sf::Vector2f(window.mapCoordsToPixel({ 1014, entryTop + 168 }, view)));
+	conditionsBox.setPosition({ 14, entryTop + 168 });
 	conditionsBox.setFillColor(sf::Color(192, 192, 192));
 	conditionsBox.setOutlineThickness(2.0f);
 	conditionsBox.setOutlineColor(sf::Color::Blue);
 
 	amountLabel = new sf::Text(UI::font, "Amount:");
-	amountLabel->setPosition(sf::Vector2f(window.mapCoordsToPixel({ 1020, entryTop + 92 }, view)));
+	amountLabel->setPosition({ 20, entryTop + 92 });
 	upperLabel = new sf::Text(UI::font, "Upper:");
-	upperLabel->setPosition(sf::Vector2f(window.mapCoordsToPixel({ 1220, entryTop + 92 }, view)));
+	upperLabel->setPosition({ 220, entryTop + 92 });
 	lowerLabel = new sf::Text(UI::font, "Lower:");
-	lowerLabel->setPosition(sf::Vector2f(window.mapCoordsToPixel({ 1380, entryTop + 92 }, view)));
+	lowerLabel->setPosition({ 380, entryTop + 92 });
 	conditionsLabel = new sf::Text(UI::font, "Conditions:");
-	conditionsLabel->setPosition(sf::Vector2f(window.mapCoordsToPixel({ 1020, entryTop + 128 }, view)));
+	conditionsLabel->setPosition({ 20, entryTop + 128 });
 	idLabel = new sf::Text(UI::font, "ID:");
-	idLabel->setPosition(sf::Vector2f(window.mapCoordsToPixel({ 1310, entryTop + 172 }, view)));
+	idLabel->setPosition({ 310, entryTop + 172 });
 	valueLabel = new sf::Text(UI::font, "Value:");
-	valueLabel->setPosition(sf::Vector2f(window.mapCoordsToPixel({ 1400, entryTop + 208 }, view)));
+	valueLabel->setPosition({ 400, entryTop + 208 });
 }
 
 void TransformEntry::Draw(sf::RenderWindow& window)
@@ -174,30 +174,29 @@ void TransformEntry::Update(sf::RenderWindow& window, sf::Time timePassed,
 
 //-----------------------------------------------------------
 
-TransformOptions::TransformOptions(sf::RenderWindow& window, sf::View& view, 
-	float yCoord, float labelCoord,
+TransformOptions::TransformOptions(float yCoord, float labelCoord,
 	float leftCoord, float optionCoord, float rightCoord, 
 	std::string label) :
 	leftArrow{ (15) /*radius*/},
 	rightArrow{ (15)/*radius*/ },
-	leftButton(sf::Vector2f(window.mapCoordsToPixel({ leftCoord, yCoord+4 }, view))/*position*/, {30, 30}/*size*/, " "),
-	rightButton(sf::Vector2f(window.mapCoordsToPixel({ rightCoord, yCoord+4 }, view))/*position*/, {30, 30}/*size*/, " ")
+	leftButton({ leftCoord, yCoord+4 }/*position*/, {30, 30}/*size*/, " "),
+	rightButton({ rightCoord, yCoord+4 }/*position*/, {30, 30}/*size*/, " ")
 {
 	leftArrow.setPointCount(3);
-	leftArrow.setPosition(sf::Vector2f(window.mapCoordsToPixel({ leftCoord+4, yCoord+4 }, view)));
+	leftArrow.setPosition({ leftCoord+4, yCoord+4 });
 	leftArrow.setFillColor(sf::Color::White);
 	leftArrow.setRotation(sf::degrees(90));
 	leftArrow.setScale({ 1.0f, -1.0f });
 
 	rightArrow.setPointCount(3);
-	rightArrow.setPosition(sf::Vector2f(window.mapCoordsToPixel({ rightCoord+26, yCoord+4 }, view)));
+	rightArrow.setPosition({ rightCoord+26, yCoord+4 });
 	rightArrow.setFillColor(sf::Color::White);
 	rightArrow.setRotation(sf::degrees(90));
 
 	optionLabel = new sf::Text(UI::font, label);
-	optionLabel->setPosition(sf::Vector2f(window.mapCoordsToPixel({ labelCoord, yCoord }, view)));
+	optionLabel->setPosition({ labelCoord, yCoord });
 	selectedOption = new sf::Text(UI::font, "selected");
-	selectedOption->setPosition(sf::Vector2f(window.mapCoordsToPixel({ optionCoord, yCoord }, view)));
+	selectedOption->setPosition({ optionCoord, yCoord });
 }
 
 void TransformOptions::Draw(sf::RenderWindow& window)

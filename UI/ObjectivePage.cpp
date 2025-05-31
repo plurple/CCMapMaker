@@ -45,7 +45,7 @@ void ObjectivePage::MouseClick(sf::RenderWindow& window, sf::Vector2i mousePos)
     }
     if (UI::CheckMouseInBounds(mousePos, addObjective.rect))
     {
-		AddObjective(window);
+		AddObjective();
     }
 	for (int i = 0; i < entries.size(); i++)
 	{
@@ -62,40 +62,39 @@ void ObjectivePage::Update(sf::RenderWindow& window, sf::Time timePassed,
 	}
 }
 
-void ObjectivePage::AddObjective(sf::RenderWindow& window)
+void ObjectivePage::AddObjective()
 {
 	int numEntries = entries.size();
 	float boxSize = numEntries ? entries[numEntries - 1].borderBox.getSize().y : 0.0f;
-	ObjectiveEntry pos{window, scrollBar.scrollWindow, 100 + (boxSize + 6) * numEntries, isObjective };
+	ObjectiveEntry pos{ 10 + (boxSize + 6) * numEntries, isObjective };
 	entries.push_back(pos);
 }
 
 //-----------------------------------------------------------
 
-ObjectiveEntry::ObjectiveEntry(sf::RenderWindow& window, sf::View& view, 
-	float entryTop, bool isObjective) :
+ObjectiveEntry::ObjectiveEntry(float entryTop, bool isObjective) :
 	borderBox{ {580,165} /*size*/},
-	nameBox(sf::Vector2f(window.mapCoordsToPixel({ 1120, entryTop + 12 }, view))/*position*/, { 450, 30 }/*size*/, "Obective Name"),
-	numRequiredBox(sf::Vector2f(window.mapCoordsToPixel({ 1235, entryTop + 124 }, view))/*position*/, { 50, 30 }/*size*/, isObjective ? "all":"1"),
+	nameBox({ 120, entryTop + 12 }/*position*/, { 450, 30 }/*size*/, "Obective Name"),
+	numRequiredBox({ 235, entryTop + 124 }/*position*/, { 50, 30 }/*size*/, isObjective ? "all":"1"),
 	selected{false}
 {
-	borderBox.setPosition(sf::Vector2f(window.mapCoordsToPixel({ 1010,entryTop }, view)));
+	borderBox.setPosition({ 10,entryTop });
 	borderBox.setFillColor({ 192, 192, 192 });
 	borderBox.setOutlineThickness(2.0f);
 	borderBox.setOutlineColor(isObjective ? sf::Color(230, 100, 110) : sf::Color::Magenta);
 
 	nameLabel = new sf::Text(UI::font, "Name:");
-	nameLabel->setPosition(sf::Vector2f(window.mapCoordsToPixel({ 1020, entryTop + 8 }, view)));
+	nameLabel->setPosition({ 20, entryTop + 8 });
 	territoryLabel = new sf::Text(UI::font, "Territories:");
-	territoryLabel->setPosition(sf::Vector2f(window.mapCoordsToPixel({ 1020, entryTop + 46 }, view)));
+	territoryLabel->setPosition({ 20, entryTop + 46 });
 	territories = new sf::Text(UI::font, "Territory");
-	territories->setPosition(sf::Vector2f(window.mapCoordsToPixel({ 1180, entryTop + 46 }, view)));
+	territories->setPosition({ 180, entryTop + 46 });
 	continentLabel = new sf::Text(UI::font, "Continents:");
-	continentLabel->setPosition(sf::Vector2f(window.mapCoordsToPixel({ 1020, entryTop + 84 }, view)));
+	continentLabel->setPosition({ 20, entryTop + 84 });
 	continents = new sf::Text(UI::font, "Continent");
-	continents->setPosition(sf::Vector2f(window.mapCoordsToPixel({ 1180, entryTop + 84 }, view)));
+	continents->setPosition({ 180, entryTop + 84 });
 	requiredLabel = new sf::Text(UI::font, "Num Required:");
-	requiredLabel->setPosition(sf::Vector2f(window.mapCoordsToPixel({ 1020, entryTop + 120 }, view)));
+	requiredLabel->setPosition({ 20, entryTop + 120 });
 }
 
 void ObjectiveEntry::Draw(sf::RenderWindow& window)

@@ -10,7 +10,7 @@ public:
 	TextBox startBox;
 	bool selected;
 
-	PositionEntry(sf::RenderWindow& window, sf::View& view, float entryTop);
+	PositionEntry(float entryTop);
 	void Draw(sf::RenderWindow& window, bool selected);
 	void MouseClick(sf::Vector2i mousePos);
 	void Update(sf::RenderWindow& window, sf::Time timePassed,
@@ -35,7 +35,7 @@ public:
 		std::string keyPressed, bool backspace, bool enter, 
 		bool showCursor) override;
 
-	void AddPosition(sf::RenderWindow& window);
+	void AddPosition();
 
 };
 

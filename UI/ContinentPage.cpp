@@ -58,7 +58,7 @@ void ContinentPage::MouseClick(sf::RenderWindow& window, sf::Vector2i mousePos)
 
 	if (UI::CheckMouseInBounds(mousePos, addContinent.rect))
 	{
-		AddContinent(window);
+		AddContinent();
 	}
 	for (int i = 0; i < (int)ContinentView::NumViews; i++)
 	{
@@ -87,56 +87,56 @@ void ContinentPage::Update(sf::RenderWindow& window, sf::Time timePassed,
 }
 
 
-void ContinentPage::AddContinent(sf::RenderWindow& window)
+void ContinentPage::AddContinent()
 {
 	int numEntries = entries.size();
 	float boxSize = numEntries ? entries[numEntries - 1].borderBox.getSize().y : 0.0f;
-	ContinentEntry pos{window, scrollBar.scrollWindow, 60+ (boxSize + 6) * numEntries };
+	ContinentEntry pos{10 + (boxSize + 6) * numEntries };
 	entries.push_back(pos);
 }
 
 //-----------------------------------------------------------
 
-ContinentEntry::ContinentEntry(sf::RenderWindow& window, sf::View& view, float entryTop) :
+ContinentEntry::ContinentEntry(float entryTop) :
 	borderBox{ {580,202} /*size*/},
-	addBonus(sf::Vector2f(window.mapCoordsToPixel({ 1510, entryTop + 50 }, view))/*position*/, { 30, 30 }/*size*/, "+"),
-	removeBonus(sf::Vector2f(window.mapCoordsToPixel({ 1550, entryTop + 50 }, view))/*position*/, { 30, 30 }/*size*/, "-"),
-	nameBox(sf::Vector2f(window.mapCoordsToPixel({ 1120, entryTop + 12 }, view))/*position*/, { 450, 30 }/*size*/, "Continent"),
+	addBonus({ 510, entryTop + 50 }/*position*/, { 30, 30 }/*size*/, "+"),
+	removeBonus({ 550, entryTop + 50 }/*position*/, { 30, 30 }/*size*/, "-"),
+	nameBox({ 120, entryTop + 12 }/*position*/, { 450, 30 }/*size*/, "Continent"),
 	selected{false}
 {
-	borderBox.setPosition(sf::Vector2f(window.mapCoordsToPixel({ 1010,entryTop }, view)));
+	borderBox.setPosition({ 10,entryTop });
 	borderBox.setFillColor(sf::Color(192, 192, 192));
 	borderBox.setOutlineThickness(2.0f);
 	borderBox.setOutlineColor({ 255, 170, 0 });
 
 	nameLabel = new sf::Text(UI::font, "Name:");
-	nameLabel->setPosition(sf::Vector2f(window.mapCoordsToPixel({ 1020, entryTop + 8 }, view)));
+	nameLabel->setPosition({ 20, entryTop + 8 });
 	bonusesLabel = new sf::Text(UI::font, "Bonuses:");
-	bonusesLabel->setPosition(sf::Vector2f(window.mapCoordsToPixel({ 1020, entryTop + 46 }, view)));
+	bonusesLabel->setPosition({ 20, entryTop + 46 });
 	territoryLabel = new sf::Text(UI::font, "Territories:");
-	territoryLabel->setPosition(sf::Vector2f(window.mapCoordsToPixel({ 1020, entryTop + 84 }, view)));
+	territoryLabel->setPosition({ 20, entryTop + 84 });
 	continentLabel = new sf::Text(UI::font, "Continents:");
-	continentLabel->setPosition(sf::Vector2f(window.mapCoordsToPixel({ 1020, entryTop + 120 }, view)));
+	continentLabel->setPosition({ 20, entryTop + 120 });
 
-	TextBox bonusBox = TextBox(sf::Vector2f(window.mapCoordsToPixel({ 1250, entryTop + 50 }, view)), { 50, 30 }, "5");
+	TextBox bonusBox = TextBox({ 250, entryTop + 50 }, { 50, 30 }, "5");
 	bonusBoxs.push_back(bonusBox);
-	TextBox requiredBox = TextBox(sf::Vector2f(window.mapCoordsToPixel({ 1450, entryTop + 50 }, view)), { 50, 30 }, "");
+	TextBox requiredBox = TextBox({ 450, entryTop + 50 }, { 50, 30 }, "");
 	requiredBoxs.push_back(requiredBox);
 
 	sf::Text* continent = new sf::Text(UI::font, "Continent");
-	continent->setPosition(sf::Vector2f(window.mapCoordsToPixel({ 1180, entryTop + 120 }, view)));
+	continent->setPosition({ 180, entryTop + 120 });
 	continents.push_back(continent);
 	sf::Text* territory = new sf::Text(UI::font, "Territory");
-	territory->setPosition(sf::Vector2f(window.mapCoordsToPixel({ 1180, entryTop + 84 }, view)));
+	territory->setPosition({ 180, entryTop + 84 });
 	territories.push_back(territory);
 	sf::Text* bonusLabel = new sf::Text(UI::font, "Bonus:");
-	bonusLabel->setPosition(sf::Vector2f(window.mapCoordsToPixel({ 1150, entryTop + 46 }, view)));
+	bonusLabel->setPosition({ 150, entryTop + 46 });
 	bonusLabels.push_back(bonusLabel);
 	sf::Text* requiredLabel = new sf::Text(UI::font, "Required:");
-	requiredLabel->setPosition(sf::Vector2f(window.mapCoordsToPixel({ 1310, entryTop + 46 }, view)));
+	requiredLabel->setPosition({ 310, entryTop + 46 });
 	requiredLabels.push_back(requiredLabel);
 
-	advanced.push_back(AdvancedTerritory(window, view, entryTop));
+	advanced.push_back(AdvancedTerritory(entryTop));
 }
 
 void ContinentEntry::Draw(sf::RenderWindow& window, ContinentView selectedView)
@@ -235,28 +235,28 @@ void ContinentEntry::Update(sf::RenderWindow& window, sf::Time timePassed,
 
 //-----------------------------------------------------------
 
-AdvancedTerritory::AdvancedTerritory(sf::RenderWindow& window, sf::View& view, float entryTop) :
+AdvancedTerritory::AdvancedTerritory(float entryTop) :
 	borderBox{ {576,78}/*size*/ },
-	mandatory(sf::Vector2f(window.mapCoordsToPixel({ 1350, entryTop + 160 }, view))/*position*/, { 30, 30 }/*size*/, " "),
-	blocker(sf::Vector2f(window.mapCoordsToPixel({ 1130, entryTop + 160 }, view))/*position*/, { 30, 30 }/*size*/, " "),
-	multiplier(sf::Vector2f(window.mapCoordsToPixel({ 1550, entryTop + 160 }, view))/*position*/, { 30, 30 }/*size*/, " "),
-	factor(sf::Vector2f(window.mapCoordsToPixel({ 1530, entryTop + 124 }, view))/*position*/, { 50, 30 }/*size*/, "1.0")
+	mandatory({ 350, entryTop + 160 }/*position*/, { 30, 30 }/*size*/, " "),
+	blocker({ 130, entryTop + 160 }/*position*/, { 30, 30 }/*size*/, " "),
+	multiplier({ 550, entryTop + 160 }/*position*/, { 30, 30 }/*size*/, " "),
+	factor({ 530, entryTop + 124 }/*position*/, { 50, 30 }/*size*/, "1.0")
 {
-	borderBox.setPosition(sf::Vector2f(window.mapCoordsToPixel({ 1012,entryTop+120 }, view)));
+	borderBox.setPosition({ 12,entryTop+120 });
 	borderBox.setFillColor(sf::Color(192, 192, 192));
 	borderBox.setOutlineThickness(2.0f);
 	borderBox.setOutlineColor(sf::Color::Cyan);
 
 	territory = new sf::Text(UI::font, "TerritoryName");
-	territory->setPosition(sf::Vector2f(window.mapCoordsToPixel({ 1020, entryTop + 120 }, view)));
+	territory->setPosition({ 20, entryTop + 120 });
 	mandatoryLabel = new sf::Text(UI::font, "Mandatory");
-	mandatoryLabel->setPosition(sf::Vector2f(window.mapCoordsToPixel({ 1200, entryTop + 156 }, view)));
+	mandatoryLabel->setPosition({ 200, entryTop + 156 });
 	blockerLabel = new sf::Text(UI::font, "Blocker");
-	blockerLabel->setPosition(sf::Vector2f(window.mapCoordsToPixel({ 1020, entryTop + 156 }, view)));
+	blockerLabel->setPosition({ 20, entryTop + 156 });
 	multiplierLabel = new sf::Text(UI::font, "Multiplier");
-	multiplierLabel->setPosition(sf::Vector2f(window.mapCoordsToPixel({ 1410, entryTop + 156 }, view)));
+	multiplierLabel->setPosition({ 410, entryTop + 156 });
 	factorLabel = new sf::Text(UI::font, "Factor:");
-	factorLabel->setPosition(sf::Vector2f(window.mapCoordsToPixel({ 1410, entryTop + 120 }, view)));
+	factorLabel->setPosition({ 410, entryTop + 120 });
 }
 
 void AdvancedTerritory::Draw(sf::RenderWindow& window)
