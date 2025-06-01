@@ -1,5 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include "ScrollBar.h"
 
 struct MapData
 {
@@ -15,7 +16,14 @@ class Maps
 public:
 	MapData largeMap;
 	MapData smallMap;
+	sf::RectangleShape mapCanvas;
+	ScrollBar scrollBar;
 
 	Maps();
 	void Draw(sf::RenderWindow& window, bool isLarge);
+	void Update(sf::RenderWindow& window, sf::Time timePassed,
+		std::string keyPressed, bool backspace, bool enter, bool showCursor,
+		bool verticle, float scrolled);
+
+	void MoveMap(sf::Vector2f offset);
 };

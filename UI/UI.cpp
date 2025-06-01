@@ -123,6 +123,7 @@ void UI::MouseClick(sf::RenderWindow& window, sf::Vector2i mousePos)
     {
         SwapMaps();
     }
+    maps.scrollBar.MouseClick(sf::Vector2i(window.mapPixelToCoords(mousePos, maps.scrollBar.scrollWindow)));
     for (int i = 0; i < (int)UIPageType::NumPageTypes; i++)
     {
         if (CheckMouseInBounds(mousePos, uiPages[i]->tabButton.rect))
@@ -148,6 +149,8 @@ void UI::Update(sf::RenderWindow& window, sf::Time timePassed,
         text_effect_time = sf::Time::Zero;
     }
 
+    maps.Update(window, timePassed, keyPressed,
+        backspace, enter, showCursor, verticle, scrolled);
     uiPages[(int)selectedPage]->Update(window, timePassed, keyPressed, 
         backspace, enter, showCursor, verticle, scrolled);
 }

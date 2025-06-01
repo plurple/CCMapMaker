@@ -157,7 +157,7 @@ void ScrollBar::MoveBar(sf::Vector2f contentSize)
 			if (ratio < 0) ratio = 0;
 			float diff = horizontalTrack.getSize().x - horizontalBar.getSize().x;
 			sf::Vector2f trackPos = horizontalTrack.getPosition();
-			horizontalBar.setPosition({ trackPos.x, trackPos.y + diff * ratio });
+			horizontalBar.setPosition({ trackPos.x + diff * ratio, trackPos.y });
 		}
 	}
 }
