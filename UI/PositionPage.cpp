@@ -97,6 +97,8 @@ void PositionPage::AddPosition()
 	PositionEntry pos{topBoxY + (boxSize + 6) * numEntries};
 	entries.push_back(pos);
 	scrollBar.BarSize({ 0, (entries[0].borderBox.getSize().y + 6) * (numEntries + 1) });
+	scrollBar.MoveBar({ 0, 10 + (entries[0].borderBox.getSize().y + 6) * (numEntries + 1) });
+	scrollBar.Scroll({ 0, scrollBar.maxScroll.y * -1 });
 }
 
 //-----------------------------------------------------------
