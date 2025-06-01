@@ -84,42 +84,40 @@ void ContinentPage::MouseClick(sf::RenderWindow& window, sf::Vector2i mousePos)
 }
 
 void ContinentPage::Update(sf::RenderWindow& window, sf::Time timePassed, 
-	std::string keyPressed, bool backspace, bool enter, bool showCursor, 
-	bool verticle, float scrolled)
+	UserInput input, bool showCursor)
 {
 	//TODO add scrolled to scrollbar to track placement and such
 	mouseOnPage = UI::CheckMouseInBounds(sf::Vector2i(window.mapPixelToCoords(sf::Mouse::getPosition(window), scrollBar.scrollWindow)), page);
 
-	if (!verticle || !mouseOnPage)
+	if (!input.verticle || !mouseOnPage)
 	{
-		scrolled = 0.0f;
+		input.scroll = 0.0f;
 	}
 	else
 	{
-		scrolled *= 7;
+		input.scroll *= 7;
 	}
 
-	if (enter)
+	if (input.enter)
 	{
-		scrolled += 50;
+		input.scroll += 50;
 	}
-	if (backspace)
+	if (input.backSpace)
 	{
-		scrolled -= 50;
+		input.scroll -= 50;
 	}
-	scrollBar.Scroll({ 0, scrolled });
+	scrollBar.Scroll({ 0, input.scroll });
 	int numEntries = entries.size();
 	if (numEntries)
 		scrollBar.MoveBar({ 0, 10 + (entries[0].borderBox.getSize().y + 6) * (numEntries) });
 
 	float topBoxY = numEntries ? entries[0].borderBox.getPosition().y : scrollBar.currentScroll.y;
 	if (scrollBar.currentScroll.y != topBoxY)
-		scrolled = scrollBar.currentScroll.y - topBoxY;
+		input.scroll = scrollBar.currentScroll.y - topBoxY;
 
 	for (int i = 0; i < entries.size(); i++)
 	{
-		entries[i].Update(window, timePassed, keyPressed, backspace, 
-			enter, showCursor, selectedView, scrolled);
+		entries[i].Update(window, timePassed, input, showCursor);
 	}
 }
 
@@ -260,20 +258,19 @@ void ContinentEntry::MouseClick(sf::Vector2i mousePos,
 }
 
 void ContinentEntry::Update(sf::RenderWindow& window, sf::Time timePassed,
-	std::string keyPressed, bool backspace, bool enter, 
-	bool showCursor, ContinentView selectedView, float scrolled)
+	UserInput input, bool showCursor)
 {
-	MoveEntry({ 0, scrolled });
+	MoveEntry({ 0, input.scroll });
 	//TODO make sure that you only care about numbers entered;
-	nameBox.Update(window, timePassed, keyPressed, backspace, enter, showCursor);
+	nameBox.Update(window, timePassed, input, showCursor);
 	for (int i = 0; i < bonusBoxs.size(); i++)
 	{
-		bonusBoxs[i].Update(window, timePassed, keyPressed, backspace, enter, showCursor);
-		requiredBoxs[i].Update(window, timePassed, keyPressed, backspace, enter, showCursor);
+		bonusBoxs[i].Update(window, timePassed, input, showCursor);
+		requiredBoxs[i].Update(window, timePassed, input, showCursor);
 	}
 	for (int i = 0; i < advanced.size(); i++)
 	{
-		advanced[i].Update(window, timePassed, keyPressed, backspace, enter, showCursor);
+		advanced[i].Update(window, timePassed, input, showCursor);
 	}
 }
 
@@ -388,11 +385,11 @@ void AdvancedTerritory::MouseClick(sf::Vector2i mousePos, bool mouseOnPage)
 }
 
 void AdvancedTerritory::Update(sf::RenderWindow& window, sf::Time timePassed,
-	std::string keyPressed, bool backspace, bool enter, bool showCursor)
+	UserInput input, bool showCursor)
 {
 	//TODO make sure that you only care about numbers entered;
 	if(multiplier.selected)
-		factor.Update(window, timePassed, keyPressed, backspace, enter, showCursor);
+		factor.Update(window, timePassed, input, showCursor);
 }
 
 void AdvancedTerritory::Move(sf::Vector2f offset)

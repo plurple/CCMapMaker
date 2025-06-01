@@ -2,6 +2,7 @@
 #include <iostream>
 #include "UI/UI.h"
 #include "UI/TextBox.h"
+#include "UserInput.h"
 
 int main()
 {
@@ -12,32 +13,30 @@ int main()
 
     while (window.isOpen())
     {
-        bool backspace = false, enter = false, verticle = true;
-        std::string keyPressed;
-        float scrolled = 0.0f;
+        UserInput input;
         while (const std::optional event = window.pollEvent())
         {
             if (event->is<sf::Event::Closed>())
                 window.close();
             if (const auto* mouseWheelScrolled = event->getIf<sf::Event::MouseWheelScrolled>())
             {
-                verticle = mouseWheelScrolled->wheel == sf::Mouse::Wheel::Vertical;
-                scrolled = mouseWheelScrolled->delta;
+                input.verticle = mouseWheelScrolled->wheel == sf::Mouse::Wheel::Vertical;
+                input.scroll = mouseWheelScrolled->delta;
             }
             if (const auto* TextEntered = event->getIf<sf::Event::TextEntered>())
             {
                 if (std::isprint(TextEntered->unicode))
-                    keyPressed += TextEntered->unicode;
+                    input.keyPressed += TextEntered->unicode;
             }
             if (const auto* KeyPressed = event->getIf<sf::Event::KeyPressed>())
             {
                 if (KeyPressed->scancode == sf::Keyboard::Scancode::Backspace)
                 {
-                    backspace = true;
+                    input.backSpace = true;
                 }
                 if (KeyPressed->scancode == sf::Keyboard::Scancode::Enter)
                 {
-                    enter = true;
+                    input.enter = true;
                 }
             }
         }
@@ -56,7 +55,7 @@ int main()
             ui.MouseClick(window, mousePos);
         }
 
-        ui.Update(window, clockElapsed, keyPressed, backspace, enter, verticle, scrolled);
+        ui.Update(window, clockElapsed, input);
 
         window.clear(); 
         ui.Draw(window);

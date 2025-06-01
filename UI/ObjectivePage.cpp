@@ -60,41 +60,39 @@ void ObjectivePage::MouseClick(sf::RenderWindow& window, sf::Vector2i mousePos)
 }
 
 void ObjectivePage::Update(sf::RenderWindow& window, sf::Time timePassed, 
-    std::string keyPressed, bool backspace, bool enter, bool showCursor, 
-	bool verticle, float scrolled)
+    UserInput input, bool showCursor)
 {
 	mouseOnPage = UI::CheckMouseInBounds(sf::Vector2i(window.mapPixelToCoords(sf::Mouse::getPosition(window), scrollBar.scrollWindow)), page);
 
-	if (!verticle || !mouseOnPage)
+	if (!input.verticle || !mouseOnPage)
 	{
-		scrolled = 0.0f;
+		input.scroll = 0.0f;
 	}
 	else
 	{
-		scrolled *= 7;
+		input.scroll *= 7;
 	}
 
-	if (enter)
+	if (input.enter)
 	{
-		scrolled += 50;
+		input.scroll += 50;
 	}
-	if (backspace)
+	if (input.backSpace)
 	{
-		scrolled -= 50;
+		input.scroll -= 50;
 	}
-	scrollBar.Scroll({ 0, scrolled });
+	scrollBar.Scroll({ 0, input.scroll });
 	int numEntries = entries.size();
 	if (numEntries)
 		scrollBar.MoveBar({ 0, 10 + (entries[0].borderBox.getSize().y + 6) * (numEntries) });
 
 	float topBoxY = numEntries ? entries[0].borderBox.getPosition().y : scrollBar.currentScroll.y;
 	if (scrollBar.currentScroll.y != topBoxY)
-		scrolled = scrollBar.currentScroll.y - topBoxY;
+		input.scroll = scrollBar.currentScroll.y - topBoxY;
 
 	for (int i = 0; i < entries.size(); i++)
 	{
-		entries[i].Update(window, timePassed, keyPressed, backspace, enter,
-		showCursor, scrolled);
+		entries[i].Update(window, timePassed, input, showCursor);
 	}
 }
 
@@ -171,13 +169,12 @@ void ObjectiveEntry::MouseClick(sf::Vector2i mousePos, bool isObjective,
 }
 
 void ObjectiveEntry::Update(sf::RenderWindow& window, sf::Time timePassed,
-	std::string keyPressed, bool backspace, bool enter, bool showCursor,
-	float scrolled)
+	UserInput input, bool showCursor)
 {
-	MoveEntry({ 0, scrolled});
+	MoveEntry({ 0, input.scroll});
 	//TODO make sure that you only care about numbers entered;
-	nameBox.Update(window, timePassed, keyPressed, backspace, enter, showCursor);
-	numRequiredBox.Update(window, timePassed, keyPressed, backspace, enter, showCursor);
+	nameBox.Update(window, timePassed, input, showCursor);
+	numRequiredBox.Update(window, timePassed, input, showCursor);
 }
 
 void ObjectiveEntry::MoveEntry(sf::Vector2f offset)

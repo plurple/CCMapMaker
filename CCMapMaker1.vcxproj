@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="UserInput.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="UI\Button.cpp" />
     <ClCompile Include="UI\ContinentPage.cpp" />
@@ -41,6 +42,7 @@
     <ClCompile Include="XML\Transform.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="UserInput.h" />
     <ClInclude Include="UI\Button.h" />
     <ClInclude Include="UI\ContinentPage.h" />
     <ClInclude Include="UI\Maps.h" />

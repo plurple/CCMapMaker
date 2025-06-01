@@ -18,7 +18,6 @@ public:
 	virtual void Draw(sf::RenderWindow& window, bool selected);
 	virtual void MouseClick(sf::RenderWindow& window, sf::Vector2i mousePos) = 0;
 	virtual void Update(sf::RenderWindow& window, sf::Time timePassed, 
-		std::string keyPressed, bool backspace, bool enter, bool showCursor,
-		bool verticle, float scrolled) = 0;
+		UserInput input, bool showCursor) = 0;
 };
 

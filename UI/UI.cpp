@@ -137,8 +137,7 @@ void UI::MouseClick(sf::RenderWindow& window, sf::Vector2i mousePos)
 }
 
 void UI::Update(sf::RenderWindow& window, sf::Time timePassed, 
-    std::string keyPressed, bool backspace, bool enter, bool verticle, 
-    float scrolled)
+    UserInput& input)
 {
     static sf::Time text_effect_time;
     text_effect_time += timePassed;
@@ -149,8 +148,6 @@ void UI::Update(sf::RenderWindow& window, sf::Time timePassed,
         text_effect_time = sf::Time::Zero;
     }
 
-    maps.Update(window, timePassed, keyPressed,
-        backspace, enter, showCursor, verticle, scrolled);
-    uiPages[(int)selectedPage]->Update(window, timePassed, keyPressed, 
-        backspace, enter, showCursor, verticle, scrolled);
+    maps.Update(window, timePassed, input);
+    uiPages[(int)selectedPage]->Update(window, timePassed, input, showCursor);
 }

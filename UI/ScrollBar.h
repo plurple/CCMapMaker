@@ -29,8 +29,6 @@ public:
 		sf::Vector2f horizontalSize = { 0, 0 }, bool vert = true, bool horiz = false);
 	void Draw(sf::RenderWindow& window);
 	void MouseClick(sf::Vector2i mousePos);
-	void Update(sf::RenderWindow& window, sf::Time timePassed,
-		std::string keyPressed, bool backspace, bool enter, bool showCursor);
 
 	void BarSize(sf::Vector2f contentSize);
 	void MoveBar(sf::Vector2f contentSize);

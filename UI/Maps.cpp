@@ -40,21 +40,22 @@ void Maps::Draw(sf::RenderWindow& window, bool isLarge)
 }
 
 void Maps::Update(sf::RenderWindow& window, sf::Time timePassed,
-    std::string keyPressed, bool backspace, bool enter, bool showCursor,
-    bool verticle, float scrolled)
+    UserInput input)
 {
     bool mouseOnPage = UI::CheckMouseInBounds(sf::Vector2i(window.mapPixelToCoords(sf::Mouse::getPosition(window), scrollBar.scrollWindow)), mapCanvas);
 
     if (!mouseOnPage)
     {
-        scrolled = 0.0f;
+        input.scroll = 0.0f;
     }
     else
     {
-        scrolled*=7;
+        input.scroll *= 7;
     }
     scrollBar.MoveBar(sf::Vector2f{largeMap.mapTexture->getSize()});
-    sf::Vector2f scroll = verticle ? sf::Vector2f{ 0, scrolled } : sf::Vector2f{scrolled, 0};
+    sf::Vector2f scroll = input.verticle ? 
+        sf::Vector2f{ 0, input.scroll } : 
+        sf::Vector2f{ input.scroll, 0} ;
     scrollBar.Scroll(scroll);
     scroll.y = scrollBar.currentScroll.y - largeMap.mapSprite->getPosition().y;
     scroll.x = scrollBar.currentScroll.x - largeMap.mapSprite->getPosition().x;

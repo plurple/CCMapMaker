@@ -77,6 +77,9 @@
     <ClCompile Include="UI\ScrollBar.cpp">
       <Filter>UI\Utility</Filter>
     </ClCompile>
+    <ClCompile Include="UserInput.cpp">
+      <Filter>other</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="UI\Maps.h">
@@ -135,6 +138,9 @@
     </ClInclude>
     <ClInclude Include="UI\ScrollBar.h">
       <Filter>UI\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="UserInput.h">
+      <Filter>other</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

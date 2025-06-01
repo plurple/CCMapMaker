@@ -16,14 +16,14 @@ TextBox::TextBox(sf::Vector2f pos, sf::Vector2f boxSize, std::string defaultText
 }
 
 void TextBox::Update(sf::RenderWindow& window, sf::Time timePassed, 
-    std::string keyPressed, bool backspace, bool enter, bool showCursor)
+    UserInput input, bool showCursor)
 {
     if (active)
     {
-        text += keyPressed;
-        if (backspace && !text.empty())
+        text += input.keyPressed;
+        if (input.backSpace && !text.empty())
             text.pop_back();
-        if (enter)
+        if (input.enter)
             active = false;       
     }
 

@@ -1,6 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include "ScrollBar.h"
+#include "../UserInput.h"
 
 struct MapData
 {
@@ -22,8 +23,7 @@ public:
 	Maps();
 	void Draw(sf::RenderWindow& window, bool isLarge);
 	void Update(sf::RenderWindow& window, sf::Time timePassed,
-		std::string keyPressed, bool backspace, bool enter, bool showCursor,
-		bool verticle, float scrolled);
+		UserInput input);
 
 	void MoveMap(sf::Vector2f offset);
 };

@@ -43,8 +43,7 @@ public:
 	void Draw(sf::RenderWindow& window, TerritoryView selectedView);
 	void MouseClick(sf::Vector2i mousePos, TerritoryView selectedView, bool mouseOnPage);
 	void Update(sf::RenderWindow& window, sf::Time timePassed,
-		std::string keyPressed, bool backspace, bool enter,
-		bool showCursor, TerritoryView selectedView, float scrolled);
+		UserInput input, bool showCursor, TerritoryView selectedView);
 	void MoveEntry(sf::Vector2f offset);
 	void SwapView();
 };
@@ -65,8 +64,7 @@ public:
 	void Draw(sf::RenderWindow& window, bool selected) override;
 	void MouseClick(sf::RenderWindow& window, sf::Vector2i mousePos) override;
 	void Update(sf::RenderWindow& window, sf::Time timePassed, 
-		std::string keyPressed, bool backspace, bool enter, 
-		bool showCursor, bool verticle, float scrolled) override;
+		UserInput input, bool showCursor) override;
 
 	void AddTerritory();
 };

@@ -2,6 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include "Maps.h"
 #include "Button.h"
+#include "../UserInput.h"
 
 enum class UIPageType
 {
@@ -44,7 +45,6 @@ public:
 	void SwapMaps();
 	void MouseClick(sf::RenderWindow& window, sf::Vector2i mousePos);
 	void Update(sf::RenderWindow& window, sf::Time timePassed, 
-		std::string keyPressed, bool backspace, bool enter, 
-		bool verticle, float scrolled);
+		UserInput& input);
 };
 
