@@ -17,7 +17,7 @@ public:
 
 	ObjectiveEntry(float entryTop, bool isObjective);
 	void Draw(sf::RenderWindow& window);
-	void MouseClick(sf::Vector2i mousePos, bool isObjective);
+	void MouseClick(sf::Vector2i mousePos, bool isObjective, bool mouseOnPage);
 	void Update(sf::RenderWindow& window, sf::Time timePassed,
 		std::string keyPressed, bool backspace, bool enter,
 		bool showCursor, float scrolled);

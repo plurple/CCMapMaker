@@ -36,11 +36,16 @@ void TransformPage::MouseClick(sf::RenderWindow& window, sf::Vector2i mousePos)
 	{
 		//TODO add a transform test function
 	}
-	scrollBar.MouseClick(sf::Vector2i(window.mapPixelToCoords(mousePos, scrollBar.scrollWindow)));
+	if (mouseOnPage)
+	{
+		scrollBar.MouseClick(sf::Vector2i(window.mapPixelToCoords(mousePos, scrollBar.scrollWindow)));
+	}
 	for (int i = 0; i < entries.size(); i++)
 	{
-		entries[i].MouseClick(sf::Vector2i(window.mapPixelToCoords(mousePos, scrollBar.scrollWindow)));
+		entries[i].MouseClick(sf::Vector2i(window.mapPixelToCoords(mousePos, scrollBar.scrollWindow)),
+			mouseOnPage);
 	}
+	
 }
 
 void TransformPage::Update(sf::RenderWindow& window, sf::Time timePassed,
@@ -162,29 +167,32 @@ void TransformEntry::Draw(sf::RenderWindow& window)
 	addCondition.Draw(window);
 }
 
-void TransformEntry::MouseClick(sf::Vector2i mousePos)
+void TransformEntry::MouseClick(sf::Vector2i mousePos, bool mouseOnPage)
 {
-	if (UI::CheckMouseInBounds(mousePos, percentage.rect))
+	if (mouseOnPage && UI::CheckMouseInBounds(mousePos, percentage.rect))
 	{
 		percentage.Toggle();
 	}
-	if (UI::CheckMouseInBounds(mousePos, addCondition.rect))
+	if (mouseOnPage && UI::CheckMouseInBounds(mousePos, addCondition.rect))
 	{
 		//todo add a conditions stuff
 	}
 
-	amountBox.active = UI::CheckMouseInBounds(mousePos, amountBox.box);
-	upperBox.active = UI::CheckMouseInBounds(mousePos, upperBox.box);
-	lowerBox.active = UI::CheckMouseInBounds(mousePos, lowerBox.box);
-	idBox.active = UI::CheckMouseInBounds(mousePos, idBox.box);
-	valueBox.active = UI::CheckMouseInBounds(mousePos, valueBox.box);
+	amountBox.active = mouseOnPage && UI::CheckMouseInBounds(mousePos, amountBox.box);
+	upperBox.active = mouseOnPage && UI::CheckMouseInBounds(mousePos, upperBox.box);
+	lowerBox.active = mouseOnPage && UI::CheckMouseInBounds(mousePos, lowerBox.box);
+	idBox.active = mouseOnPage && UI::CheckMouseInBounds(mousePos, idBox.box);
+	valueBox.active = mouseOnPage && UI::CheckMouseInBounds(mousePos, valueBox.box);
 
-	typeOptions.MouseClick(mousePos);
-	applyOptions.MouseClick(mousePos);
-	incOptions.MouseClick(mousePos);
-	conditionTypeOptions.MouseClick(mousePos);
-	operatorOptions.MouseClick(mousePos);
-	valueOptions.MouseClick(mousePos);
+	if (mouseOnPage)
+	{
+		typeOptions.MouseClick(mousePos);
+		applyOptions.MouseClick(mousePos);
+		incOptions.MouseClick(mousePos);
+		conditionTypeOptions.MouseClick(mousePos);
+		operatorOptions.MouseClick(mousePos);
+		valueOptions.MouseClick(mousePos);
+	}
 }
 
 void TransformEntry::Update(sf::RenderWindow& window, sf::Time timePassed,

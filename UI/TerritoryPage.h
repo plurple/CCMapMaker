@@ -41,7 +41,7 @@ public:
 
 	TerritoryEntry(float entryTop, TerritoryView selectedView);
 	void Draw(sf::RenderWindow& window, TerritoryView selectedView);
-	void MouseClick(sf::Vector2i mousePos, TerritoryView selectedView);
+	void MouseClick(sf::Vector2i mousePos, TerritoryView selectedView, bool mouseOnPage);
 	void Update(sf::RenderWindow& window, sf::Time timePassed,
 		std::string keyPressed, bool backspace, bool enter,
 		bool showCursor, TerritoryView selectedView, float scrolled);

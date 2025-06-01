@@ -12,7 +12,7 @@ public:
 
 	PositionEntry(float entryTop);
 	void Draw(sf::RenderWindow& window, bool selected);
-	void MouseClick(sf::Vector2i mousePos);
+	void MouseClick(sf::Vector2i mousePos, bool mouseOnPage);
 	void Update(sf::RenderWindow& window, sf::Time timePassed,
 		std::string keyPressed, bool backspace, bool enter,
 		bool showCursor, float scrolled);

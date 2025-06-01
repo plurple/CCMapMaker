@@ -25,7 +25,7 @@ public:
 
 	AdvancedTerritory(float entryTop);
 	void Draw(sf::RenderWindow& window);
-	void MouseClick(sf::Vector2i mousePos);
+	void MouseClick(sf::Vector2i mousePos, bool mouseOnPage);
 	void Update(sf::RenderWindow& window, sf::Time timePassed,
 		std::string keyPressed, bool backspace, bool enter,
 		bool showCursor);
@@ -56,7 +56,7 @@ public:
 
 	ContinentEntry(float entryTop);
 	void Draw(sf::RenderWindow& window, ContinentView selectedView);
-	void MouseClick(sf::Vector2i mousePos, ContinentView selectedView);
+	void MouseClick(sf::Vector2i mousePos, ContinentView selectedView, bool mouseOnPage);
 	void Update(sf::RenderWindow& window, sf::Time timePassed,
 		std::string keyPressed, bool backspace, bool enter,
 		bool showCursor, ContinentView selectedView, float scrolled);

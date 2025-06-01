@@ -47,11 +47,16 @@ void ObjectivePage::MouseClick(sf::RenderWindow& window, sf::Vector2i mousePos)
     {
 		AddObjective();
     }
-	scrollBar.MouseClick(sf::Vector2i(window.mapPixelToCoords(mousePos, scrollBar.scrollWindow)));
+	if (mouseOnPage)
+	{
+		scrollBar.MouseClick(sf::Vector2i(window.mapPixelToCoords(mousePos, scrollBar.scrollWindow)));
+	}
 	for (int i = 0; i < entries.size(); i++)
 	{
-		entries[i].MouseClick(sf::Vector2i(window.mapPixelToCoords(mousePos, scrollBar.scrollWindow)), isObjective);
+		entries[i].MouseClick(sf::Vector2i(window.mapPixelToCoords(mousePos, scrollBar.scrollWindow)), 
+			isObjective, mouseOnPage);
 	}
+	
 }
 
 void ObjectivePage::Update(sf::RenderWindow& window, sf::Time timePassed, 
@@ -143,9 +148,10 @@ void ObjectiveEntry::Draw(sf::RenderWindow& window)
 	window.draw(*requiredLabel);
 }
 
-void ObjectiveEntry::MouseClick(sf::Vector2i mousePos, bool isObjective)
+void ObjectiveEntry::MouseClick(sf::Vector2i mousePos, bool isObjective, 
+	bool mouseOnPage)
 {
-	if (UI::CheckMouseInBounds(mousePos, borderBox))
+	if (mouseOnPage && UI::CheckMouseInBounds(mousePos, borderBox))
 	{
 		selected = true;
 		borderBox.setOutlineThickness(4.0f);
@@ -158,8 +164,8 @@ void ObjectiveEntry::MouseClick(sf::Vector2i mousePos, bool isObjective)
 		borderBox.setOutlineThickness(2.0f);
 		borderBox.setOutlineColor(isObjective ? sf::Color(230, 100, 110) : sf::Color::Magenta);
 	}
-	nameBox.active = UI::CheckMouseInBounds(mousePos, nameBox.box);
-	numRequiredBox.active = UI::CheckMouseInBounds(mousePos, numRequiredBox.box);
+	nameBox.active = mouseOnPage && UI::CheckMouseInBounds(mousePos, nameBox.box);
+	numRequiredBox.active = mouseOnPage && UI::CheckMouseInBounds(mousePos, numRequiredBox.box);
 }
 
 void ObjectiveEntry::Update(sf::RenderWindow& window, sf::Time timePassed,

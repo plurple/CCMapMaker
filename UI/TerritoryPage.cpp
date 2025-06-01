@@ -77,11 +77,15 @@ void TerritoryPage::MouseClick(sf::RenderWindow& window, sf::Vector2i mousePos)
 			territoryViews[(int)selectedView].Toggle();
 		}
 	}
-	scrollBar.MouseClick(sf::Vector2i(window.mapPixelToCoords(mousePos, scrollBar.scrollWindow)));
+	if (mouseOnPage)
+	{
+		scrollBar.MouseClick(sf::Vector2i(window.mapPixelToCoords(mousePos, scrollBar.scrollWindow)));
+	}
 	for (int i = 0; i < entries.size(); i++)
 	{
-		entries[i].MouseClick(sf::Vector2i(window.mapPixelToCoords(mousePos, scrollBar.scrollWindow)), selectedView);
-	}
+		entries[i].MouseClick(sf::Vector2i(window.mapPixelToCoords(mousePos, scrollBar.scrollWindow)), 
+			selectedView, mouseOnPage);
+	}	
 }
 
 void TerritoryPage::Update(sf::RenderWindow& window, sf::Time timePassed, 
@@ -238,9 +242,10 @@ void TerritoryEntry::Draw(sf::RenderWindow& window, TerritoryView selectedView)
 	}
 }	
 
-void TerritoryEntry::MouseClick(sf::Vector2i mousePos, TerritoryView selectedView)
+void TerritoryEntry::MouseClick(sf::Vector2i mousePos, 
+	TerritoryView selectedView, bool mouseOnPage)
 {
-	if (UI::CheckMouseInBounds(mousePos, borderBox))
+	if (mouseOnPage && UI::CheckMouseInBounds(mousePos, borderBox))
 	{
 		selected = true;
 		borderBox.setOutlineThickness(4.0f);
@@ -253,20 +258,21 @@ void TerritoryEntry::MouseClick(sf::Vector2i mousePos, TerritoryView selectedVie
 		borderBox.setOutlineThickness(2.0f);
 		borderBox.setOutlineColor({ 150, 60, 255 });
 	}
-	if (selectedView == TerritoryView::Extras && UI::CheckMouseInBounds(mousePos, killer.rect))
+	
+	if (mouseOnPage && selectedView == TerritoryView::Extras && UI::CheckMouseInBounds(mousePos, killer.rect))
 	{
 		killer.Toggle();
 	}
-	nameBox.active = UI::CheckMouseInBounds(mousePos, nameBox.box);
-	xSmallBox.active = UI::CheckMouseInBounds(mousePos, xSmallBox.box);
-	ySmallBox.active = UI::CheckMouseInBounds(mousePos, ySmallBox.box);
-	xLargeBox.active = UI::CheckMouseInBounds(mousePos, xLargeBox.box);
-	yLargeBox.active = UI::CheckMouseInBounds(mousePos, yLargeBox.box);
+	nameBox.active = mouseOnPage && UI::CheckMouseInBounds(mousePos, nameBox.box);
+	xSmallBox.active = mouseOnPage && UI::CheckMouseInBounds(mousePos, xSmallBox.box);
+	ySmallBox.active = mouseOnPage && UI::CheckMouseInBounds(mousePos, ySmallBox.box);
+	xLargeBox.active = mouseOnPage && UI::CheckMouseInBounds(mousePos, xLargeBox.box);
+	yLargeBox.active = mouseOnPage && UI::CheckMouseInBounds(mousePos, yLargeBox.box);
 	if (selectedView == TerritoryView::Extras)
 	{
-		neutralBox.active = UI::CheckMouseInBounds(mousePos, neutralBox.box);
-		bonusBox.active = UI::CheckMouseInBounds(mousePos, bonusBox.box);
-	}
+		neutralBox.active = mouseOnPage && UI::CheckMouseInBounds(mousePos, neutralBox.box);
+		bonusBox.active = mouseOnPage && UI::CheckMouseInBounds(mousePos, bonusBox.box);
+	}	
 }
 
 void TerritoryEntry::Update(sf::RenderWindow& window, sf::Time timePassed,

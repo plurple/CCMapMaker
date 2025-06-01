@@ -71,11 +71,16 @@ void ContinentPage::MouseClick(sf::RenderWindow& window, sf::Vector2i mousePos)
 			//todo overides view swap continet list.
 		}
 	}
-	scrollBar.MouseClick(sf::Vector2i(window.mapPixelToCoords(mousePos, scrollBar.scrollWindow)));
+	if (mouseOnPage)
+	{
+		scrollBar.MouseClick(sf::Vector2i(window.mapPixelToCoords(mousePos, scrollBar.scrollWindow)));
+	}
 	for (int i = 0; i < entries.size(); i++)
 	{
-		entries[i].MouseClick(sf::Vector2i(window.mapPixelToCoords(mousePos, scrollBar.scrollWindow)), selectedView);
+		entries[i].MouseClick(sf::Vector2i(window.mapPixelToCoords(mousePos, scrollBar.scrollWindow)), 
+			selectedView, mouseOnPage);
 	}
+	
 }
 
 void ContinentPage::Update(sf::RenderWindow& window, sf::Time timePassed, 
@@ -215,9 +220,10 @@ void ContinentEntry::Draw(sf::RenderWindow& window, ContinentView selectedView)
 	}
 }
 
-void ContinentEntry::MouseClick(sf::Vector2i mousePos, ContinentView selectedView)
+void ContinentEntry::MouseClick(sf::Vector2i mousePos, 
+	ContinentView selectedView, bool mouseOnPage)
 {
-	if (UI::CheckMouseInBounds(mousePos, borderBox))
+	if (mouseOnPage && UI::CheckMouseInBounds(mousePos, borderBox))
 	{
 		selected = true;
 		borderBox.setOutlineThickness(4.0f);
@@ -230,24 +236,25 @@ void ContinentEntry::MouseClick(sf::Vector2i mousePos, ContinentView selectedVie
 		borderBox.setOutlineThickness(2.0f);
 		borderBox.setOutlineColor({ 255, 170, 0 });
 	}
-	if (UI::CheckMouseInBounds(mousePos, addBonus.rect))
+	if (mouseOnPage && UI::CheckMouseInBounds(mousePos, addBonus.rect))
 	{
 		//todo add a bonus line.
 	}
-	if (UI::CheckMouseInBounds(mousePos, removeBonus.rect))
+	if (mouseOnPage && UI::CheckMouseInBounds(mousePos, removeBonus.rect))
 	{
 		//todo remove a bonus line.
 	}
-	nameBox.active = UI::CheckMouseInBounds(mousePos, nameBox.box);
+	nameBox.active = mouseOnPage && UI::CheckMouseInBounds(mousePos, nameBox.box);
 	for (int i = 0; i < bonusBoxs.size(); i++)
 	{
-		bonusBoxs[i].active = UI::CheckMouseInBounds(mousePos, bonusBoxs[i].box);
-		requiredBoxs[i].active = UI::CheckMouseInBounds(mousePos, requiredBoxs[i].box);
+		bonusBoxs[i].active = mouseOnPage && UI::CheckMouseInBounds(mousePos, bonusBoxs[i].box);
+		requiredBoxs[i].active = mouseOnPage && UI::CheckMouseInBounds(mousePos, requiredBoxs[i].box);
 	}
 	for (int i = 0; i < advanced.size(); i++)
 	{
-		advanced[i].MouseClick(mousePos);
+		advanced[i].MouseClick(mousePos, mouseOnPage);
 	}
+	
 }
 
 void ContinentEntry::Update(sf::RenderWindow& window, sf::Time timePassed,
@@ -351,28 +358,31 @@ void AdvancedTerritory::Draw(sf::RenderWindow& window)
 	}
 }
 
-void AdvancedTerritory::MouseClick(sf::Vector2i mousePos)
+void AdvancedTerritory::MouseClick(sf::Vector2i mousePos, bool mouseOnPage)
 {
-	if (UI::CheckMouseInBounds(mousePos, mandatory.rect))
+	if (mouseOnPage)
 	{
-		mandatory.Toggle();
-		blocker.Unselect();
-		multiplier.Unselect();
-	}
-	else if (UI::CheckMouseInBounds(mousePos, blocker.rect))
-	{
-		blocker.Toggle();
-		mandatory.Unselect();
-		multiplier.Unselect();
-	}
-	else if (UI::CheckMouseInBounds(mousePos, multiplier.rect))
-	{
-		multiplier.Toggle();
-		mandatory.Unselect();
-		blocker.Unselect();
+		if (UI::CheckMouseInBounds(mousePos, mandatory.rect))
+		{
+			mandatory.Toggle();
+			blocker.Unselect();
+			multiplier.Unselect();
+		}
+		else if (UI::CheckMouseInBounds(mousePos, blocker.rect))
+		{
+			blocker.Toggle();
+			mandatory.Unselect();
+			multiplier.Unselect();
+		}
+		else if (UI::CheckMouseInBounds(mousePos, multiplier.rect))
+		{
+			multiplier.Toggle();
+			mandatory.Unselect();
+			blocker.Unselect();
+		}
 	}
 	if(multiplier.selected)
-		factor.active = UI::CheckMouseInBounds(mousePos, factor.box);
+		factor.active = mouseOnPage && UI::CheckMouseInBounds(mousePos, factor.box);
 }
 
 void AdvancedTerritory::Update(sf::RenderWindow& window, sf::Time timePassed,

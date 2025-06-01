@@ -36,12 +36,16 @@ void ReinforcementPage::MouseClick(sf::RenderWindow& window, sf::Vector2i mouseP
     {
 		AddReinforcement();
     }
-	scrollBar.MouseClick(sf::Vector2i(window.mapPixelToCoords(mousePos, scrollBar.scrollWindow)));
+	minReinforcements.active = UI::CheckMouseInBounds(mousePos, minReinforcements.box);
+	if (mouseOnPage)
+	{
+		scrollBar.MouseClick(sf::Vector2i(window.mapPixelToCoords(mousePos, scrollBar.scrollWindow)));
+	}
 	for (int i = 0; i < entries.size(); i++)
 	{
-		entries[i].MouseClick(sf::Vector2i(window.mapPixelToCoords(mousePos, scrollBar.scrollWindow)));
+		entries[i].MouseClick(sf::Vector2i(window.mapPixelToCoords(mousePos, scrollBar.scrollWindow)),
+			mouseOnPage);
 	}
-	minReinforcements.active = UI::CheckMouseInBounds(mousePos, minReinforcements.box);
 }
 
 void ReinforcementPage::Update(sf::RenderWindow& window, sf::Time timePassed, 
@@ -129,11 +133,11 @@ void ReinforcementEntry::Draw(sf::RenderWindow& window)
 	window.draw(*explanation);
 }
 
-void ReinforcementEntry::MouseClick(sf::Vector2i mousePos)
+void ReinforcementEntry::MouseClick(sf::Vector2i mousePos, bool mouseOnPage)
 {
-	lowerBox.active = UI::CheckMouseInBounds(mousePos, lowerBox.box);
-	upperBox.active = UI::CheckMouseInBounds(mousePos, upperBox.box);
-	divisorBox.active = UI::CheckMouseInBounds(mousePos, divisorBox.box);
+	lowerBox.active = mouseOnPage && UI::CheckMouseInBounds(mousePos, lowerBox.box);
+	upperBox.active = mouseOnPage && UI::CheckMouseInBounds(mousePos, upperBox.box);
+	divisorBox.active = mouseOnPage && UI::CheckMouseInBounds(mousePos, divisorBox.box);
 }
 
 void ReinforcementEntry::Update(sf::RenderWindow& window, sf::Time timePassed,

@@ -37,11 +37,15 @@ void PositionPage::MouseClick(sf::RenderWindow& window, sf::Vector2i mousePos)
 		AddPosition();
 	}
 	maxBox.active = UI::CheckMouseInBounds(mousePos, maxBox.box);
-	scrollBar.MouseClick(sf::Vector2i(window.mapPixelToCoords(mousePos, scrollBar.scrollWindow)));
+	if (mouseOnPage)
+	{
+		scrollBar.MouseClick(sf::Vector2i(window.mapPixelToCoords(mousePos, scrollBar.scrollWindow)));
+	}
 	for (int i = 0; i < entries.size(); i++)
 	{
-		entries[i].MouseClick(sf::Vector2i(window.mapPixelToCoords(mousePos, scrollBar.scrollWindow)));
-	}
+		entries[i].MouseClick(sf::Vector2i(window.mapPixelToCoords(mousePos, scrollBar.scrollWindow)),
+			mouseOnPage);
+	}	
 }
 
 void PositionPage::Update(sf::RenderWindow& window, sf::Time timePassed, 
@@ -121,9 +125,9 @@ void PositionEntry::Draw(sf::RenderWindow& window, bool selected)
 	window.draw(*territoryName);
 }
 
-void PositionEntry::MouseClick(sf::Vector2i mousePos)
+void PositionEntry::MouseClick(sf::Vector2i mousePos, bool mouseOnPage)
 {
-	if (UI::CheckMouseInBounds(mousePos, borderBox))
+	if (mouseOnPage && UI::CheckMouseInBounds(mousePos, borderBox))
 	{
 		selected = true;
 		borderBox.setOutlineThickness(4.0f);
@@ -136,7 +140,7 @@ void PositionEntry::MouseClick(sf::Vector2i mousePos)
 		borderBox.setOutlineThickness(2.0f);
 		borderBox.setOutlineColor(sf::Color::Green);
 	}
-	startBox.active = UI::CheckMouseInBounds(mousePos, startBox.box);
+	startBox.active = mouseOnPage && UI::CheckMouseInBounds(mousePos, startBox.box);
 }
 
 void PositionEntry::Update(sf::RenderWindow& window, sf::Time timePassed,
