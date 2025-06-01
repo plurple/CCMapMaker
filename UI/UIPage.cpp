@@ -18,6 +18,7 @@ UIPage::UIPage(sf::Vector2f tabPos, sf::Vector2f tabSize,
 	float bob = (page.getSize().y + 8.0f) / UI::windowSize.y;
 	float bob2 = (page.getSize().x + 8.0f) / UI::windowSize.x;
 	scrollBar.scrollWindow.setViewport(sf::FloatRect({ 1.0f - bob2, 1.0f-bob }, { bob2, bob }));
+	scrollBar.minScroll.y = 10.0f;
 
 	buttonBox.setPosition({ 1004, 154 });
 	buttonBox.setFillColor(sf::Color(192, 192, 192, 0));

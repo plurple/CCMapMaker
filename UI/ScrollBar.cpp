@@ -1,6 +1,6 @@
 #include "ScrollBar.h"
 #include "UI.h"
-
+	
 ScrollBar::ScrollBar(sf::View view, sf::Vector2f verticlePos,
 	sf::Vector2f verticleSize, sf::Vector2f horizontalPos,
 	sf::Vector2f horizontalSize, bool vert, bool horiz) :
@@ -18,8 +18,10 @@ ScrollBar::ScrollBar(sf::View view, sf::Vector2f verticlePos,
 	horizontal{ horiz },
 	horizontalBar{ horizontalSize },
 	horizontalTrack{ horizontalSize },
-	scrollWindow{view},
-	currentScroll{0, 10}
+	scrollWindow{ view },
+	maxScroll{ 0, 0 },
+	minScroll{ 0, 0 },
+	currentScroll{ minScroll }
 {
 	upArrow.setPointCount(3);
 	upArrow.setPosition({ verticlePos.x, verticlePos.y-33});
@@ -86,22 +88,22 @@ void ScrollBar::MouseClick(sf::Vector2i mousePos)
 	{
 		if (UI::CheckMouseInBounds(mousePos, upButton.rect))
 		{
-			currentScroll.y -= 50;
+			Scroll({ 0, -50 });
 		}
 		if (UI::CheckMouseInBounds(mousePos, downButton.rect))
 		{
-			currentScroll.y += 50;
+			Scroll({ 0, 50 });
 		}
 	}
 	if (horizontal)
 	{
 		if (UI::CheckMouseInBounds(mousePos, leftButton.rect))
 		{
-			currentScroll.x -= 50;
+			Scroll({ -50, 0 });
 		}
 		if (UI::CheckMouseInBounds(mousePos, rightButton.rect))
 		{
-			currentScroll.x += 50;
+			Scroll({ 50, 0 });
 		}
 	}
 }
@@ -130,8 +132,53 @@ void ScrollBar::BarSize(sf::Vector2f contentSize)
 
 void ScrollBar::MoveBar(sf::Vector2f contentSize)
 {
-	float amountToScroll = contentSize.y - scrollWindow.getSize().y;
-	auto ratio = (currentScroll.y*-1) / amountToScroll;
-	auto diff = verticleTrack.getSize().y - verticleBar.getSize().y;
-	verticleBar.setPosition({ verticleTrack.getPosition().x, verticleTrack.getPosition().y + diff *ratio});
+	if (verticle)
+	{
+		maxScroll.y = contentSize.y - scrollWindow.getSize().y;
+		if (maxScroll.y < 0) 
+			maxScroll.y = 0;
+		else
+		{
+			float ratio = (currentScroll.y * -1) / maxScroll.y;
+			if (ratio < 0) ratio = 0;
+			float diff = verticleTrack.getSize().y - verticleBar.getSize().y;
+			sf::Vector2f trackPos = verticleTrack.getPosition();
+			verticleBar.setPosition({ trackPos.x, trackPos.y + diff * ratio });
+		}
+	}
+	if (horizontal)
+	{
+		maxScroll.x = contentSize.x - scrollWindow.getSize().x;
+		if (maxScroll.x < 0) 
+			maxScroll.x = 0;
+		else
+		{
+			float ratio = (currentScroll.x * -1) / maxScroll.x;
+			if (ratio < 0) ratio = 0;
+			float diff = horizontalTrack.getSize().x - horizontalBar.getSize().x;
+			sf::Vector2f trackPos = horizontalTrack.getPosition();
+			horizontalBar.setPosition({ trackPos.x, trackPos.y + diff * ratio });
+		}
+	}
+}
+
+void ScrollBar::Scroll(sf::Vector2f offset)
+{
+	currentScroll += offset;
+	if (currentScroll.x > minScroll.x)
+	{
+		currentScroll.x = minScroll.x;
+	}
+	if (currentScroll.y > minScroll.y)
+	{
+		currentScroll.y = minScroll.y;
+	}
+	if (currentScroll.x < maxScroll.x * -1)
+	{
+		currentScroll.x = maxScroll.x*-1;
+	}
+	if (currentScroll.y < maxScroll.y*-1)
+	{
+		currentScroll.y = maxScroll.y*-1;
+	}
 }

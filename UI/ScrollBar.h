@@ -21,6 +21,8 @@ public:
 	sf::RectangleShape horizontalTrack;
 	sf::View scrollWindow;
 	sf::Vector2f currentScroll;
+	sf::Vector2f maxScroll;
+	sf::Vector2f minScroll;
 
 	ScrollBar(sf::View view, sf::Vector2f verticlePos, 
 		sf::Vector2f verticleSize, sf::Vector2f horizontalPos = { 0,0 },
@@ -32,5 +34,6 @@ public:
 
 	void BarSize(sf::Vector2f contentSize);
 	void MoveBar(sf::Vector2f contentSize);
+	void Scroll(sf::Vector2f offset);
 };
 

@@ -102,18 +102,14 @@ void ContinentPage::Update(sf::RenderWindow& window, sf::Time timePassed,
 	{
 		scrolled -= 50;
 	}
-	if (scrolled == 0.0f)
-	{
-		float topBoxY = entries.size() ? entries[0].borderBox.getPosition().y : scrollBar.currentScroll.y;
-		if (scrollBar.currentScroll.y != topBoxY)
-			scrolled = scrollBar.currentScroll.y - topBoxY;
-	}
-	else
-	{
-		scrollBar.currentScroll.y += scrolled;
-		if (entries.size())
-			scrollBar.MoveBar({ 0, 10 + (entries[0].borderBox.getSize().y + 6) * (entries.size()) });
-	}
+	scrollBar.Scroll({ 0, scrolled });
+	int numEntries = entries.size();
+	if (numEntries)
+		scrollBar.MoveBar({ 0, 10 + (entries[0].borderBox.getSize().y + 6) * (numEntries) });
+
+	float topBoxY = numEntries ? entries[0].borderBox.getPosition().y : scrollBar.currentScroll.y;
+	if (scrollBar.currentScroll.y != topBoxY)
+		scrolled = scrollBar.currentScroll.y - topBoxY;
 
 	for (int i = 0; i < entries.size(); i++)
 	{
@@ -126,11 +122,11 @@ void ContinentPage::Update(sf::RenderWindow& window, sf::Time timePassed,
 void ContinentPage::AddContinent()
 {
 	int numEntries = entries.size();
-	float topBoxY = numEntries ? entries[0].borderBox.getPosition().y : 10.0f;
+	float topBoxY = numEntries ? entries[0].borderBox.getPosition().y : 0.0f;
 	float boxSize = numEntries ? entries[numEntries - 1].borderBox.getSize().y : 0.0f;
 	ContinentEntry pos{topBoxY + (boxSize + 6) * numEntries };
 	entries.push_back(pos);
-	scrollBar.BarSize({ 0, 10 + (entries[0].borderBox.getSize().y + 6) * (numEntries + 1) });
+	scrollBar.BarSize({ 0, (entries[0].borderBox.getSize().y + 6) * (numEntries + 1) });
 }
 
 //-----------------------------------------------------------
