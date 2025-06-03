@@ -10,7 +10,7 @@
 sf::Font UI::font;
 sf::Vector2u UI::windowSize{ 1600, 900 };
 
-UI::UI() : 
+UI::UI(XMLData& xmlData) :
     selectedPage{UIPageType::Territory}, 
     uiPanel{ {600,1000} },
     mapPanel{ {370,45} },
@@ -56,19 +56,26 @@ UI::UI() :
     smallLabel = new sf::Text(font, "Small");
     smallLabel->setPosition({ 1275, 8 });
 
-    TerritoryPage* territoryPage = new TerritoryPage({ 1010, 60 }, { 150, 30 }, "Territories", { 592, 142 });
+    TerritoryPage* territoryPage = new TerritoryPage(xmlData, 
+        { 1010, 60 }, { 150, 30 }, "Territories", { 592, 142 });
     uiPages.push_back(territoryPage);
-    ContinentPage* continentPage = new ContinentPage({ 1175, 60 }, { 150, 30 }, "Continents", { 592, 97 });
+    ContinentPage* continentPage = new ContinentPage(xmlData, 
+        { 1175, 60 }, { 150, 30 }, "Continents", { 592, 97 });
     uiPages.push_back(continentPage);
-    ReinforcementPage* reinforcementPage = new ReinforcementPage({ 1340, 60 }, { 220, 30 }, "Reinforcements", { 592, 52 });
+    ReinforcementPage* reinforcementPage = new ReinforcementPage(xmlData, 
+        { 1340, 60 }, { 220, 30 }, "Reinforcements", { 592, 52 });
     uiPages.push_back(reinforcementPage);
-    PositionPage* positionPage = new PositionPage({ 1010, 100 }, { 130, 30 }, "Positions", { 592, 52 });
+    PositionPage* positionPage = new PositionPage(xmlData, 
+        { 1010, 100 }, { 130, 30 }, "Positions", { 592, 52 });
     uiPages.push_back(positionPage);
-    ObjectivePage* requirementPage = new ObjectivePage({ 1340, 100 }, { 200, 30 }, "Requirements", { 592, 52 });
+    ObjectivePage* requirementPage = new ObjectivePage(xmlData, 
+        { 1340, 100 }, { 200, 30 }, "Requirements", { 592, 52 });
     uiPages.push_back(requirementPage);
-    ObjectivePage* objectivePage = new ObjectivePage({ 1175, 100 }, { 150, 30 }, "Objectives", { 592, 52 });
+    ObjectivePage* objectivePage = new ObjectivePage(xmlData, 
+        { 1175, 100 }, { 150, 30 }, "Objectives", { 592, 52 });
     uiPages.push_back(objectivePage);
-    TransformPage* transformPage = new TransformPage({ 1400, 20 }, { 160, 30 }, "Transforms", { 592, 52 });
+    TransformPage* transformPage = new TransformPage(xmlData, 
+        { 1400, 20 }, { 160, 30 }, "Transforms", { 592, 52 });
     uiPages.push_back(transformPage);
     uiPages[(int)selectedPage]->tabButton.Select();
 }
@@ -126,7 +133,7 @@ void UI::SwapMaps()
     isLarge = !isLarge;
 }
 
-void UI::MouseClick(sf::RenderWindow& window, sf::Vector2i mousePos)
+void UI::MouseClick(XMLData& xmlData, sf::RenderWindow& window, sf::Vector2i mousePos)
 {
     if (CheckMouseInBounds(mousePos, mapCheckBox.rect))
     {
@@ -142,7 +149,7 @@ void UI::MouseClick(sf::RenderWindow& window, sf::Vector2i mousePos)
             uiPages[(int)selectedPage]->tabButton.Toggle();
         }
     }
-    uiPages[(int)selectedPage]->MouseClick(window, mousePos);
+    uiPages[(int)selectedPage]->MouseClick(xmlData, window, mousePos);
 }
 
 void UI::Update(sf::RenderWindow& window, sf::Time timePassed, 

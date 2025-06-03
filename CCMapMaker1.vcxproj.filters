@@ -20,9 +20,6 @@
     <ClCompile Include="XML\Continent.cpp">
       <Filter>XML</Filter>
     </ClCompile>
-    <ClCompile Include="XML\Manager.cpp">
-      <Filter>XML</Filter>
-    </ClCompile>
     <ClCompile Include="XML\Objective.cpp">
       <Filter>XML</Filter>
     </ClCompile>
@@ -80,6 +77,9 @@
     <ClCompile Include="UserInput.cpp">
       <Filter>other</Filter>
     </ClCompile>
+    <ClCompile Include="XML\XMLData.cpp">
+      <Filter>XML</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="UI\Maps.h">
@@ -89,9 +89,6 @@
       <Filter>UI</Filter>
     </ClInclude>
     <ClInclude Include="XML\Continent.h">
-      <Filter>XML</Filter>
-    </ClInclude>
-    <ClInclude Include="XML\Manager.h">
       <Filter>XML</Filter>
     </ClInclude>
     <ClInclude Include="XML\Objective.h">
@@ -141,6 +138,9 @@
     </ClInclude>
     <ClInclude Include="UserInput.h">
       <Filter>other</Filter>
+    </ClInclude>
+    <ClInclude Include="XML\XMLData.h">
+      <Filter>XML</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -1,7 +1,7 @@
 #include "ObjectivePage.h"
 #include "UI.h"
 
-ObjectivePage::ObjectivePage(sf::Vector2f tabPos, 
+ObjectivePage::ObjectivePage(XMLData& xmlData, sf::Vector2f tabPos,
 	sf::Vector2f tabSize, std::string tabLabel, sf::Vector2f buttonBoxSize) :
 	UIPage(tabPos, tabSize, tabLabel, buttonBoxSize),
     isObjective{ true }
@@ -23,9 +23,9 @@ void ObjectivePage::Draw(sf::RenderWindow& window, bool selected)
 	}
 }
 
-void ObjectivePage::MouseClick(sf::RenderWindow& window, sf::Vector2i mousePos)
+void ObjectivePage::MouseClick(XMLData& xmlData, sf::RenderWindow& window, sf::Vector2i mousePos)
 {
-	UIPage::MouseClick(window, mousePos);
+	UIPage::MouseClick(xmlData, window, mousePos);
     if (UI::CheckMouseInBounds(mousePos, showContinents.rect))
     {
         showContinents.Toggle();
@@ -34,7 +34,7 @@ void ObjectivePage::MouseClick(sf::RenderWindow& window, sf::Vector2i mousePos)
     }
     if (UI::CheckMouseInBounds(mousePos, addEntry.rect))
     {
-		AddObjective();
+		AddObjective(xmlData);
     }
 }
 
@@ -44,15 +44,15 @@ void ObjectivePage::Update(sf::RenderWindow& window, sf::Time timePassed,
 	UIPage::Update(window, timePassed, input, showCursor);
 }
 
-void ObjectivePage::AddObjective()
+void ObjectivePage::AddObjective(XMLData& xmlData)
 {
 	ObjectiveEntry* entry = new ObjectiveEntry{isObjective};
-	UIPage::AddEntry(entry);
+	UIPage::AddEntry(xmlData, entry);
 }
 
 //-----------------------------------------------------------
 
-void ObjectiveEntry::CreateEntry(float entryTop)
+void ObjectiveEntry::CreateEntry(XMLData& xmlData, float entryTop)
 {
 	sf::RectangleShape* border = new sf::RectangleShape{ {580, 165} };
 	border->setPosition({ 10,entryTop });

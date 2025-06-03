@@ -8,10 +8,11 @@ class Objective;
 class Continent;
 class Territory;
 
-class Manager
+class XMLData
 {
 public:
 	std::unordered_map<int, Transform*> transforms;
+	int minReinforcements;
 	std::unordered_map<int, Reinforcement*> reinforcements;
 	int maxPositions;
 	std::unordered_map<int, Position*> positions;
@@ -19,5 +20,7 @@ public:
 	std::unordered_map<int, Objective*> objectives; //by default required is all
 	std::unordered_map<int, Continent*> continents;
 	std::unordered_map<int, Territory*> territories;
+
+	XMLData();
 };
 

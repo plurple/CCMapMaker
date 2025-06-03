@@ -3,10 +3,12 @@
 #include "UI/UI.h"
 #include "UI/TextBox.h"
 #include "UserInput.h"
+#include "XML/XMLData.h"
 
 int main()
 {
-    UI ui;
+    XMLData xmlData;
+    UI ui(xmlData);
     sf::Clock clock;
 
     sf::RenderWindow window(sf::VideoMode(UI::windowSize), "CC Map Maker");
@@ -52,7 +54,7 @@ int main()
         {
             //TODO add a hover effect to buttons :D
             mouse_effect_time = sf::Time::Zero;
-            ui.MouseClick(window, mousePos);
+            ui.MouseClick(xmlData, window, mousePos);
         }
 
         ui.Update(window, clockElapsed, input);

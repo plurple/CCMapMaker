@@ -29,7 +29,7 @@ public:
 
 	ObjectiveEntry(bool isObjective) : 
 		isObjective{ isObjective } {};
-	void CreateEntry(float entryTop) override;
+	void CreateEntry(XMLData& xmlData, float entryTop) override;
 
 	void Draw(sf::RenderWindow& window) override;
 	void MouseClick(sf::Vector2i mousePos, bool mouseOnPage) override;
@@ -44,13 +44,15 @@ class ObjectivePage : public UIPage
 public:
 	bool isObjective;
 
-	ObjectivePage(sf::Vector2f tabPos, sf::Vector2f tabSize,
-		std::string tabLabel, sf::Vector2f buttonBoxSize);
+	ObjectivePage(XMLData& xmlData, sf::Vector2f tabPos, 
+		sf::Vector2f tabSize, std::string tabLabel, 
+		sf::Vector2f buttonBoxSize);
+
 	void Draw(sf::RenderWindow& window, bool selected) override;
-	void MouseClick(sf::RenderWindow& window,sf::Vector2i mousePos) override;
+	void MouseClick(XMLData& xmlData, sf::RenderWindow& window,sf::Vector2i mousePos) override;
 	void Update(sf::RenderWindow& window, sf::Time timePassed, 
 		UserInput input, bool showCursor) override;
 
-	void AddObjective();
+	void AddObjective(XMLData& xmlData);
 };
 

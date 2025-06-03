@@ -3,6 +3,7 @@
 #include "Maps.h"
 #include "Button.h"
 #include "../UserInput.h"
+#include "../XML/XMLData.h"
 
 enum class UIPageType
 {
@@ -39,12 +40,12 @@ public:
 	sf::Vector2f smallArrowPos;
 	bool showCursor;
 
-	UI();
+	UI(XMLData& xmlData);
 	void Draw(sf::RenderWindow &window);
 	static bool CheckMouseInBounds(sf::Vector2i mousePos, sf::RectangleShape rect);
 	static bool CheckMouseInBounds(sf::Vector2i mousePos, sf::FloatRect rect);
 	void SwapMaps();
-	void MouseClick(sf::RenderWindow& window, sf::Vector2i mousePos);
+	void MouseClick(XMLData& xmlData, sf::RenderWindow& window, sf::Vector2i mousePos);
 	void Update(sf::RenderWindow& window, sf::Time timePassed, 
 		UserInput& input);
 };

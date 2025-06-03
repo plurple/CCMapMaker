@@ -1,7 +1,8 @@
-#include "ReinforcementPage.h"
 #include "UI.h"
+#include "ReinforcementPage.h"
+#include "../XML/Reinforcement.h"
 
-ReinforcementPage::ReinforcementPage(sf::Vector2f tabPos, 
+ReinforcementPage::ReinforcementPage(XMLData& xmlData, sf::Vector2f tabPos,
 	sf::Vector2f tabSize, std::string tabLabel, sf::Vector2f buttonBoxSize) :
 	UIPage(tabPos, tabSize, tabLabel, buttonBoxSize),
 	minReinforcements({ 1530, 170 }, { 50, 30 }, "3")
@@ -24,12 +25,12 @@ void ReinforcementPage::Draw(sf::RenderWindow& window, bool selected)
 	}
 }
 
-void ReinforcementPage::MouseClick(sf::RenderWindow& window, sf::Vector2i mousePos)
+void ReinforcementPage::MouseClick(XMLData& xmlData, sf::RenderWindow& window, sf::Vector2i mousePos)
 {
-	UIPage::MouseClick(window, mousePos);
+	UIPage::MouseClick(xmlData, window, mousePos);
     if (UI::CheckMouseInBounds(mousePos, addEntry.rect))
     {
-		AddReinforcement();
+		AddReinforcement(xmlData);
     }
 	minReinforcements.active = UI::CheckMouseInBounds(mousePos, minReinforcements.box);
 }
@@ -42,15 +43,15 @@ void ReinforcementPage::Update(sf::RenderWindow& window, sf::Time timePassed,
 	minReinforcements.Update(window, timePassed, input, showCursor);
 }
 
-void ReinforcementPage::AddReinforcement()
+void ReinforcementPage::AddReinforcement(XMLData& xmlData)
 {
 	ReinforcementEntry* entry = new ReinforcementEntry{};
-	UIPage::AddEntry(entry);
+	UIPage::AddEntry(xmlData, entry);
 }
 
 //-----------------------------------------------------------
 
-void ReinforcementEntry::CreateEntry(float entryTop)
+void ReinforcementEntry::CreateEntry(XMLData& xmlData, float entryTop)
 {
 	sf::RectangleShape* border = new sf::RectangleShape{ {580,155}/*size*/ };
 	border->setPosition({ 10,entryTop });

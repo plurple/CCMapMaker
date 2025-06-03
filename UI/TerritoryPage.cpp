@@ -1,7 +1,7 @@
 #include "TerritoryPage.h"
 #include "UI.h"
 
-TerritoryPage::TerritoryPage(sf::Vector2f tabPos, 
+TerritoryPage::TerritoryPage(XMLData& xmlData, sf::Vector2f tabPos,
 	sf::Vector2f tabSize, std::string tabLabel, sf::Vector2f buttonBoxSize):
 	UIPage(tabPos, tabSize, tabLabel, buttonBoxSize),
 	selectedView{ TerritoryView::Borders },
@@ -38,9 +38,9 @@ void TerritoryPage::Draw(sf::RenderWindow& window, bool selected)
 	}
 }
 
-void TerritoryPage::MouseClick(sf::RenderWindow& window, sf::Vector2i mousePos)
+void TerritoryPage::MouseClick(XMLData& xmlData, sf::RenderWindow& window, sf::Vector2i mousePos)
 {
-	UIPage::MouseClick(window, mousePos);
+	UIPage::MouseClick(xmlData, window, mousePos);
 	if (UI::CheckMouseInBounds(mousePos, linkCoordinates.rect))
 	{
 		linkCoordinates.Toggle();
@@ -62,7 +62,7 @@ void TerritoryPage::MouseClick(sf::RenderWindow& window, sf::Vector2i mousePos)
 		
 	if (UI::CheckMouseInBounds(mousePos, addEntry.rect))
 	{
-		AddTerritory();
+		AddTerritory(xmlData);
 	}
 	for (int i = 0; i < (int)TerritoryView::NumViews; i++)
 	{
@@ -83,10 +83,10 @@ void TerritoryPage::Update(sf::RenderWindow& window, sf::Time timePassed,
 }
 
 
-void TerritoryPage::AddTerritory()
+void TerritoryPage::AddTerritory(XMLData& xmlData)
 {
 	TerritoryEntry* entry = new TerritoryEntry{ selectedView };
-	UIPage::AddEntry(entry);
+	UIPage::AddEntry(xmlData, entry);
 }
 
 void TerritoryPage::SwapView()
@@ -101,7 +101,7 @@ void TerritoryPage::SwapView()
 
 //-----------------------------------------------------------
 
-void TerritoryEntry::CreateEntry(float entryTop)
+void TerritoryEntry::CreateEntry(XMLData& xmlData, float entryTop)
 {
 	sf::RectangleShape* border = new sf::RectangleShape{ { 580,200 } };/*size*/
 	border->setPosition({ 10,entryTop });

@@ -34,7 +34,7 @@
     <ClCompile Include="UI\UI.cpp" />
     <ClCompile Include="UI\UIPage.cpp" />
     <ClCompile Include="XML\Continent.cpp" />
-    <ClCompile Include="XML\Manager.cpp" />
+    <ClCompile Include="XML\XMLData.cpp" />
     <ClCompile Include="XML\Objective.cpp" />
     <ClCompile Include="XML\Position.cpp" />
     <ClCompile Include="XML\Reinforcement.cpp" />
@@ -56,7 +56,7 @@
     <ClInclude Include="UI\UI.h" />
     <ClInclude Include="UI\UIPage.h" />
     <ClInclude Include="XML\Continent.h" />
-    <ClInclude Include="XML\Manager.h" />
+    <ClInclude Include="XML\XMLData.h" />
     <ClInclude Include="XML\Objective.h" />
     <ClInclude Include="XML\Position.h" />
     <ClInclude Include="XML\Reinforcement.h" />

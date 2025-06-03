@@ -3,6 +3,7 @@
 #include "Button.h"
 #include "TextBox.h"
 #include "ScrollBar.h"
+#include "../XML/XMLData.h"
 
 class UIEntry
 {
@@ -15,7 +16,7 @@ public:
 	bool selected;
 
 	UIEntry() : selected{ false } {};
-	virtual void CreateEntry(float entryTop) = 0;
+	virtual void CreateEntry(XMLData& xmlData, float entryTop) = 0;
 
 	virtual void Draw(sf::RenderWindow& window);
 	virtual void MouseClick(sf::Vector2i mousePos, bool mouseOnPage);
@@ -40,10 +41,10 @@ public:
 	UIPage(sf::Vector2f tabPos, sf::Vector2f tabSize, 
 		std::string tabLabel, sf::Vector2f buttonBoxSize);
 	virtual void Draw(sf::RenderWindow& window, bool selected);
-	virtual void MouseClick(sf::RenderWindow& window, sf::Vector2i mousePos);
+	virtual void MouseClick(XMLData& xmlData, sf::RenderWindow& window, sf::Vector2i mousePos);
 	virtual void Update(sf::RenderWindow& window, sf::Time timePassed, 
 		UserInput input, bool showCursor);
 
-	void AddEntry(UIEntry* entry);
+	void AddEntry(XMLData& xmlData, UIEntry* entry);
 };
 

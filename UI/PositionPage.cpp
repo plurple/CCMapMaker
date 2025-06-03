@@ -1,7 +1,7 @@
 #include "PositionPage.h"
 #include "UI.h"
 
-PositionPage::PositionPage(sf::Vector2f tabPos, 
+PositionPage::PositionPage(XMLData& xmlData, sf::Vector2f tabPos,
 	sf::Vector2f tabSize, std::string tabLabel, sf::Vector2f buttonBoxSize) :
 	UIPage(tabPos, tabSize, tabLabel, buttonBoxSize),
     maxBox({ 1470, 170 }, { 50, 30 })
@@ -25,12 +25,12 @@ void PositionPage::Draw(sf::RenderWindow& window, bool selected)
 	}
 }
 
-void PositionPage::MouseClick(sf::RenderWindow& window, sf::Vector2i mousePos)
+void PositionPage::MouseClick(XMLData& xmlData, sf::RenderWindow& window, sf::Vector2i mousePos)
 {
-	UIPage::MouseClick(window, mousePos);
+	UIPage::MouseClick(xmlData, window, mousePos);
 	if (UI::CheckMouseInBounds(mousePos, addEntry.rect))
 	{
-		AddPosition();
+		AddPosition(xmlData);
 	}
 	maxBox.active = UI::CheckMouseInBounds(mousePos, maxBox.box);	
 }
@@ -43,15 +43,15 @@ void PositionPage::Update(sf::RenderWindow& window, sf::Time timePassed,
 	maxBox.Update(window, timePassed, input, showCursor);
 }
 
-void PositionPage::AddPosition()
+void PositionPage::AddPosition(XMLData& xmlData)
 {
 	PositionEntry* entry = new PositionEntry{};
-	UIPage::AddEntry(entry);
+	UIPage::AddEntry(xmlData, entry);
 }
 
 //-----------------------------------------------------------
 
-void PositionEntry::CreateEntry(float entryTop)
+void PositionEntry::CreateEntry(XMLData& xmlData, float entryTop)
 {
 	sf::RectangleShape* border = new sf::RectangleShape{ {580, 50} };
 	border->setPosition({ 10,entryTop });
