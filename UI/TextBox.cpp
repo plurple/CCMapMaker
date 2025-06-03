@@ -36,8 +36,14 @@ void TextBox::Draw(sf::RenderWindow& window)
     window.draw(*displayText);
 }
 
-void TextBox::MoveBox(sf::Vector2f offset)
+void TextBox::Move(sf::Vector2f offset)
 {
     box.move(offset);
     displayText->move(offset);
+}
+
+void TextBox::Hide(bool show)
+{
+    box.setScale({ (float)show,(float)show });
+    displayText->setScale({ (float)show, (float)show });
 }

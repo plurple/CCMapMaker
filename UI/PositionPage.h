@@ -1,31 +1,41 @@
 #pragma once
 #include "UIPage.h"
 
-class PositionEntry
+class PositionEntry : public UIEntry
 {
+	enum class ShapeTypes
+	{
+		Border,
+		NumShapes
+	};
+	enum class LabelTypes
+	{
+		TerritoryName,
+		StartLabel,
+		NumLabels
+	};
+	enum class BoxTypes
+	{
+		StartBox,
+		NumBoxes
+	};
 public:
-	sf::RectangleShape borderBox;
-	sf::Text* territoryName;
-	sf::Text* startLabel;
-	TextBox startBox;
-	bool selected;
+	PositionEntry() {};
+	void CreateEntry(float entryTop) override;
 
-	PositionEntry(float entryTop);
-	void Draw(sf::RenderWindow& window, bool selected);
-	void MouseClick(sf::Vector2i mousePos, bool mouseOnPage);
+	void Draw(sf::RenderWindow& window) override;
+	void MouseClick(sf::Vector2i mousePos, bool mouseOnPage) override;
 	void Update(sf::RenderWindow& window, sf::Time timePassed,
-		UserInput input, bool showCursor);
+		UserInput input, bool showCursor) override;
 
-	void MoveEntry(sf::Vector2f offset);
+	void MoveEntry(sf::Vector2f offset) override;
 };
 
 class PositionPage : public UIPage
 {
 public:
-	Button addPosition;
 	sf::Text* maxLabel;
 	TextBox maxBox;
-	std::vector<PositionEntry> entries;
 
 	PositionPage(sf::Vector2f tabPos, sf::Vector2f tabSize,
 		std::string tabLabel, sf::Vector2f buttonBoxSize);
@@ -36,6 +46,5 @@ public:
 		UserInput input, bool showCursor) override;
 
 	void AddPosition();
-
 };
 

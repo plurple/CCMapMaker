@@ -42,6 +42,7 @@ public:
 	UI();
 	void Draw(sf::RenderWindow &window);
 	static bool CheckMouseInBounds(sf::Vector2i mousePos, sf::RectangleShape rect);
+	static bool CheckMouseInBounds(sf::Vector2i mousePos, sf::FloatRect rect);
 	void SwapMaps();
 	void MouseClick(sf::RenderWindow& window, sf::Vector2i mousePos);
 	void Update(sf::RenderWindow& window, sf::Time timePassed, 

@@ -14,6 +14,7 @@ public:
 	void Update(sf::RenderWindow& window, sf::Time timePassed, 
 		UserInput input, bool showCursor);
 	void Draw(sf::RenderWindow& window);
-	void MoveBox(sf::Vector2f offset);
+	void Move(sf::Vector2f offset);
+	void Hide(bool show = false);
 };
 

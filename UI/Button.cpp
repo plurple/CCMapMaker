@@ -42,8 +42,20 @@ void Button::Toggle()
 	selected ? Unselect() : Select();
 }
 
-void Button::MoveButton(sf::Vector2f offset)
+void Button::Move(sf::Vector2f offset)
 {
 	rect.move(offset);
 	label->move(offset);
+}
+
+void Button::SetPosition(sf::Vector2f pos)
+{
+	rect.setPosition(pos);
+	label->setPosition({ pos.x + 5, pos.y - 5 });
+}
+
+void Button::Hide(bool show)
+{
+	rect.setScale({ (float)show,(float)show });
+	label->setScale({ (float)show, (float)show });
 }

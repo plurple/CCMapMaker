@@ -9,77 +9,132 @@ enum class ContinentView
 	NumViews
 };
 
-class AdvancedTerritory
+class AdvancedTerritory : public UIEntry
 {
+	enum class ShapeTypes
+	{
+		Border,
+		NumShapes
+	};
+	enum class LabelTypes
+	{
+		TerritoryName,
+		FactorLabel,
+		NumLabels
+	};
+	enum class BoxTypes
+	{
+		FactorBox,
+		NumBoxes
+	};
+	enum class ButtonTypes
+	{
+		Mandatory,
+		Blocker,
+		Multiplier,
+		NumButtons
+	};
 public:
-	sf::RectangleShape borderBox;
-	sf::Text* territory;
-	Button mandatory;
-	sf::Text* mandatoryLabel;
-	Button blocker;
-	sf::Text* blockerLabel;
-	Button multiplier;
-	sf::Text* multiplierLabel;
-	TextBox factor;
-	sf::Text* factorLabel;
+	AdvancedTerritory() {};
+	void CreateEntry(float entryTop) override;
 
-	AdvancedTerritory(float entryTop);
-	void Draw(sf::RenderWindow& window);
-	void MouseClick(sf::Vector2i mousePos, bool mouseOnPage);
+	void Draw(sf::RenderWindow& window) override;
+	void MouseClick(sf::Vector2i mousePos, bool mouseOnPage) override;
 	void Update(sf::RenderWindow& window, sf::Time timePassed,
-		UserInput input, bool showCursor);
+		UserInput input, bool showCursor) override;
 
-	void Move(sf::Vector2f offset);
-	void SwapView();
+	void MoveEntry(sf::Vector2f offset) override;
 };
 
-class ContinentEntry
+class BonusLine : public UIEntry
 {
+	enum class LabelTypes
+	{
+		BonusLabel,
+		RequiredLabel,
+		NumLabels
+	};
+	enum class BoxTypes
+	{
+		BonusBox,
+		RequiredBox,
+		NumBoxes
+	};
 public:
-	sf::RectangleShape borderBox;
-	sf::Text* nameLabel;
-	TextBox nameBox;
-	sf::Text* bonusesLabel;
-	Button addBonus;
-	Button removeBonus;
-	std::vector<sf::Text*> bonusLabels;
-	std::vector<TextBox> bonusBoxs;
-	std::vector<sf::Text*> requiredLabels;
-	std::vector<TextBox> requiredBoxs;
-	sf::Text* territoryLabel;
+	BonusLine() {};
+	void CreateEntry(float entryTop) override;
+
+	void Draw(sf::RenderWindow& window) override;
+	void MouseClick(sf::Vector2i mousePos, bool mouseOnPage) override;
+	void Update(sf::RenderWindow& window, sf::Time timePassed,
+		UserInput input, bool showCursor) override;
+
+	void MoveEntry(sf::Vector2f offset) override;
+};
+
+class ContinentEntry : public UIEntry
+{
+	enum class ShapeTypes
+	{
+		Border,
+		NumShapes
+	};
+	enum class LabelTypes
+	{
+		NameLabel,
+		BonusesLabel,
+		TerritoriesLabel,
+		ContinentsLabel,
+		NumLabels
+	};
+	enum class BoxTypes
+	{
+		NameBox,
+		NumBoxes
+	};
+	enum class ButtonTypes
+	{
+		AddBonus,
+		RemoveBonus,
+		NumButtons
+	};
+	enum class EntryTypes
+	{
+		Advanced,
+		NumButtons
+	};
+public:
 	std::vector<sf::Text*> territories;
-	std::vector<AdvancedTerritory> advanced;
-	sf::Text* continentLabel;
 	std::vector<sf::Text*> continents;
-	bool selected;
+	std::vector<UIEntry*> bonuses;
+	ContinentView selectedView;
 
-	ContinentEntry(float entryTop);
-	void Draw(sf::RenderWindow& window, ContinentView selectedView);
-	void MouseClick(sf::Vector2i mousePos, ContinentView selectedView, bool mouseOnPage);
+	ContinentEntry(ContinentView view) : selectedView{ view } {};
+	void CreateEntry(float entryTop) override;
+
+	void Draw(sf::RenderWindow& window) override;
+	void MouseClick(sf::Vector2i mousePos, bool mouseOnPage) override;
 	void Update(sf::RenderWindow& window, sf::Time timePassed,
-		UserInput input, bool showCursor);
+		UserInput input, bool showCursor) override;
 
-	void MoveEntry(sf::Vector2f offset);
-	void swapView();
+	void MoveEntry(sf::Vector2f offset) override;
 };
-
 
 class ContinentPage : public UIPage
 {
 public:
-	Button addContinent;
-	Button showContinents;
 	std::vector<Button> continentViews;
 	ContinentView selectedView;
-	std::vector<ContinentEntry> entries;
 
 	ContinentPage(sf::Vector2f tabPos, sf::Vector2f tabSize,
 		std::string tabLabel, sf::Vector2f buttonBoxSize);
+
 	void Draw(sf::RenderWindow& window, bool selected) override;
 	void MouseClick(sf::RenderWindow& window, sf::Vector2i mousePos) override;
 	void Update(sf::RenderWindow& window, sf::Time timePassed, 
 		UserInput input, bool showCursor) override;
 
 	void AddContinent();
+	void SwapView();
 };
 

@@ -1,25 +1,40 @@
 #pragma once
 #include "UIPage.h"
 
-class ObjectiveEntry
+class ObjectiveEntry : public UIEntry
 {
+	enum class ShapeTypes
+	{
+		Border,
+		NumShapes
+	};
+	enum class LabelTypes
+	{
+		Name,
+		Territories,
+		TerritoryList,
+		Continents,
+		ContinentList,
+		Required,
+		NumLabels
+	};
+	enum class BoxTypes
+	{
+		Name,
+		NumRequired,
+		NumBoxes
+	};
 public:
-	sf::RectangleShape borderBox;
-	sf::Text* nameLabel;
-	TextBox nameBox;
-	sf::Text* territoryLabel;
-	sf::Text* territories;
-	sf::Text* continentLabel;
-	sf::Text* continents;
-	sf::Text* requiredLabel;
-	TextBox numRequiredBox;
-	bool selected;
+	bool isObjective;
 
-	ObjectiveEntry(float entryTop, bool isObjective);
-	void Draw(sf::RenderWindow& window);
-	void MouseClick(sf::Vector2i mousePos, bool isObjective, bool mouseOnPage);
+	ObjectiveEntry(bool isObjective) : 
+		isObjective{ isObjective } {};
+	void CreateEntry(float entryTop) override;
+
+	void Draw(sf::RenderWindow& window) override;
+	void MouseClick(sf::Vector2i mousePos, bool mouseOnPage) override;
 	void Update(sf::RenderWindow& window, sf::Time timePassed,
-		UserInput input, bool showCursor);
+		UserInput input, bool showCursor) override;
 
 	void MoveEntry(sf::Vector2f offset);
 };
@@ -27,10 +42,8 @@ public:
 class ObjectivePage : public UIPage
 {
 public:
-	Button addObjective;
-	Button showContinents;
 	bool isObjective;
-	std::vector<ObjectiveEntry> entries;
+
 	ObjectivePage(sf::Vector2f tabPos, sf::Vector2f tabSize,
 		std::string tabLabel, sf::Vector2f buttonBoxSize);
 	void Draw(sf::RenderWindow& window, bool selected) override;

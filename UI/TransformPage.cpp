@@ -4,300 +4,299 @@
 TransformPage::TransformPage(sf::Vector2f tabPos, 
 	sf::Vector2f tabSize, std::string tabLabel, sf::Vector2f buttonBoxSize) :
 	UIPage(tabPos, tabSize, tabLabel, buttonBoxSize),
-	addTransform({ 1051, 170 }, { 210, 30 }, "Add Transform"),
 	testTransforms({ 1321, 170 }, { 230, 30 }, "Test Transforms")
-{}
+{
+	addEntry.SetPosition({ 1051, 170 });
+	addEntry.rect.setSize({ 210, 30 });
+	addEntry.label->setString("Add Transform");
+}
 
 void TransformPage::Draw(sf::RenderWindow& window, bool selected)
 {
 	UIPage::Draw(window, selected);
 	if (selected)
 	{
-		addTransform.Draw(window);
 		testTransforms.Draw(window);
-		window.setView(scrollBar.scrollWindow);
-		for (int i = 0; i < entries.size(); i++)
-		{
-			entries[i].Draw(window);
-		}
-		window.draw(page);
-		scrollBar.Draw(window);
-		window.setView(window.getDefaultView());
 	}	
 }
 
 void TransformPage::MouseClick(sf::RenderWindow& window, sf::Vector2i mousePos)
 {
-    if (UI::CheckMouseInBounds(mousePos, addTransform.rect))
+	UIPage::MouseClick(window, mousePos);
+    if (UI::CheckMouseInBounds(mousePos, addEntry.rect))
     {
 		AddTransform();
     }
 	if (UI::CheckMouseInBounds(mousePos, testTransforms.rect))
 	{
 		//TODO add a transform test function
-	}
-	if (mouseOnPage)
-	{
-		scrollBar.MouseClick(sf::Vector2i(window.mapPixelToCoords(mousePos, scrollBar.scrollWindow)));
-	}
-	for (int i = 0; i < entries.size(); i++)
-	{
-		entries[i].MouseClick(sf::Vector2i(window.mapPixelToCoords(mousePos, scrollBar.scrollWindow)),
-			mouseOnPage);
-	}
-	
+	}	
 }
 
 void TransformPage::Update(sf::RenderWindow& window, sf::Time timePassed,
-    UserInput input, bool showCursor)
+    UserInput input, bool showCursor) 
 {
-	mouseOnPage = UI::CheckMouseInBounds(sf::Vector2i(window.mapPixelToCoords(sf::Mouse::getPosition(window), scrollBar.scrollWindow)), page);
-
-	if (!input.verticle || !mouseOnPage)
-	{
-		input.scroll = 0.0f;
-	}
-	else
-	{
-		input.scroll *= 7;
-	}
-
-	if (input.enter)
-	{
-		input.scroll += 50;
-	}
-	if (input.backSpace)
-	{
-		input.scroll -= 50;
-	}
-
-	scrollBar.Scroll({ 0, input.scroll });
-	int numEntries = entries.size();
-	if (numEntries)
-		scrollBar.MoveBar({ 0, 10+(entries[0].borderBox.getSize().y + 6) * (numEntries) });
-
-	float topBoxY = numEntries ? entries[0].borderBox.getPosition().y : scrollBar.currentScroll.y;
-	if (scrollBar.currentScroll.y != topBoxY)
-		input.scroll = scrollBar.currentScroll.y - topBoxY;
-
-
-	for (int i = 0; i < entries.size(); i++)
-	{
-		entries[i].Update(window, timePassed, input, showCursor);
-	}
+	UIPage::Update(window, timePassed, input, showCursor);
 }
 
 void TransformPage::AddTransform()
 {
-	int numEntries = entries.size();
-	float topBoxY = numEntries ? entries[0].borderBox.getPosition().y : 0.0f;
-	float boxSize = numEntries ? entries[numEntries - 1].borderBox.getSize().y : 0.0f;
-	TransformEntry pos{ topBoxY + (boxSize + 6) * numEntries};
-	entries.push_back(pos);
-	scrollBar.BarSize({ 0, (entries[0].borderBox.getSize().y + 6) * (numEntries + 1) });
-	scrollBar.MoveBar({ 0, 10 + (entries[0].borderBox.getSize().y + 6) * (numEntries + 1) });
-	scrollBar.Scroll({ 0, scrollBar.maxScroll.y * -1 });
+	TransformEntry* entry = new TransformEntry{};
+	UIPage::AddEntry(entry);
 }
 
 //-----------------------------------------------------------
 
-TransformEntry::TransformEntry(float entryTop) :
-	borderBox{ {580,288} /*size*/},
-	conditionsBox{ {572,116} /*size*/ },
-	percentage({ 540, entryTop + 96 }/*position*/, { 35, 30 }/*size*/, "%"),
-	addCondition({ 200, entryTop + 132 }/*position*/, { 205, 30 }/*size*/, "Add Condition"),
-	amountBox({ 140, entryTop + 96 }/*position*/, { 70, 30 }/*size*/, ""),
-	upperBox({ 320, entryTop + 96 }/*position*/, { 50, 30 }/*size*/, ""),
-	lowerBox({ 480, entryTop + 96 }/*position*/, { 50, 30 }/*size*/, ""),
-	idBox({ 370, entryTop +  176}/*position*/, { 50, 30 }/*size*/, ""),
-	valueBox({ 500, entryTop + 208 }/*position*/, { 50, 30 }/*size*/, ""),
-	typeOptions(entryTop + 12, 20, 100, 140, 260, "Type:"),
-	applyOptions(entryTop + 46, 20, 150, 190, 310, "Apply To:"),
-	incOptions(entryTop + 12, 320, 380, 420, 540, "Inc:"),
-	conditionTypeOptions(entryTop + 172, 20, 100, 140, 260, "Type:"),
-	operatorOptions(entryTop + 208, 20, 150, 190, 310, "Operator:"),
-	valueOptions(entryTop + 244, 20, 120, 160, 280, "Value:")
+void TransformEntry::CreateEntry(float entryTop)
 {
-	borderBox.setPosition({ 10, entryTop });
-	borderBox.setFillColor(sf::Color(192, 192, 192));
-	borderBox.setOutlineThickness(2.0f);
-	borderBox.setOutlineColor(sf::Color::Blue);
+	sf::RectangleShape* border = new sf::RectangleShape{ { 580,288 } };/*size*/
+	border->setPosition({ 10, entryTop });
+	border->setFillColor(sf::Color(192, 192, 192, 0));
+	border->setOutlineThickness(2.0f);
+	border->setOutlineColor(sf::Color::Blue);
+	shapes.push_back(border);
 
-	conditionsBox.setPosition({ 14, entryTop + 168 });
-	conditionsBox.setFillColor(sf::Color(192, 192, 192));
-	conditionsBox.setOutlineThickness(2.0f);
-	conditionsBox.setOutlineColor(sf::Color::Blue);
-
-	amountLabel = new sf::Text(UI::font, "Amount:");
+	sf::Text* amountLabel = new sf::Text(UI::font, "Amount:");
 	amountLabel->setPosition({ 20, entryTop + 92 });
-	upperLabel = new sf::Text(UI::font, "Upper:");
+	labels.push_back(amountLabel);
+	
+	sf::Text* upperLabel = new sf::Text(UI::font, "Upper:");
 	upperLabel->setPosition({ 220, entryTop + 92 });
-	lowerLabel = new sf::Text(UI::font, "Lower:");
+	labels.push_back(upperLabel);
+	
+	sf::Text* lowerLabel = new sf::Text(UI::font, "Lower:");
 	lowerLabel->setPosition({ 380, entryTop + 92 });
-	conditionsLabel = new sf::Text(UI::font, "Conditions:");
+	labels.push_back(lowerLabel);
+	
+	sf::Text* conditionsLabel = new sf::Text(UI::font, "Conditions:");
 	conditionsLabel->setPosition({ 20, entryTop + 128 });
-	idLabel = new sf::Text(UI::font, "ID:");
-	idLabel->setPosition({ 310, entryTop + 172 });
-	valueLabel = new sf::Text(UI::font, "Value:");
-	valueLabel->setPosition({ 400, entryTop + 208 });
+	labels.push_back(conditionsLabel);
+
+	Button* percentage = new Button({ 540, entryTop + 96 }/*position*/, { 35, 30 }/*size*/, "%");
+	buttons.push_back(percentage);
+	
+	Button* addCondition = new Button({ 200, entryTop + 132 }/*position*/, { 205, 30 }/*size*/, "Add Condition");
+	buttons.push_back(addCondition);
+
+	TextBox* amountBox = new TextBox({ 140, entryTop + 96 }/*position*/, { 70, 30 }/*size*/, "");
+	boxes.push_back(amountBox);
+	
+	TextBox* upperBox = new TextBox({ 320, entryTop + 96 }/*position*/, { 50, 30 }/*size*/, "");
+	boxes.push_back(upperBox);
+	
+	TextBox* lowerBox = new TextBox({ 480, entryTop + 96 }/*position*/, { 50, 30 }/*size*/, "");
+	boxes.push_back(lowerBox);
+
+	TransformOption* typeOptions = new TransformOption();
+	typeOptions->CreateEntry(entryTop + 12, 20, 100, 140, 260, "Type:");
+	entries.push_back(typeOptions);
+	
+	TransformOption* applyOptions = new TransformOption();
+	applyOptions->CreateEntry(entryTop + 46, 20, 150, 190, 310, "Apply To:");
+	entries.push_back(applyOptions);
+	
+	TransformOption* incOptions = new TransformOption();
+	incOptions->CreateEntry(entryTop + 12, 320, 380, 420, 540, "Inc:");
+	entries.push_back(incOptions);
+	
+	ConditionEntry* condition = new ConditionEntry();
+	condition->CreateEntry(entryTop);
+	conditions.push_back(condition);
 }
 
 void TransformEntry::Draw(sf::RenderWindow& window)
 {
-	window.draw(borderBox);
-	window.draw(conditionsBox);
-	amountBox.Draw(window);
-	upperBox.Draw(window);
-	lowerBox.Draw(window);
-	idBox.Draw(window);
-	valueBox.Draw(window);
-	window.draw(*amountLabel);
-	window.draw(*upperLabel);
-	window.draw(*lowerLabel);
-	window.draw(*conditionsLabel);
-	window.draw(*idLabel);
-	window.draw(*valueLabel);
-	typeOptions.Draw(window);
-	applyOptions.Draw(window);
-	incOptions.Draw(window);
-	conditionTypeOptions.Draw(window);
-	operatorOptions.Draw(window);
-	valueOptions.Draw(window);
-	percentage.Draw(window);
-	addCondition.Draw(window);
+	UIEntry::Draw(window);
+	for (UIEntry* entry : conditions)
+	{
+		entry->Draw(window);
+	}
 }
 
 void TransformEntry::MouseClick(sf::Vector2i mousePos, bool mouseOnPage)
 {
-	if (mouseOnPage && UI::CheckMouseInBounds(mousePos, percentage.rect))
+	UIEntry::MouseClick(mousePos, mouseOnPage);
+	sf::Shape* borderBox = shapes[(int)ShapeTypes::Border];
+	if (mouseOnPage && borderBox)
 	{
-		percentage.Toggle();
+		if (UI::CheckMouseInBounds(mousePos, borderBox->getGlobalBounds()))
+		{
+			selected = true;
+			borderBox->setOutlineThickness(4.0f);
+			borderBox->setOutlineColor({ 60, 120, 240 });
+			//TODO be able to pick a territory from the map
+		}
+		else
+		{
+			selected = false;
+			borderBox->setOutlineThickness(2.0f);
+			borderBox->setOutlineColor(sf::Color::Blue);
+		}
 	}
-	if (mouseOnPage && UI::CheckMouseInBounds(mousePos, addCondition.rect))
+	Button* percentage = buttons[(int)ButtonTypes::Percentage];
+	if (mouseOnPage && percentage && UI::CheckMouseInBounds(mousePos, percentage->rect))
+	{
+		percentage->Toggle();
+	}
+	Button* addCondition = buttons[(int)ButtonTypes::AddCondition];
+	if (mouseOnPage && addCondition && UI::CheckMouseInBounds(mousePos, addCondition->rect))
 	{
 		//todo add a conditions stuff
 	}
-
-	amountBox.active = mouseOnPage && UI::CheckMouseInBounds(mousePos, amountBox.box);
-	upperBox.active = mouseOnPage && UI::CheckMouseInBounds(mousePos, upperBox.box);
-	lowerBox.active = mouseOnPage && UI::CheckMouseInBounds(mousePos, lowerBox.box);
-	idBox.active = mouseOnPage && UI::CheckMouseInBounds(mousePos, idBox.box);
-	valueBox.active = mouseOnPage && UI::CheckMouseInBounds(mousePos, valueBox.box);
-
-	if (mouseOnPage)
+	for (UIEntry* entry : conditions)
 	{
-		typeOptions.MouseClick(mousePos);
-		applyOptions.MouseClick(mousePos);
-		incOptions.MouseClick(mousePos);
-		conditionTypeOptions.MouseClick(mousePos);
-		operatorOptions.MouseClick(mousePos);
-		valueOptions.MouseClick(mousePos);
+		entry->MouseClick(mousePos, mouseOnPage);
 	}
 }
 
 void TransformEntry::Update(sf::RenderWindow& window, sf::Time timePassed,
 	UserInput input, bool showCursor)
 {
+	UIEntry::Update(window, timePassed, input, showCursor);
 	MoveEntry({ 0, input.scroll });
 
-	//TODO make sure that you only care about numbers entered;
-	typeOptions.Update(window, timePassed, input, showCursor);
-	applyOptions.Update(window, timePassed, input, showCursor);
-	incOptions.Update(window, timePassed, input, showCursor);
-	conditionTypeOptions.Update(window, timePassed, input, showCursor);
-	operatorOptions.Update(window, timePassed, input, showCursor);
-	valueOptions.Update(window, timePassed, input, showCursor);
-	amountBox.Update(window, timePassed, input, showCursor);
-	upperBox.Update(window, timePassed, input, showCursor);
-	lowerBox.Update(window, timePassed, input, showCursor);
-	idBox.Update(window, timePassed, input, showCursor);
-	valueBox.Update(window, timePassed, input, showCursor);
+	for (UIEntry* entry : conditions)
+	{
+		entry->Update(window, timePassed, input, showCursor);
+	}
 }
 
 void TransformEntry::MoveEntry(sf::Vector2f offset)
 {
-	borderBox.move(offset);
-	typeOptions.MoveOption(offset);
-	applyOptions.MoveOption(offset);
-	incOptions.MoveOption(offset);
-	amountLabel->move(offset);
-	amountBox.MoveBox(offset);
-	upperLabel->move(offset);
-	upperBox.MoveBox(offset);
-	lowerLabel->move(offset);
-	lowerBox.MoveBox(offset);
-	percentage.MoveButton(offset);
-	conditionsLabel->move(offset);
-	conditionsBox.move(offset);
-	addCondition.MoveButton(offset);
-	conditionTypeOptions.MoveOption(offset);
-	idLabel->move(offset);
-	idBox.MoveBox(offset); //this might want to be a territory picker sometimes
-	operatorOptions.MoveOption(offset);
-	valueOptions.MoveOption(offset);
-	valueLabel->move(offset);
-	valueBox.MoveBox(offset);
+	UIEntry::MoveEntry(offset);
+	for (UIEntry* entry : conditions)
+	{
+		entry->MoveEntry(offset);
+	}
 }
 
 //-----------------------------------------------------------
 
-TransformOptions::TransformOptions(float yCoord, float labelCoord,
-	float leftCoord, float optionCoord, float rightCoord, 
-	std::string label) :
-	leftArrow{ (15) /*radius*/},
-	rightArrow{ (15)/*radius*/ },
-	leftButton({ leftCoord, yCoord+4 }/*position*/, {30, 30}/*size*/, " "),
-	rightButton({ rightCoord, yCoord+4 }/*position*/, {30, 30}/*size*/, " ")
+void ConditionEntry::CreateEntry(float entryTop)
 {
-	leftArrow.setPointCount(3);
-	leftArrow.setPosition({ leftCoord+4, yCoord+4 });
-	leftArrow.setFillColor(sf::Color::White);
-	leftArrow.setRotation(sf::degrees(90));
-	leftArrow.setScale({ 1.0f, -1.0f });
+	sf::RectangleShape* border = new sf::RectangleShape{ { 572,116 } };/*size*/
+	border->setPosition({ 14, entryTop + 168});
+	border->setFillColor(sf::Color(192, 192, 192, 0));
+	border->setOutlineThickness(2.0f);
+	border->setOutlineColor(sf::Color::Cyan);
+	shapes.push_back(border);
 
-	rightArrow.setPointCount(3);
-	rightArrow.setPosition({ rightCoord+26, yCoord+4 });
-	rightArrow.setFillColor(sf::Color::White);
-	rightArrow.setRotation(sf::degrees(90));
+	sf::Text* idLabel = new sf::Text(UI::font, "ID:");
+	idLabel->setPosition({ 310, entryTop + 172 });
+	labels.push_back(idLabel);
 
-	optionLabel = new sf::Text(UI::font, label);
+	sf::Text* valueLabel = new sf::Text(UI::font, "Value:");
+	valueLabel->setPosition({ 400, entryTop + 208 });
+	labels.push_back(valueLabel);
+
+	TextBox* idBox = new TextBox({ 370, entryTop + 176 }/*position*/, { 50, 30 }/*size*/, "");
+	boxes.push_back(idBox);
+
+	TextBox* valueBox = new TextBox({ 500, entryTop + 208 }/*position*/, { 50, 30 }/*size*/, "");
+	boxes.push_back(valueBox);
+
+	TransformOption* typeOptions = new TransformOption();
+	typeOptions->CreateEntry(entryTop + 172, 20, 100, 140, 260, "Type:");
+	entries.push_back(typeOptions);
+
+	TransformOption* operatorOptions = new TransformOption();
+	operatorOptions->CreateEntry(entryTop + 208, 20, 150, 190, 310, "Operator:");
+	entries.push_back(operatorOptions);
+
+	TransformOption* valueOptions = new TransformOption();
+	valueOptions->CreateEntry(entryTop + 244, 20, 120, 160, 280, "Value:");
+	entries.push_back(valueOptions);
+}
+
+void ConditionEntry::Draw(sf::RenderWindow& window)
+{
+	UIEntry::Draw(window);
+}
+
+void ConditionEntry::MouseClick(sf::Vector2i mousePos, bool mouseOnPage)
+{
+	UIEntry::MouseClick(mousePos, mouseOnPage);
+}
+
+void ConditionEntry::Update(sf::RenderWindow& window, sf::Time timePassed,
+	UserInput input, bool showCursor)
+{
+	UIEntry::Update(window, timePassed, input, showCursor);
+}
+
+void ConditionEntry::MoveEntry(sf::Vector2f offset)
+{
+	UIEntry::MoveEntry(offset);
+}
+
+//-----------------------------------------------------------
+
+void TransformOption::CreateEntry(float entryTop)
+{
+
+}
+
+void TransformOption::CreateEntry(float yCoord, float labelCoord, float leftCoord,
+	float optionCoord, float rightCoord, std::string label)
+{
+	sf::CircleShape* leftArrow = new sf::CircleShape{ (15) /*radius*/ };
+	leftArrow->setPointCount(3);
+	leftArrow->setPosition({ leftCoord + 4, yCoord + 4 });
+	leftArrow->setFillColor(sf::Color::White);
+	leftArrow->setRotation(sf::degrees(90));
+	leftArrow->setScale({ 1.0f, -1.0f });
+	shapes.push_back(leftArrow);
+
+	sf::CircleShape* rightArrow = new sf::CircleShape{ (15)/*radius*/ };
+	rightArrow->setPointCount(3);
+	rightArrow->setPosition({ rightCoord + 26, yCoord + 4 });
+	rightArrow->setFillColor(sf::Color::White);
+	rightArrow->setRotation(sf::degrees(90));
+	shapes.push_back(rightArrow);
+
+	sf::Text* optionLabel = new sf::Text(UI::font, label);
 	optionLabel->setPosition({ labelCoord, yCoord });
-	selectedOption = new sf::Text(UI::font, "selected");
+	labels.push_back(optionLabel);
+	
+	sf::Text* selectedOption = new sf::Text(UI::font, "selected");
 	selectedOption->setPosition({ optionCoord, yCoord });
+	labels.push_back(selectedOption);
+
+	Button* leftButton  = new Button({ leftCoord, yCoord + 4 }/*position*/, { 30, 30 }/*size*/, " ");
+	buttons.push_back(leftButton);
+
+	Button* rightButton = new Button({ rightCoord, yCoord + 4 }/*position*/, { 30, 30 }/*size*/, " ");
+	buttons.push_back(rightButton);
 }
 
-void TransformOptions::Draw(sf::RenderWindow& window)
+void TransformOption::Draw(sf::RenderWindow& window)
 {
-	leftButton.Draw(window);
-	window.draw(leftArrow);
-	rightButton.Draw(window);
-	window.draw(rightArrow);
-	window.draw(*optionLabel);
-	window.draw(*selectedOption);
+	UIEntry::Draw(window);
 }
 
-void TransformOptions::MouseClick(sf::Vector2i mousePos)
+void TransformOption::MouseClick(sf::Vector2i mousePos, bool mouseOnPage)
 {
-	if (UI::CheckMouseInBounds(mousePos, leftButton.rect))
+	UIEntry::MouseClick(mousePos, mouseOnPage);
+
+	Button* leftButton = buttons[(int)ButtonTypes::LeftButton];
+	if (UI::CheckMouseInBounds(mousePos, leftButton->rect))
 	{
 		//todo swap the opttion left
 	}
-	if (UI::CheckMouseInBounds(mousePos, rightButton.rect))
+	Button* rightButton = buttons[(int)ButtonTypes::RightButton];
+	if (UI::CheckMouseInBounds(mousePos, rightButton->rect))
 	{
 		//todo swap the opttion right
 	}
 }
 
-void TransformOptions::Update(sf::RenderWindow& window, sf::Time timePassed,
+void TransformOption::Update(sf::RenderWindow& window, sf::Time timePassed,
 	UserInput input, bool showCursor)
-{}
-
-void TransformOptions::MoveOption(sf::Vector2f offset)
 {
-	optionLabel->move(offset);
-	leftButton.MoveButton(offset);
-	leftArrow.move(offset);
-	selectedOption->move(offset);
-	rightButton.MoveButton(offset);
-	rightArrow.move(offset);
+	UIEntry::Update(window, timePassed, input, showCursor);
+}
+
+void TransformOption::MoveEntry(sf::Vector2f offset)
+{
+	UIEntry::MoveEntry(offset);
 }

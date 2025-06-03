@@ -5,8 +5,6 @@ TerritoryPage::TerritoryPage(sf::Vector2f tabPos,
 	sf::Vector2f tabSize, std::string tabLabel, sf::Vector2f buttonBoxSize):
 	UIPage(tabPos, tabSize, tabLabel, buttonBoxSize),
 	selectedView{ TerritoryView::Borders },
-	addTerritory({ 1066, 260 }, { 190, 30 }, "Add Territory"),
-	showContinents({ 1296, 215 }, { 240, 30 }, "Show Continents"),
 	linkCoordinates({ 1296, 260 }, { 240, 30 }, "Link Coordinates", true)
 {
 	Button borders({ 1066, 170 }, { 115, 30 }, "Borders", true);
@@ -17,6 +15,12 @@ TerritoryPage::TerritoryPage(sf::Vector2f tabPos,
 	territoryViews.push_back(conditions);
 	Button extras({ 1436, 170 }, { 100, 30 }, "Extras");
 	territoryViews.push_back(extras);
+
+	addEntry.SetPosition({ 1066, 260 });
+	addEntry.rect.setSize({ 190, 30 });
+	addEntry.label->setString("Add Territory");
+
+	showContinents.SetPosition({ 1296, 215 });
 }
 
 void TerritoryPage::Draw(sf::RenderWindow& window, bool selected)
@@ -24,7 +28,6 @@ void TerritoryPage::Draw(sf::RenderWindow& window, bool selected)
 	UIPage::Draw(window, selected);
 	if (selected)
 	{
-		addTerritory.Draw(window);
 		if(selectedView == TerritoryView::Conditions)
 			showContinents.Draw(window);
 		linkCoordinates.Draw(window);
@@ -32,19 +35,12 @@ void TerritoryPage::Draw(sf::RenderWindow& window, bool selected)
 		{
 			territoryViews[i].Draw(window);
 		}
-		window.setView(scrollBar.scrollWindow);
-		for (int i = 0; i < entries.size(); i++)
-		{
-			entries[i].Draw(window, selectedView);
-		}
-		window.draw(page);
-		scrollBar.Draw(window);
-		window.setView(window.getDefaultView());
 	}
 }
 
 void TerritoryPage::MouseClick(sf::RenderWindow& window, sf::Vector2i mousePos)
 {
+	UIPage::MouseClick(window, mousePos);
 	if (UI::CheckMouseInBounds(mousePos, linkCoordinates.rect))
 	{
 		linkCoordinates.Toggle();
@@ -64,7 +60,7 @@ void TerritoryPage::MouseClick(sf::RenderWindow& window, sf::Vector2i mousePos)
 		//TODO close continents page
 	}
 		
-	if (UI::CheckMouseInBounds(mousePos, addTerritory.rect))
+	if (UI::CheckMouseInBounds(mousePos, addEntry.rect))
 	{
 		AddTerritory();
 	}
@@ -75,163 +71,144 @@ void TerritoryPage::MouseClick(sf::RenderWindow& window, sf::Vector2i mousePos)
 			territoryViews[(int)selectedView].Toggle();
 			selectedView = (TerritoryView)i;
 			territoryViews[(int)selectedView].Toggle();
+			SwapView();
 		}
-	}
-	if (mouseOnPage)
-	{
-		scrollBar.MouseClick(sf::Vector2i(window.mapPixelToCoords(mousePos, scrollBar.scrollWindow)));
-	}
-	for (int i = 0; i < entries.size(); i++)
-	{
-		entries[i].MouseClick(sf::Vector2i(window.mapPixelToCoords(mousePos, scrollBar.scrollWindow)), 
-			selectedView, mouseOnPage);
 	}	
 }
 
 void TerritoryPage::Update(sf::RenderWindow& window, sf::Time timePassed, 
 	UserInput input, bool showCursor)
 {
-	mouseOnPage = UI::CheckMouseInBounds(sf::Vector2i(window.mapPixelToCoords(sf::Mouse::getPosition(window), scrollBar.scrollWindow)), page);
-
-	if (!input.verticle || !mouseOnPage)
-	{
-		input.scroll = 0.0f;
-	}
-	else
-	{
-		input.scroll *= 7;
-	}
-
-	if (input.enter)
-	{
-		input.scroll += 50;
-	}
-	if (input.backSpace)
-	{
-		input.scroll -= 50;
-	}
-	scrollBar.Scroll({ 0, input.scroll });
-	int numEntries = entries.size();
-	if (numEntries)
-		scrollBar.MoveBar({ 0, 10 + (entries[0].borderBox.getSize().y + 6) * (numEntries) });
-
-	float topBoxY = numEntries ? entries[0].borderBox.getPosition().y : scrollBar.currentScroll.y;
-	if (scrollBar.currentScroll.y != topBoxY)
-		input.scroll = scrollBar.currentScroll.y - topBoxY;
-
-	for (int i = 0; i < entries.size(); i++)
-	{
-		entries[i].Update(window, timePassed, input, showCursor, selectedView);
-	}
+	UIPage::Update(window, timePassed, input, showCursor);
 }
 
 
 void TerritoryPage::AddTerritory()
 {
-	int numEntries = entries.size();
-	float topBoxY = numEntries ? entries[0].borderBox.getPosition().y : 0.0f;
-	float boxSize = numEntries ? entries[numEntries - 1].borderBox.getSize().y : 0.0f;
-	TerritoryEntry pos{ topBoxY + (boxSize + 6) * numEntries, selectedView };
-	entries.push_back(pos);
-	scrollBar.BarSize({ 0, (entries[0].borderBox.getSize().y + 6) * (numEntries + 1) });
-	scrollBar.MoveBar({ 0, 10 + (entries[0].borderBox.getSize().y + 6) * (numEntries + 1) });
-	scrollBar.Scroll({ 0, scrollBar.maxScroll.y * -1 });
+	TerritoryEntry* entry = new TerritoryEntry{ selectedView };
+	UIPage::AddEntry(entry);
+}
+
+void TerritoryPage::SwapView()
+{
+	/*TODO change the colour of the labels to make them visible or not
+	also move the positions and size of the box and such*/
+	for (UIEntry* entry : entries)
+	{
+		dynamic_cast<TerritoryEntry*>(entry)->SwapView(selectedView);
+	}
 }
 
 //-----------------------------------------------------------
 
-TerritoryEntry::TerritoryEntry(float entryTop, TerritoryView selectedView) :
-	borderBox{ {580,200} /*size*/ },
-	killer({ 390, entryTop + 124 }/*position*/, { 100, 30 }/*size*/, "Killer"),
-	nameBox({ 120, entryTop + 12 }/*position*/, { 450, 30 }/*size*/, ""),
-	xSmallBox({ 330, entryTop + 50 }/*position*/, { 50, 30 }/*size*/, "0"),
-	ySmallBox({ 440, entryTop + 50 }/*position*/, { 50, 30 }/*size*/, "0"),
-	xLargeBox({ 330, entryTop + 88 }/*position*/, { 50, 30 }/*size*/, "0"),
-	yLargeBox({ 440, entryTop + 88 }/*position*/, { 50, 30 }/*size*/, "0"),
-	neutralBox({ 330, entryTop + 124 }/*position*/, { 50, 30 }/*size*/, ""),
-	bonusBox({ 120, entryTop + 124 }/*position*/, { 50, 30 }/*size*/, ""),
-	selected{ false }
+void TerritoryEntry::CreateEntry(float entryTop)
 {
-	borderBox.setPosition({ 10,entryTop });
-	borderBox.setFillColor(sf::Color(192, 192, 192));
-	borderBox.setOutlineThickness(2.0f);
-	borderBox.setOutlineColor({ 150, 60, 255 });
+	sf::RectangleShape* border = new sf::RectangleShape{ { 580,200 } };/*size*/
+	border->setPosition({ 10,entryTop });
+	border->setFillColor(sf::Color(192, 192, 192, 0));
+	border->setOutlineThickness(2.0f);
+	border->setOutlineColor({ 150, 60, 255 });
+	shapes.push_back(border);
 
-	nameLabel = new sf::Text(UI::font, "Name:");
+	sf::Text* nameLabel = new sf::Text(UI::font, "Name:");
 	nameLabel->setPosition({ 20, entryTop + 8 });
-	coordinateLabel = new sf::Text(UI::font, "Coordinates:");
-	coordinateLabel->setPosition({ 20, entryTop + 46 });
-	smallLabel = new sf::Text(UI::font, "Small:");
-	smallLabel->setPosition({ 200, entryTop + 46 });
-	xSmallLabel = new sf::Text(UI::font, "x:");
-	xSmallLabel->setPosition({ 290, entryTop + 44 });
-	ySmallLabel = new sf::Text(UI::font, "y:");
-	ySmallLabel->setPosition({ 400, entryTop + 44 });
-	largeLabel = new sf::Text(UI::font, "Large:");
-	largeLabel->setPosition({ 200, entryTop + 84 });
-	xLargeLabel = new sf::Text(UI::font, "X:");
-	xLargeLabel->setPosition({ 290, entryTop + 84 });
-	yLargeLabel = new sf::Text(UI::font, "Y:");
-	yLargeLabel->setPosition({ 400, entryTop + 84 });
-	connectionLabel = new sf::Text(UI::font, "Territories:");
-	connectionLabel->setPosition({ 20, entryTop + 120 });
-	conditionLabel = new sf::Text(UI::font, "Condition:");
-	conditionLabel->setPosition({ 20, entryTop + 156 });
-	neutralLabel = new sf::Text(UI::font, "Neutral:");
-	neutralLabel->setPosition({ 200, entryTop + 120 });
-	bonusLabel = new sf::Text(UI::font, "Bonus:");
-	bonusLabel->setPosition({ 20, entryTop + 120 });
+	labels.push_back(nameLabel);
 
-	sf::Text* territory = new sf::Text(UI::font, "");
+	sf::Text* coordinateLabel = new sf::Text(UI::font, "Coordinates:");
+	coordinateLabel->setPosition({ 20, entryTop + 46 });
+	labels.push_back(coordinateLabel);
+
+	sf::Text* smallLabel = new sf::Text(UI::font, "Small:");
+	smallLabel->setPosition({ 200, entryTop + 46 });
+	labels.push_back(smallLabel);
+
+	sf::Text* xSmallLabel = new sf::Text(UI::font, "x:");
+	xSmallLabel->setPosition({ 290, entryTop + 44 });
+	labels.push_back(xSmallLabel);
+
+	sf::Text* ySmallLabel = new sf::Text(UI::font, "y:");
+	ySmallLabel->setPosition({ 400, entryTop + 44 });
+	labels.push_back(ySmallLabel);
+
+	sf::Text* largeLabel = new sf::Text(UI::font, "Large:");
+	largeLabel->setPosition({ 200, entryTop + 84 });
+	labels.push_back(largeLabel);
+
+	sf::Text* xLargeLabel = new sf::Text(UI::font, "X:");
+	xLargeLabel->setPosition({ 290, entryTop + 84 });
+	labels.push_back(xLargeLabel);
+
+	sf::Text* yLargeLabel = new sf::Text(UI::font, "Y:");
+	yLargeLabel->setPosition({ 400, entryTop + 84 });
+	labels.push_back(yLargeLabel);
+
+	sf::Text* connectionLabel = new sf::Text(UI::font, "Territories:");
+	connectionLabel->setPosition({ 20, entryTop + 120 });
+	labels.push_back(connectionLabel);
+
+	sf::Text* conditionLabel = new sf::Text(UI::font, "Condition:");
+	conditionLabel->setPosition({ 20, entryTop + 156 });
+	labels.push_back(conditionLabel);
+
+	sf::Text* neutralLabel = new sf::Text(UI::font, "Neutral:");
+	neutralLabel->setPosition({ 200, entryTop + 120 });
+	labels.push_back(neutralLabel);
+
+	sf::Text* bonusLabel = new sf::Text(UI::font, "Bonus:");
+	bonusLabel->setPosition({ 20, entryTop + 120 });
+	labels.push_back(bonusLabel);
+
+	sf::Text* territory = new sf::Text(UI::font, "terr");
 	territory->setPosition({ 170, entryTop + 120 });
 	territories.push_back(territory);
-	sf::Text* condition = new sf::Text(UI::font, "");
+
+	sf::Text* condition = new sf::Text(UI::font, "con");
 	condition->setPosition({ 170, entryTop + 156 });
 	conditions.push_back(condition);
-	sf::Text* bombardment = new sf::Text(UI::font, "");
+
+	sf::Text* bombardment = new sf::Text(UI::font, "bomb");
 	bombardment->setPosition({ 250, entryTop + 120 });
 	bombardments.push_back(bombardment);
+
+	Button* killer = new Button({ 390, entryTop + 124 }/*position*/, { 100, 30 }/*size*/, "Killer");
+	buttons.push_back(killer);
+
+	TextBox* nameBox = new TextBox({ 120, entryTop + 12 }/*position*/, { 450, 30 }/*size*/, "");
+	boxes.push_back(nameBox);
+
+	TextBox* xSmallBox = new TextBox({ 330, entryTop + 50 }/*position*/, { 50, 30 }/*size*/, "0");
+	boxes.push_back(xSmallBox);
+
+	TextBox* ySmallBox = new TextBox({ 440, entryTop + 50 }/*position*/, { 50, 30 }/*size*/, "0");
+	boxes.push_back(ySmallBox);
+
+	TextBox* xLargeBox = new TextBox({ 330, entryTop + 88 }/*position*/, { 50, 30 }/*size*/, "0");
+	boxes.push_back(xLargeBox);
+
+	TextBox* yLargeBox = new TextBox({ 440, entryTop + 88 }/*position*/, { 50, 30 }/*size*/, "0");
+	boxes.push_back(yLargeBox);
+
+	TextBox* neutralBox = new TextBox({ 330, entryTop + 124 }/*position*/, { 50, 30 }/*size*/, "");
+	boxes.push_back(neutralBox);
+
+	TextBox* bonusBox = new TextBox({ 120, entryTop + 124 }/*position*/, { 50, 30 }/*size*/, "");
+	boxes.push_back(bonusBox);
+
+	SwapView(selectedView);
 }
 
-void TerritoryEntry::Draw(sf::RenderWindow& window, TerritoryView selectedView)
+void TerritoryEntry::Draw(sf::RenderWindow& window)
 {
-	window.draw(borderBox);
-	window.draw(*nameLabel);
-	nameBox.Draw(window);
-	window.draw(*coordinateLabel);
-	window.draw(*smallLabel);
-	window.draw(*largeLabel);
-	window.draw(*xSmallLabel);
-	xSmallBox.Draw(window);
-	window.draw(*ySmallLabel);
-	ySmallBox.Draw(window);
-	window.draw(*xLargeLabel);
-	xLargeBox.Draw(window);
-	window.draw(*yLargeLabel);
-	yLargeBox.Draw(window);
+	UIEntry::Draw(window);
 	if (selectedView == TerritoryView::Bombardments)
 	{
-		connectionLabel->setString("Bombardments:");
-		window.draw(*connectionLabel);
 		for (int i = 0; i < bombardments.size(); i++)
 		{
 			window.draw(*bombardments[i]);
 		}
 	}
-	else if (selectedView == TerritoryView::Extras)
+	else if (selectedView != TerritoryView::Extras)
 	{
-		killer.Draw(window);
-		window.draw(*neutralLabel);
-		neutralBox.Draw(window);
-		window.draw(*bonusLabel);
-		bonusBox.Draw(window);
-	}
-	else
-	{
-		connectionLabel->setString("Territories:");
-		window.draw(*connectionLabel);
-		if (selectedView == TerritoryView::Conditions)
-			window.draw(*conditionLabel);
 		for (int i = 0; i < territories.size(); i++)
 		{
 			window.draw(*territories[i]);
@@ -243,90 +220,79 @@ void TerritoryEntry::Draw(sf::RenderWindow& window, TerritoryView selectedView)
 	}
 }	
 
-void TerritoryEntry::MouseClick(sf::Vector2i mousePos, 
-	TerritoryView selectedView, bool mouseOnPage)
+void TerritoryEntry::MouseClick(sf::Vector2i mousePos, bool mouseOnPage)
 {
-	if (mouseOnPage && UI::CheckMouseInBounds(mousePos, borderBox))
+	UIEntry::MouseClick(mousePos, mouseOnPage);
+	sf::Shape* borderBox = shapes[(int)ShapeTypes::Border];
+	if (mouseOnPage && borderBox)
 	{
-		selected = true;
-		borderBox.setOutlineThickness(4.0f);
-		borderBox.setOutlineColor({ 120, 0, 255 });
-		//TODO be able to pick a territory from the map
+		if (UI::CheckMouseInBounds(mousePos, borderBox->getGlobalBounds()))
+		{
+			selected = true;
+			borderBox->setOutlineThickness(4.0f);
+			borderBox->setOutlineColor({ 120, 0, 255 });
+			//TODO be able to pick a territory from the map
+		}
+		else
+		{
+			selected = false;
+			borderBox->setOutlineThickness(2.0f);
+			borderBox->setOutlineColor({ 150, 60, 255 });
+		}
 	}
-	else
+
+	Button* killer = buttons[(int)ButtonTypes::Killer];
+	if (killer && mouseOnPage && selectedView == TerritoryView::Extras && 
+		UI::CheckMouseInBounds(mousePos, killer->rect))
 	{
-		selected = false;
-		borderBox.setOutlineThickness(2.0f);
-		borderBox.setOutlineColor({ 150, 60, 255 });
+		killer->Toggle();
 	}
-	
-	if (mouseOnPage && selectedView == TerritoryView::Extras && UI::CheckMouseInBounds(mousePos, killer.rect))
-	{
-		killer.Toggle();
-	}
-	nameBox.active = mouseOnPage && UI::CheckMouseInBounds(mousePos, nameBox.box);
-	xSmallBox.active = mouseOnPage && UI::CheckMouseInBounds(mousePos, xSmallBox.box);
-	ySmallBox.active = mouseOnPage && UI::CheckMouseInBounds(mousePos, ySmallBox.box);
-	xLargeBox.active = mouseOnPage && UI::CheckMouseInBounds(mousePos, xLargeBox.box);
-	yLargeBox.active = mouseOnPage && UI::CheckMouseInBounds(mousePos, yLargeBox.box);
-	if (selectedView == TerritoryView::Extras)
-	{
-		neutralBox.active = mouseOnPage && UI::CheckMouseInBounds(mousePos, neutralBox.box);
-		bonusBox.active = mouseOnPage && UI::CheckMouseInBounds(mousePos, bonusBox.box);
-	}	
+
+	TextBox* neutralBox = boxes[(int)BoxTypes::NeutralBox];
+	if(neutralBox) neutralBox->active &= selectedView == TerritoryView::Extras;
+	TextBox* bonusBox = boxes[(int)BoxTypes::BonusBox];
+	if(bonusBox) bonusBox->active &= selectedView == TerritoryView::Extras;
+		
 }
 
 void TerritoryEntry::Update(sf::RenderWindow& window, sf::Time timePassed,
-	UserInput input, bool showCursor, TerritoryView selectedView)
+	UserInput input, bool showCursor)
 {
+	UIEntry::Update(window, timePassed, input, showCursor);
 	MoveEntry({ 0, input.scroll });
-	
-	//TODO make sure that you only care about numbers entered;
-	nameBox.Update(window, timePassed, input, showCursor);
-	xSmallBox.Update(window, timePassed, input, showCursor);
-	ySmallBox.Update(window, timePassed, input, showCursor);
-	xLargeBox.Update(window, timePassed, input, showCursor);
-	yLargeBox.Update(window, timePassed, input, showCursor);
-	if (selectedView == TerritoryView::Extras)
-	{
-		neutralBox.Update(window, timePassed, input, showCursor);
-		bonusBox.Update(window, timePassed, input, showCursor);
-	}
 }
 
 void TerritoryEntry::MoveEntry(sf::Vector2f offset)
 {
-	borderBox.move(offset);
-	nameLabel->move(offset);
-	nameBox.MoveBox(offset);
-	coordinateLabel->move(offset);
-	smallLabel->move(offset);
-	largeLabel->move(offset);
-	xSmallLabel->move(offset);
-	xSmallBox.MoveBox(offset);
-	ySmallLabel->move(offset);
-	ySmallBox.MoveBox(offset);
-	xLargeLabel->move(offset);
-	xLargeBox.MoveBox(offset);
-	yLargeLabel->move(offset);
-	yLargeBox.MoveBox(offset);
-	connectionLabel->move(offset);
-	for (int i = 0; i < territories.size(); i++)
+	UIEntry::MoveEntry(offset);
+
+	for (sf::Text* territory : territories)
 	{
-		territories[i]->move(offset);
+		territory->move(offset);
 	}
-	conditionLabel->move(offset);
-	for (int i = 0; i < conditions.size(); i++)
+	for (sf::Text* condition : conditions)
 	{
-		conditions[i]->move(offset);
+		condition->move(offset);
 	}
-	for (int i = 0; i < bombardments.size(); i++)
+	for (sf::Text* bomb : bombardments)
 	{
-		bombardments[i]->move(offset);
+		bomb->move(offset);
 	}
-	killer.MoveButton(offset);
-	neutralLabel->move(offset);
-	neutralBox.MoveBox(offset);
-	bonusLabel->move(offset);
-	bonusBox.MoveBox(offset);
+}
+
+void TerritoryEntry::SwapView(TerritoryView view)
+{
+	selectedView = view;
+	float bombardment = selectedView == TerritoryView::Bombardments;
+	float extra = selectedView == TerritoryView::Extras;
+	float condition = selectedView == TerritoryView::Conditions;
+
+	labels[(int)LabelTypes::ConnectionLabel]->setString(bombardment ? "Bombardment:" : "Territory:");
+	labels[(int)LabelTypes::ConditionLabel]->setScale({ condition,condition });
+	labels[(int)LabelTypes::BonusLabel]->setScale({ extra,extra });
+	labels[(int)LabelTypes::NeutralLabel]->setScale({ extra,extra });
+	labels[(int)LabelTypes::ConnectionLabel]->setScale({ (float)!extra,(float)!extra});
+	buttons[(int)ButtonTypes::Killer]->Hide(extra);
+	boxes[(int)BoxTypes::BonusBox]->Hide(extra);
+	boxes[(int)BoxTypes::NeutralBox]->Hide(extra);
 }

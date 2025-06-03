@@ -99,6 +99,15 @@ bool UI::CheckMouseInBounds(sf::Vector2i mousePos, sf::RectangleShape rect)
         mousePos.y > rectPos.y && mousePos.y < rectPos.y + rectSize.y;
 }
 
+bool UI::CheckMouseInBounds(sf::Vector2i mousePos, sf::FloatRect rect)
+{
+    sf::Vector2f rectPos = rect.position;
+    sf::Vector2f rectSize = rect.size;
+
+    return mousePos.x > rectPos.x && mousePos.x < rectPos.x + rectSize.x &&
+        mousePos.y > rectPos.y && mousePos.y < rectPos.y + rectSize.y;
+}
+
 void UI::SwapMaps()
 {
     if (isLarge)

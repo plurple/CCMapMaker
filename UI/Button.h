@@ -14,6 +14,8 @@ public:
 	void Select();
 	void Unselect();
 	void Toggle();
-	void MoveButton(sf::Vector2f offset);
+	void Move(sf::Vector2f offset);
+	void SetPosition(sf::Vector2f);
+	void Hide(bool show = false);
 };
 

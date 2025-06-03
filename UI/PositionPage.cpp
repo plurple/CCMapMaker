@@ -4,11 +4,14 @@
 PositionPage::PositionPage(sf::Vector2f tabPos, 
 	sf::Vector2f tabSize, std::string tabLabel, sf::Vector2f buttonBoxSize) :
 	UIPage(tabPos, tabSize, tabLabel, buttonBoxSize),
-	addPosition({ 1070, 170 }, { 185, 30 }, "Add Position"),
     maxBox({ 1470, 170 }, { 50, 30 })
 {
     maxLabel = new sf::Text(UI::font, "Max Positions:");
     maxLabel->setPosition({ 1270, 165 });
+
+	addEntry.SetPosition({ 1070, 170 });
+	addEntry.rect.setSize({ 185, 30 });
+	addEntry.label->setString("Add Position");
 }
 
 void PositionPage::Draw(sf::RenderWindow& window, bool selected)
@@ -16,145 +19,94 @@ void PositionPage::Draw(sf::RenderWindow& window, bool selected)
 	UIPage::Draw(window, selected);
 	if (selected)
 	{
-		addPosition.Draw(window);
 		maxBox.Draw(window);
-		if(maxLabel) window.draw(*maxLabel);
-		window.setView(scrollBar.scrollWindow);
-		for (int i = 0; i < entries.size(); i++)
-		{
-			entries[i].Draw(window, selected);
-		}
-		window.draw(page);
-		scrollBar.Draw(window);
-		window.setView(window.getDefaultView());
+		if(maxLabel) 
+			window.draw(*maxLabel);
 	}
 }
 
 void PositionPage::MouseClick(sf::RenderWindow& window, sf::Vector2i mousePos)
 {
-	if (UI::CheckMouseInBounds(mousePos, addPosition.rect))
+	UIPage::MouseClick(window, mousePos);
+	if (UI::CheckMouseInBounds(mousePos, addEntry.rect))
 	{
 		AddPosition();
 	}
-	maxBox.active = UI::CheckMouseInBounds(mousePos, maxBox.box);
-	if (mouseOnPage)
-	{
-		scrollBar.MouseClick(sf::Vector2i(window.mapPixelToCoords(mousePos, scrollBar.scrollWindow)));
-	}
-	for (int i = 0; i < entries.size(); i++)
-	{
-		entries[i].MouseClick(sf::Vector2i(window.mapPixelToCoords(mousePos, scrollBar.scrollWindow)),
-			mouseOnPage);
-	}	
+	maxBox.active = UI::CheckMouseInBounds(mousePos, maxBox.box);	
 }
 
 void PositionPage::Update(sf::RenderWindow& window, sf::Time timePassed, 
 	UserInput input, bool showCursor)
 {
-	mouseOnPage = UI::CheckMouseInBounds(sf::Vector2i(window.mapPixelToCoords(sf::Mouse::getPosition(window), scrollBar.scrollWindow)), page);
-
-	if (!input.verticle || !mouseOnPage)
-	{
-		input.scroll = 0.0f;
-	}
-	else
-	{
-		input.scroll *= 7;
-	}
-
-	if (input.enter)
-	{
-		input.scroll += 50;
-	}
-	if (input.backSpace)
-	{
-		input.scroll -= 50;
-	}
-	scrollBar.Scroll({ 0, input.scroll });
-	int numEntries = entries.size();
-	if (numEntries)
-		scrollBar.MoveBar({ 0, 10 + (entries[0].borderBox.getSize().y + 6) * (numEntries) });
-
-	float topBoxY = numEntries ? entries[0].borderBox.getPosition().y : scrollBar.currentScroll.y;
-	if (scrollBar.currentScroll.y != topBoxY)
-		input.scroll = scrollBar.currentScroll.y - topBoxY;
-
+	UIPage::Update(window, timePassed, input, showCursor);
 	//TODO make sure that you only care about numbers entered;
 	maxBox.Update(window, timePassed, input, showCursor);
-	for (int i = 0; i < entries.size(); i++)
-	{
-		entries[i].Update(window, timePassed, input, showCursor);
-	}
 }
 
 void PositionPage::AddPosition()
 {
-	int numEntries = entries.size();
-	float topBoxY = numEntries ? entries[0].borderBox.getPosition().y : 0.0f;
-	float boxSize = numEntries ? entries[numEntries - 1].borderBox.getSize().y : 0.0f;
-	PositionEntry pos{topBoxY + (boxSize + 6) * numEntries};
-	entries.push_back(pos);
-	scrollBar.BarSize({ 0, (entries[0].borderBox.getSize().y + 6) * (numEntries + 1) });
-	scrollBar.MoveBar({ 0, 10 + (entries[0].borderBox.getSize().y + 6) * (numEntries + 1) });
-	scrollBar.Scroll({ 0, scrollBar.maxScroll.y * -1 });
+	PositionEntry* entry = new PositionEntry{};
+	UIPage::AddEntry(entry);
 }
 
 //-----------------------------------------------------------
 
-PositionEntry::PositionEntry(float entryTop) :
-	borderBox{{580,50}/*size*/},
-	startBox({ 525, entryTop+12 }/*position*/, {50, 30}/*size*/, "3"),
-	selected{false}
+void PositionEntry::CreateEntry(float entryTop)
 {
-	borderBox.setPosition({ 10,entryTop });
-	borderBox.setFillColor(sf::Color(192, 192, 192));
-	borderBox.setOutlineThickness(2.0f);
-	borderBox.setOutlineColor(sf::Color::Green);
+	sf::RectangleShape* border = new sf::RectangleShape{ {580, 50} };
+	border->setPosition({ 10,entryTop });
+	border->setFillColor(sf::Color(192, 192, 192, 0));
+	border->setOutlineThickness(2.0f);
+	border->setOutlineColor(sf::Color::Green);
+	shapes.push_back(border);
 
-	territoryName = new sf::Text(UI::font, "Territory Name");
-	territoryName->setPosition({ 30, entryTop+8 });
-	startLabel = new sf::Text(UI::font, "Start Size:");
-	startLabel->setPosition({ 380, entryTop+8 });
+	sf::Text* territoryName = new sf::Text(UI::font, "Territory Name");
+	territoryName->setPosition({ 30, entryTop + 8 });
+	labels.push_back(territoryName);
+
+	sf::Text* startLabel = new sf::Text(UI::font, "Start Size:");
+	startLabel->setPosition({ 380, entryTop + 8 });
+	labels.push_back(startLabel);
+
+	TextBox* startBox = new TextBox({ 525, entryTop + 12 }/*position*/, { 50, 30 }/*size*/, "3");
+	boxes.push_back(startBox);
 }
 
-void PositionEntry::Draw(sf::RenderWindow& window, bool selected)
+void PositionEntry::Draw(sf::RenderWindow& window)
 {
-	window.draw(borderBox);
-	startBox.Draw(window);
-	window.draw(*startLabel);
-	window.draw(*territoryName);
+	UIEntry::Draw(window);
 }
 
 void PositionEntry::MouseClick(sf::Vector2i mousePos, bool mouseOnPage)
 {
-	if (mouseOnPage && UI::CheckMouseInBounds(mousePos, borderBox))
+	UIEntry::MouseClick(mousePos, mouseOnPage);
+	sf::Shape* borderBox = shapes[(int)ShapeTypes::Border];
+	if (mouseOnPage && borderBox)
 	{
-		selected = true;
-		borderBox.setOutlineThickness(4.0f);
-		borderBox.setOutlineColor({ 26, 176, 26 });
-		//TODO be able to pick a territory from the map
+		if (UI::CheckMouseInBounds(mousePos, borderBox->getGlobalBounds()))
+		{
+			selected = true;
+			borderBox->setOutlineThickness(4.0f);
+			borderBox->setOutlineColor({ 26, 176, 26 });
+			//TODO be able to pick a territory from the map
+		}
+		else
+		{
+			selected = false;
+			borderBox->setOutlineThickness(2.0f);
+			borderBox->setOutlineColor(sf::Color::Green);
+		}
 	}
-	else
-	{
-		selected = false;
-		borderBox.setOutlineThickness(2.0f);
-		borderBox.setOutlineColor(sf::Color::Green);
-	}
-	startBox.active = mouseOnPage && UI::CheckMouseInBounds(mousePos, startBox.box);
 }
 
 void PositionEntry::Update(sf::RenderWindow& window, sf::Time timePassed,
 	UserInput input, bool showCursor)
 {
-	MoveEntry({ 0, input.scroll});
-	//TODO make sure that you only care about numbers entered;
-	startBox.Update(window, timePassed, input, showCursor);
+	UIEntry::Update(window, timePassed, input, showCursor);
+	MoveEntry({ 0, input.scroll });
 }
 
 void PositionEntry::MoveEntry(sf::Vector2f offset)
 {
-	borderBox.move(offset);
-	territoryName->move(offset);
-	startLabel->move(offset);
-	startBox.MoveBox(offset);
+	UIEntry::MoveEntry(offset);
 }

@@ -10,62 +10,80 @@ enum class TerritoryView
 	NumViews
 };
 
-class TerritoryEntry
+class TerritoryEntry : public UIEntry
 {
+	enum class ShapeTypes
+	{
+		Border,
+		NumShapes
+	};
+	enum class LabelTypes
+	{
+		NameLabel,
+		CoordinatesLabel,
+		SmallLabel,
+		SmallXLabel,
+		SmallYLabel,
+		LargeLabel,
+		LargeXLabel,
+		LargeYLabel,
+		ConnectionLabel,
+		ConditionLabel,
+		NeutralLabel,
+		BonusLabel,
+		NumLabels
+	};
+	enum class BoxTypes
+	{
+		NameBox,
+		SmallXBox,
+		SmallYBox,
+		LargeXBox,
+		LargeYBox,
+		NeutralBox,
+		BonusBox,
+		NumBoxes
+	};
+	enum class ButtonTypes
+	{
+		Killer,
+		NumButtons
+	};
 public:
-	sf::RectangleShape borderBox;
-	sf::Text* nameLabel;
-	TextBox nameBox;	
-	sf::Text* coordinateLabel;
-	sf::Text* smallLabel;
-	sf::Text* largeLabel;
-	sf::Text* xSmallLabel;
-	TextBox   xSmallBox;
-	sf::Text* ySmallLabel;
-	TextBox   ySmallBox;
-	sf::Text* xLargeLabel;
-	TextBox   xLargeBox;
-	sf::Text* yLargeLabel;
-	TextBox   yLargeBox;
-	sf::Text* connectionLabel;
 	std::vector<sf::Text*> territories;
-	sf::Text* conditionLabel;
 	std::vector<sf::Text*> conditions;
 	std::vector<sf::Text*> bombardments;
-	Button killer;
-	sf::Text* neutralLabel;
-	TextBox neutralBox;
-	sf::Text* bonusLabel;
-	TextBox bonusBox;
-	bool selected;
+	TerritoryView selectedView;
 
-	TerritoryEntry(float entryTop, TerritoryView selectedView);
-	void Draw(sf::RenderWindow& window, TerritoryView selectedView);
-	void MouseClick(sf::Vector2i mousePos, TerritoryView selectedView, bool mouseOnPage);
+	TerritoryEntry(TerritoryView view) : selectedView(view) {};
+	void CreateEntry(float entryTop) override;
+
+	void Draw(sf::RenderWindow& window) override;
+	void MouseClick(sf::Vector2i mousePos, bool mouseOnPage) override;
 	void Update(sf::RenderWindow& window, sf::Time timePassed,
-		UserInput input, bool showCursor, TerritoryView selectedView);
-	void MoveEntry(sf::Vector2f offset);
-	void SwapView();
+		UserInput input, bool showCursor) override;
+
+	void MoveEntry(sf::Vector2f offset) override;
+	void SwapView(TerritoryView view);
 };
 
 
 class TerritoryPage : public UIPage
 {
 public:
-	Button addTerritory;
-	Button showContinents;
 	Button linkCoordinates;
 	std::vector<Button> territoryViews;
 	TerritoryView selectedView;
-	std::vector<TerritoryEntry> entries;
 
 	TerritoryPage(sf::Vector2f tabPos, sf::Vector2f tabSize,
 		std::string tabLabel, sf::Vector2f buttonBoxSize); 
+
 	void Draw(sf::RenderWindow& window, bool selected) override;
 	void MouseClick(sf::RenderWindow& window, sf::Vector2i mousePos) override;
 	void Update(sf::RenderWindow& window, sf::Time timePassed, 
 		UserInput input, bool showCursor) override;
 
 	void AddTerritory();
+	void SwapView();
 };
 
