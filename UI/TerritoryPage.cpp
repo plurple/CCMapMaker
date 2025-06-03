@@ -158,21 +158,6 @@ void TerritoryEntry::CreateEntry(float entryTop)
 	bonusLabel->setPosition({ 20, entryTop + 120 });
 	labels.push_back(bonusLabel);
 
-	sf::Text* territory = new sf::Text(UI::font, "terr");
-	territory->setPosition({ 170, entryTop + 120 });
-	territories.push_back(territory);
-
-	sf::Text* condition = new sf::Text(UI::font, "con");
-	condition->setPosition({ 170, entryTop + 156 });
-	conditions.push_back(condition);
-
-	sf::Text* bombardment = new sf::Text(UI::font, "bomb");
-	bombardment->setPosition({ 250, entryTop + 120 });
-	bombardments.push_back(bombardment);
-
-	Button* killer = new Button({ 390, entryTop + 124 }/*position*/, { 100, 30 }/*size*/, "Killer");
-	buttons.push_back(killer);
-
 	TextBox* nameBox = new TextBox({ 120, entryTop + 12 }/*position*/, { 450, 30 }/*size*/, "");
 	boxes.push_back(nameBox);
 
@@ -193,6 +178,21 @@ void TerritoryEntry::CreateEntry(float entryTop)
 
 	TextBox* bonusBox = new TextBox({ 120, entryTop + 124 }/*position*/, { 50, 30 }/*size*/, "");
 	boxes.push_back(bonusBox);
+
+	Button* killer = new Button({ 390, entryTop + 124 }/*position*/, { 100, 30 }/*size*/, "Killer");
+	buttons.push_back(killer);
+
+	sf::Text* territory = new sf::Text(UI::font, "terr");
+	territory->setPosition({ 170, entryTop + 120 });
+	territories.push_back(territory);
+
+	sf::Text* condition = new sf::Text(UI::font, "con");
+	condition->setPosition({ 170, entryTop + 156 });
+	conditions.push_back(condition);
+
+	sf::Text* bombardment = new sf::Text(UI::font, "bomb");
+	bombardment->setPosition({ 250, entryTop + 120 });
+	bombardments.push_back(bombardment);
 
 	SwapView(selectedView);
 }

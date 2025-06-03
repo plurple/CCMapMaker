@@ -119,14 +119,6 @@ void ContinentEntry::CreateEntry(float entryTop)
 	continentLabel->setPosition({ 20, entryTop + 120 });
 	labels.push_back(continentLabel);
 
-	sf::Text* continent = new sf::Text(UI::font, "Continent");
-	continent->setPosition({ 180, entryTop + 120 });
-	continents.push_back(continent);
-
-	sf::Text* territory = new sf::Text(UI::font, "Territory");
-	territory->setPosition({ 180, entryTop + 84 });
-	territories.push_back(territory);
-
 	Button* addBonus = new Button({ 510, entryTop + 50 }/*position*/, { 30, 30 }/*size*/, "+");
 	buttons.push_back(addBonus);
 
@@ -136,13 +128,21 @@ void ContinentEntry::CreateEntry(float entryTop)
 	TextBox* nameBox = new TextBox({ 120, entryTop + 12 }/*position*/, { 450, 30 }/*size*/, "Continent");
 	boxes.push_back(nameBox);
 
-	BonusLine* bonus = new BonusLine();
-	bonus->CreateEntry(entryTop);
-	bonuses.push_back(bonus);
-
 	AdvancedTerritory* advance = new AdvancedTerritory();
 	advance->CreateEntry(entryTop);
 	entries.push_back(advance);
+
+	sf::Text* territory = new sf::Text(UI::font, "Territory");
+	territory->setPosition({ 180, entryTop + 84 });
+	territories.push_back(territory);
+
+	sf::Text* continent = new sf::Text(UI::font, "Continent");
+	continent->setPosition({ 180, entryTop + 120 });
+	continents.push_back(continent);
+
+	BonusLine* bonus = new BonusLine();
+	bonus->CreateEntry(entryTop);
+	bonuses.push_back(bonus);
 }
 
 void ContinentEntry::Draw(sf::RenderWindow& window)
@@ -243,12 +243,14 @@ void BonusLine::CreateEntry(float entryTop)
 	sf::Text* bonusLabel = new sf::Text(UI::font, "Bonus:");
 	bonusLabel->setPosition({ 150, entryTop + 46 });
 	labels.push_back(bonusLabel);
+
 	sf::Text* requiredLabel = new sf::Text(UI::font, "Required:");
 	requiredLabel->setPosition({ 310, entryTop + 46 });
 	labels.push_back(requiredLabel);
 
 	TextBox* bonusBox = new TextBox({ 250, entryTop + 50 }, { 50, 30 }, "5");
 	boxes.push_back(bonusBox);
+
 	TextBox* requiredBox = new TextBox({ 450, entryTop + 50 }, { 50, 30 }, "");
 	boxes.push_back(requiredBox);	
 }
@@ -295,8 +297,10 @@ void AdvancedTerritory::CreateEntry(float entryTop)
 
 	Button* mandatory  = new Button({ 350, entryTop + 160 }/*position*/, { 30, 30 }/*size*/, "Mandatory");
 	buttons.push_back(mandatory);
+
 	Button* blocker    = new Button({ 130, entryTop + 160 }/*position*/, { 30, 30 }/*size*/, "Blocker");
 	buttons.push_back(blocker);
+
 	Button* multiplier = new Button({ 550, entryTop + 160 }/*position*/, { 30, 30 }/*size*/, "Multiplier");
 	buttons.push_back(multiplier);
 

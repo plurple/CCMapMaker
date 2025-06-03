@@ -72,12 +72,6 @@ void TransformEntry::CreateEntry(float entryTop)
 	conditionsLabel->setPosition({ 20, entryTop + 128 });
 	labels.push_back(conditionsLabel);
 
-	Button* percentage = new Button({ 540, entryTop + 96 }/*position*/, { 35, 30 }/*size*/, "%");
-	buttons.push_back(percentage);
-	
-	Button* addCondition = new Button({ 200, entryTop + 132 }/*position*/, { 205, 30 }/*size*/, "Add Condition");
-	buttons.push_back(addCondition);
-
 	TextBox* amountBox = new TextBox({ 140, entryTop + 96 }/*position*/, { 70, 30 }/*size*/, "");
 	boxes.push_back(amountBox);
 	
@@ -86,6 +80,12 @@ void TransformEntry::CreateEntry(float entryTop)
 	
 	TextBox* lowerBox = new TextBox({ 480, entryTop + 96 }/*position*/, { 50, 30 }/*size*/, "");
 	boxes.push_back(lowerBox);
+
+	Button* percentage = new Button({ 540, entryTop + 96 }/*position*/, { 35, 30 }/*size*/, "%");
+	buttons.push_back(percentage);
+
+	Button* addCondition = new Button({ 200, entryTop + 132 }/*position*/, { 205, 30 }/*size*/, "Add Condition");
+	buttons.push_back(addCondition);
 
 	TransformOption* typeOptions = new TransformOption();
 	typeOptions->CreateEntry(entryTop + 12, 20, 100, 140, 260, "Type:");

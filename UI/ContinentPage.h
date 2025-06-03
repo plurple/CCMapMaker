@@ -21,18 +21,18 @@ class AdvancedTerritory : public UIEntry
 		TerritoryName,
 		FactorLabel,
 		NumLabels
-	};
-	enum class BoxTypes
-	{
-		FactorBox,
-		NumBoxes
-	};
+	};	
 	enum class ButtonTypes
 	{
 		Mandatory,
 		Blocker,
 		Multiplier,
 		NumButtons
+	};
+	enum class BoxTypes
+	{
+		FactorBox,
+		NumBoxes
 	};
 public:
 	AdvancedTerritory() {};
@@ -86,17 +86,17 @@ class ContinentEntry : public UIEntry
 		TerritoriesLabel,
 		ContinentsLabel,
 		NumLabels
-	};
-	enum class BoxTypes
-	{
-		NameBox,
-		NumBoxes
-	};
+	};	
 	enum class ButtonTypes
 	{
 		AddBonus,
 		RemoveBonus,
 		NumButtons
+	};
+	enum class BoxTypes
+	{
+		NameBox,
+		NumBoxes
 	};
 	enum class EntryTypes
 	{
