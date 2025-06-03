@@ -52,7 +52,7 @@ int main()
             ui.MouseClick(xmlData, window, mousePos);
         }
 
-        ui.Update(window, clockElapsed, input);
+        ui.Update(xmlData, window, clockElapsed, input);
 
         window.clear(); 
         ui.Draw(window);

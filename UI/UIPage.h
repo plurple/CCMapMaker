@@ -14,9 +14,10 @@ public:
 	std::vector<TextBox*> boxes;
 	std::vector<UIEntry*> entries;
 	bool selected;
+	int xmlKey;
 
-	UIEntry() : selected{ false } {};
-	virtual void CreateEntry(XMLData& xmlData, float entryTop, int insertedKey) = 0;
+	UIEntry(int insertedKey) : selected{ false }, xmlKey{ insertedKey } {};
+	virtual void CreateEntry(XMLData& xmlData, float entryTop) = 0;
 
 	virtual void Draw(sf::RenderWindow& window);
 	virtual void MouseClick(sf::Vector2i mousePos, bool mouseOnPage);
@@ -42,9 +43,9 @@ public:
 		std::string tabLabel, sf::Vector2f buttonBoxSize);
 	virtual void Draw(sf::RenderWindow& window, bool selected);
 	virtual void MouseClick(XMLData& xmlData, sf::RenderWindow& window, sf::Vector2i mousePos);
-	virtual void Update(sf::RenderWindow& window, sf::Time timePassed, 
-		UserInput input, bool showCursor);
+	virtual void Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
+		UserInput input, bool showCursor, UIPageType page);
 
-	void AddEntry(XMLData& xmlData, UIEntry* entry, int insertedKey);
+	void AddEntry(XMLData& xmlData, UIEntry* entry);
 };
 

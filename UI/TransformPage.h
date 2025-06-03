@@ -22,10 +22,10 @@ class TransformOption : public UIEntry
 		NumButtons
 	};
 public:
-	TransformOption() {};
-	void CreateEntry(XMLData& xmlData, float entryTop, int insertedKey) override;
+	TransformOption(int insertedKey) : UIEntry{ insertedKey } {};
+	void CreateEntry(XMLData& xmlData, float entryTop) override;
 	void CreateEntry(XMLData& xmlData, float yCoord, float labelCoord, float leftCoord,
-		float optionCoord, float rightCoord, std::string label, int insertedKey);
+		float optionCoord, float rightCoord, std::string label);
 
 	void Draw(sf::RenderWindow& window) override;
 	void MouseClick(sf::Vector2i mousePos, bool mouseOnPage) override;
@@ -62,8 +62,8 @@ class ConditionEntry : public UIEntry
 		NumOptions
 	};
 public:
-	ConditionEntry() {};
-	void CreateEntry(XMLData& xmlData, float entryTop, int insertedKey) override;
+	ConditionEntry(int insertedKey) : UIEntry{ insertedKey } {};
+	void CreateEntry(XMLData& xmlData, float entryTop) override;
 
 	void Draw(sf::RenderWindow& window) override;
 	void MouseClick(sf::Vector2i mousePos, bool mouseOnPage) override;
@@ -111,8 +111,8 @@ class TransformEntry : public UIEntry
 public:
 	std::vector<UIEntry*> conditions;
 
-	TransformEntry() {};
-	void CreateEntry(XMLData& xmlData, float entryTop, int insertedKey) override;
+	TransformEntry(int insertedKey) : UIEntry{ insertedKey } {};
+	void CreateEntry(XMLData& xmlData, float entryTop) override;
 
 	void Draw(sf::RenderWindow& window) override;
 	void MouseClick(sf::Vector2i mousePos, bool mouseOnPage) override;
@@ -133,8 +133,8 @@ public:
 
 	void Draw(sf::RenderWindow& window, bool selected) override;
 	void MouseClick(XMLData& xmlData, sf::RenderWindow& window, sf::Vector2i mousePos) override;
-	void Update(sf::RenderWindow& window, sf::Time timePassed, 
-		UserInput input, bool showCursor) override;
+	void Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
+		UserInput input, bool showCursor, UIPageType pageType) override;
 
 	void AddTransform(XMLData& xmlData);
 };

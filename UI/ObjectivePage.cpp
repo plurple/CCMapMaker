@@ -38,21 +38,21 @@ void ObjectivePage::MouseClick(XMLData& xmlData, sf::RenderWindow& window, sf::V
     }
 }
 
-void ObjectivePage::Update(sf::RenderWindow& window, sf::Time timePassed, 
-    UserInput input, bool showCursor)
+void ObjectivePage::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
+    UserInput input, bool showCursor, UIPageType pageType)
 {
-	UIPage::Update(window, timePassed, input, showCursor);
+	UIPage::Update(xmlData, window, timePassed, input, showCursor, pageType);
 }
 
 void ObjectivePage::AddObjective(XMLData& xmlData)
 {
-	ObjectiveEntry* entry = new ObjectiveEntry{isObjective};
-	UIPage::AddEntry(xmlData, entry, 0);
+	ObjectiveEntry* entry = new ObjectiveEntry{isObjective, 0};
+	UIPage::AddEntry(xmlData, entry);
 }
 
 //-----------------------------------------------------------
 
-void ObjectiveEntry::CreateEntry(XMLData& xmlData, float entryTop, int insertedKey)
+void ObjectiveEntry::CreateEntry(XMLData& xmlData, float entryTop)
 {
 	sf::RectangleShape* border = new sf::RectangleShape{ {580, 165} };
 	border->setPosition({ 10,entryTop });

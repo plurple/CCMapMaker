@@ -37,11 +37,13 @@ public:
 	XMLData();
 	//Transform*		AddTransform();
 	int	AddReinforcement();
+	void RemoveReinforcement(int key);
 	//Position*		AddPosition();
 	//Objective* 		AddRequirement();
 	//Objective* 		AddObjective();
 	//Continent* 		AddContinent();
 	//Territory* 		AddTerritory();
 
+	void RemoveData(UIPageType type, int key);
 };
 

@@ -37,24 +37,23 @@ void ReinforcementPage::MouseClick(XMLData& xmlData, sf::RenderWindow& window, s
 	minReinforcements.active = UI::CheckMouseInBounds(mousePos, minReinforcements.box);
 }
 
-void ReinforcementPage::Update(sf::RenderWindow& window, sf::Time timePassed, 
-    UserInput input, bool showCursor)
+void ReinforcementPage::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
+    UserInput input, bool showCursor, UIPageType pageType)
 {
-	UIPage::Update(window, timePassed, input, showCursor);
+	UIPage::Update(xmlData, window, timePassed, input, showCursor, pageType);
 
 	minReinforcements.Update(window, timePassed, input, showCursor);
 }
 
 void ReinforcementPage::AddReinforcement(XMLData& xmlData)
 {
-	ReinforcementEntry* entry = new ReinforcementEntry{};
-	auto insertedKey = xmlData.AddReinforcement();
-	UIPage::AddEntry(xmlData, entry, insertedKey);
+	ReinforcementEntry* entry = new ReinforcementEntry{ xmlData.AddReinforcement() };
+	UIPage::AddEntry(xmlData, entry);
 }
 
 //-----------------------------------------------------------
 
-void ReinforcementEntry::CreateEntry(XMLData& xmlData, float entryTop, int insertedKey)
+void ReinforcementEntry::CreateEntry(XMLData& xmlData, float entryTop)
 {
 	sf::RectangleShape* border = new sf::RectangleShape{ {580,155}/*size*/ };
 	border->setPosition({ 10,entryTop });
@@ -79,7 +78,7 @@ void ReinforcementEntry::CreateEntry(XMLData& xmlData, float entryTop, int inser
 	explanation->setPosition({ 50, entryTop + 48 });
 	labels.push_back(explanation);
 
-	Reinforcement* data = xmlData.reinforcements.at(insertedKey);
+	Reinforcement* data = xmlData.reinforcements.at(xmlKey);
 	TextBox* lowerBox = new TextBox({ 160, entryTop + 12 }/*position*/, { 50, 30 }/*size*/);
 	lowerBox->number = &data->lower;
 	boxes.push_back(lowerBox);

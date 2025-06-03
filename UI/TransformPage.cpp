@@ -33,21 +33,21 @@ void TransformPage::MouseClick(XMLData& xmlData, sf::RenderWindow& window, sf::V
 	}	
 }
 
-void TransformPage::Update(sf::RenderWindow& window, sf::Time timePassed,
-    UserInput input, bool showCursor) 
+void TransformPage::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
+    UserInput input, bool showCursor, UIPageType pageType) 
 {
-	UIPage::Update(window, timePassed, input, showCursor);
+	UIPage::Update(xmlData, window, timePassed, input, showCursor, pageType);
 }
 
 void TransformPage::AddTransform(XMLData& xmlData)
 {
-	TransformEntry* entry = new TransformEntry{};
-	UIPage::AddEntry(xmlData, entry, 0);
+	TransformEntry* entry = new TransformEntry{0};
+	UIPage::AddEntry(xmlData, entry);
 }
 
 //-----------------------------------------------------------
 
-void TransformEntry::CreateEntry(XMLData& xmlData, float entryTop, int insertedKey)
+void TransformEntry::CreateEntry(XMLData& xmlData, float entryTop)
 {
 	sf::RectangleShape* border = new sf::RectangleShape{ { 580,288 } };/*size*/
 	border->setPosition({ 10, entryTop });
@@ -87,20 +87,20 @@ void TransformEntry::CreateEntry(XMLData& xmlData, float entryTop, int insertedK
 	Button* addCondition = new Button({ 200, entryTop + 132 }/*position*/, { 205, 30 }/*size*/, "Add Condition");
 	buttons.push_back(addCondition);
 
-	TransformOption* typeOptions = new TransformOption();
-	typeOptions->CreateEntry(xmlData, entryTop + 12, 20, 100, 140, 260, "Type:", insertedKey);
+	TransformOption* typeOptions = new TransformOption(xmlKey);
+	typeOptions->CreateEntry(xmlData, entryTop + 12, 20, 100, 140, 260, "Type:");
 	entries.push_back(typeOptions);
 	
-	TransformOption* applyOptions = new TransformOption();
-	applyOptions->CreateEntry(xmlData, entryTop + 46, 20, 150, 190, 310, "Apply To:", insertedKey);
+	TransformOption* applyOptions = new TransformOption(xmlKey);
+	applyOptions->CreateEntry(xmlData, entryTop + 46, 20, 150, 190, 310, "Apply To:");
 	entries.push_back(applyOptions);
 	
-	TransformOption* incOptions = new TransformOption();
-	incOptions->CreateEntry(xmlData, entryTop + 12, 320, 380, 420, 540, "Inc:", insertedKey);
+	TransformOption* incOptions = new TransformOption(xmlKey);
+	incOptions->CreateEntry(xmlData, entryTop + 12, 320, 380, 420, 540, "Inc:");
 	entries.push_back(incOptions);
 	
-	ConditionEntry* condition = new ConditionEntry();
-	condition->CreateEntry(xmlData, entryTop, insertedKey);
+	ConditionEntry* condition = new ConditionEntry(xmlKey);
+	condition->CreateEntry(xmlData, entryTop);
 	conditions.push_back(condition);
 }
 
@@ -172,7 +172,7 @@ void TransformEntry::MoveEntry(sf::Vector2f offset)
 
 //-----------------------------------------------------------
 
-void ConditionEntry::CreateEntry(XMLData& xmlData, float entryTop, int insertedKey)
+void ConditionEntry::CreateEntry(XMLData& xmlData, float entryTop)
 {
 	sf::RectangleShape* border = new sf::RectangleShape{ { 572,116 } };/*size*/
 	border->setPosition({ 14, entryTop + 168});
@@ -195,16 +195,16 @@ void ConditionEntry::CreateEntry(XMLData& xmlData, float entryTop, int insertedK
 	TextBox* valueBox = new TextBox({ 500, entryTop + 208 }/*position*/, { 50, 30 }/*size*/);
 	boxes.push_back(valueBox);
 
-	TransformOption* typeOptions = new TransformOption();
-	typeOptions->CreateEntry(xmlData, entryTop + 172, 20, 100, 140, 260, "Type:", insertedKey);
+	TransformOption* typeOptions = new TransformOption(xmlKey);
+	typeOptions->CreateEntry(xmlData, entryTop + 172, 20, 100, 140, 260, "Type:");
 	entries.push_back(typeOptions);
 
-	TransformOption* operatorOptions = new TransformOption();
-	operatorOptions->CreateEntry(xmlData, entryTop + 208, 20, 150, 190, 310, "Operator:", insertedKey);
+	TransformOption* operatorOptions = new TransformOption(xmlKey);
+	operatorOptions->CreateEntry(xmlData, entryTop + 208, 20, 150, 190, 310, "Operator:");
 	entries.push_back(operatorOptions);
 
-	TransformOption* valueOptions = new TransformOption();
-	valueOptions->CreateEntry(xmlData, entryTop + 244, 20, 120, 160, 280, "Value:", insertedKey);
+	TransformOption* valueOptions = new TransformOption(xmlKey);
+	valueOptions->CreateEntry(xmlData, entryTop + 244, 20, 120, 160, 280, "Value:");
 	entries.push_back(valueOptions);
 }
 
@@ -231,15 +231,12 @@ void ConditionEntry::MoveEntry(sf::Vector2f offset)
 
 //-----------------------------------------------------------
 
-void TransformOption::CreateEntry(XMLData& xmlData, float entryTop,
-	int insertedKey)
-{
-
-}
+void TransformOption::CreateEntry(XMLData& xmlData, float entryTop)
+{}
 
 void TransformOption::CreateEntry(XMLData& xmlData, float yCoord, 
 	float labelCoord, float leftCoord, float optionCoord, 
-	float rightCoord, std::string label, int insertedKey)
+	float rightCoord, std::string label)
 {
 	sf::CircleShape* leftArrow = new sf::CircleShape{ (15) /*radius*/ };
 	leftArrow->setPointCount(3);

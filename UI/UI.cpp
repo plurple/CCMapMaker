@@ -62,18 +62,18 @@ UI::UI(XMLData& xmlData) :
     ContinentPage* continentPage = new ContinentPage(xmlData, 
         { 1175, 60 }, { 150, 30 }, "Continents", { 592, 97 });
     uiPages.push_back(continentPage);
-    ReinforcementPage* reinforcementPage = new ReinforcementPage(xmlData, 
-        { 1340, 60 }, { 220, 30 }, "Reinforcements", { 592, 52 });
-    uiPages.push_back(reinforcementPage);
-    PositionPage* positionPage = new PositionPage(xmlData, 
+    PositionPage* positionPage = new PositionPage(xmlData,
         { 1010, 100 }, { 130, 30 }, "Positions", { 592, 52 });
-    uiPages.push_back(positionPage);
+    uiPages.push_back(positionPage);    
     ObjectivePage* requirementPage = new ObjectivePage(xmlData, 
         { 1340, 100 }, { 200, 30 }, "Requirements", { 592, 52 });
     uiPages.push_back(requirementPage);
     ObjectivePage* objectivePage = new ObjectivePage(xmlData, 
         { 1175, 100 }, { 150, 30 }, "Objectives", { 592, 52 });
     uiPages.push_back(objectivePage);
+    ReinforcementPage* reinforcementPage = new ReinforcementPage(xmlData, 
+        { 1340, 60 }, { 220, 30 }, "Reinforcements", { 592, 52 });
+    uiPages.push_back(reinforcementPage);
     TransformPage* transformPage = new TransformPage(xmlData, 
         { 1400, 20 }, { 160, 30 }, "Transforms", { 592, 52 });
     uiPages.push_back(transformPage);
@@ -152,7 +152,7 @@ void UI::MouseClick(XMLData& xmlData, sf::RenderWindow& window, sf::Vector2i mou
     uiPages[(int)selectedPage]->MouseClick(xmlData, window, mousePos);
 }
 
-void UI::Update(sf::RenderWindow& window, sf::Time timePassed, 
+void UI::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
     UserInput& input)
 {
     static sf::Time text_effect_time;
@@ -165,5 +165,5 @@ void UI::Update(sf::RenderWindow& window, sf::Time timePassed,
     }
 
     maps.Update(window, timePassed, input);
-    uiPages[(int)selectedPage]->Update(window, timePassed, input, showCursor);
+    uiPages[(int)selectedPage]->Update(xmlData, window, timePassed, input, showCursor, selectedPage);
 }

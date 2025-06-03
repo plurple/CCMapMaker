@@ -28,6 +28,11 @@ int XMLData::AddReinforcement()
 	return key;
 }
 
+void XMLData::RemoveReinforcement(int key)
+{
+	reinforcements.erase(key);
+}
+
 //Position* XMLData::AddPosition()
 //{
 //
@@ -52,3 +57,25 @@ int XMLData::AddReinforcement()
 //{
 //
 //}
+
+void XMLData::RemoveData(UIPageType type, int key)
+{
+	switch (type)
+	{
+	case UIPageType::Territory:
+		break;
+	case UIPageType::Continent:
+		break;
+	case UIPageType::Position:
+		break;
+	case UIPageType::Requirements:
+		break;
+	case UIPageType::Objective:
+		break;
+	case UIPageType::Reinforcement:
+		RemoveReinforcement(key);
+		break;
+	case UIPageType::Transform:
+		break;
+	}
+}

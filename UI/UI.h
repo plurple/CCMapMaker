@@ -34,7 +34,7 @@ public:
 	static bool CheckMouseInBounds(sf::Vector2i mousePos, sf::FloatRect rect);
 	void SwapMaps();
 	void MouseClick(XMLData& xmlData, sf::RenderWindow& window, sf::Vector2i mousePos);
-	void Update(sf::RenderWindow& window, sf::Time timePassed, 
+	void Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
 		UserInput& input);
 };
 

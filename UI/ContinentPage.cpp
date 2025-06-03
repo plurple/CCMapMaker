@@ -70,16 +70,16 @@ void ContinentPage::MouseClick(XMLData& xmlData, sf::RenderWindow& window, sf::V
 	}	
 }
 
-void ContinentPage::Update(sf::RenderWindow& window, sf::Time timePassed, 
-	UserInput input, bool showCursor)
+void ContinentPage::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
+	UserInput input, bool showCursor, UIPageType pageType)
 {
-	UIPage::Update(window, timePassed, input, showCursor);
+	UIPage::Update(xmlData, window, timePassed, input, showCursor, pageType);
 }
 
 void ContinentPage::AddContinent(XMLData& xmlData)
 {
-	ContinentEntry* entry = new ContinentEntry{selectedView};
-	UIPage::AddEntry(xmlData, entry, 0);
+	ContinentEntry* entry = new ContinentEntry{selectedView, 0};
+	UIPage::AddEntry(xmlData, entry);
 }
 
 void ContinentPage::SwapView()
@@ -94,7 +94,7 @@ void ContinentPage::SwapView()
 }
 //-----------------------------------------------------------
 
-void ContinentEntry::CreateEntry(XMLData& xmlData, float entryTop, int insertedKey)
+void ContinentEntry::CreateEntry(XMLData& xmlData, float entryTop)
 {
 	sf::RectangleShape* border = new sf::RectangleShape{ {580,202 } };/*size*/
 	border->setPosition({ 10,entryTop });
@@ -128,8 +128,8 @@ void ContinentEntry::CreateEntry(XMLData& xmlData, float entryTop, int insertedK
 	TextBox* nameBox = new TextBox({ 120, entryTop + 12 }/*position*/, { 450, 30 }/*size*/, new std::string("Continent"));
 	boxes.push_back(nameBox);
 
-	AdvancedTerritory* advance = new AdvancedTerritory();
-	advance->CreateEntry(xmlData, entryTop, insertedKey);
+	AdvancedTerritory* advance = new AdvancedTerritory(xmlKey);
+	advance->CreateEntry(xmlData, entryTop);
 	entries.push_back(advance);
 
 	sf::Text* territory = new sf::Text(UI::font, "Territory");
@@ -140,8 +140,8 @@ void ContinentEntry::CreateEntry(XMLData& xmlData, float entryTop, int insertedK
 	continent->setPosition({ 180, entryTop + 120 });
 	continents.push_back(continent);
 
-	BonusLine* bonus = new BonusLine();
-	bonus->CreateEntry(xmlData, entryTop, insertedKey);
+	BonusLine* bonus = new BonusLine(xmlKey);
+	bonus->CreateEntry(xmlData, entryTop);
 	bonuses.push_back(bonus);
 }
 
@@ -238,7 +238,7 @@ void ContinentEntry::MoveEntry(sf::Vector2f offset)
 
 //-----------------------------------------------------------
 
-void BonusLine::CreateEntry(XMLData& xmlData, float entryTop, int insertedKey)
+void BonusLine::CreateEntry(XMLData& xmlData, float entryTop)
 {
 	sf::Text* bonusLabel = new sf::Text(UI::font, "Bonus:");
 	bonusLabel->setPosition({ 150, entryTop + 46 });
@@ -278,7 +278,7 @@ void BonusLine::MoveEntry(sf::Vector2f offset)
 
 //-----------------------------------------------------------
 
-void AdvancedTerritory::CreateEntry(XMLData& xmlData, float entryTop, int insertedKey)
+void AdvancedTerritory::CreateEntry(XMLData& xmlData, float entryTop)
 {
 	sf::RectangleShape* border = new sf::RectangleShape{ {576,78 } };/*size*/
 	border->setPosition({ 12,entryTop + 120 });

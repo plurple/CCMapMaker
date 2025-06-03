@@ -35,23 +35,23 @@ void PositionPage::MouseClick(XMLData& xmlData, sf::RenderWindow& window, sf::Ve
 	maxBox.active = UI::CheckMouseInBounds(mousePos, maxBox.box);	
 }
 
-void PositionPage::Update(sf::RenderWindow& window, sf::Time timePassed, 
-	UserInput input, bool showCursor)
+void PositionPage::Update(XMLData& xmlData, sf::RenderWindow& window, 
+	sf::Time timePassed, UserInput input, bool showCursor, UIPageType pageType)
 {
-	UIPage::Update(window, timePassed, input, showCursor);
-	//TODO make sure that you only care about numbers entered;
+	UIPage::Update(xmlData, window, timePassed, input, showCursor, 
+		pageType);
 	maxBox.Update(window, timePassed, input, showCursor);
 }
 
 void PositionPage::AddPosition(XMLData& xmlData)
 {
-	PositionEntry* entry = new PositionEntry{};
-	UIPage::AddEntry(xmlData, entry, 0);
+	PositionEntry* entry = new PositionEntry{0};
+	UIPage::AddEntry(xmlData, entry);
 }
 
 //-----------------------------------------------------------
 
-void PositionEntry::CreateEntry(XMLData& xmlData, float entryTop, int insertedKey)
+void PositionEntry::CreateEntry(XMLData& xmlData, float entryTop)
 {
 	sf::RectangleShape* border = new sf::RectangleShape{ {580, 50} };
 	border->setPosition({ 10,entryTop });

@@ -76,17 +76,17 @@ void TerritoryPage::MouseClick(XMLData& xmlData, sf::RenderWindow& window, sf::V
 	}	
 }
 
-void TerritoryPage::Update(sf::RenderWindow& window, sf::Time timePassed, 
-	UserInput input, bool showCursor)
+void TerritoryPage::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
+	UserInput input, bool showCursor, UIPageType pageType)
 {
-	UIPage::Update(window, timePassed, input, showCursor);
+	UIPage::Update(xmlData, window, timePassed, input, showCursor, pageType);
 }
 
 
 void TerritoryPage::AddTerritory(XMLData& xmlData)
 {
-	TerritoryEntry* entry = new TerritoryEntry{ selectedView };
-	UIPage::AddEntry(xmlData, entry, 0);
+	TerritoryEntry* entry = new TerritoryEntry{ selectedView, 0 };
+	UIPage::AddEntry(xmlData, entry);
 }
 
 void TerritoryPage::SwapView()
@@ -101,7 +101,7 @@ void TerritoryPage::SwapView()
 
 //-----------------------------------------------------------
 
-void TerritoryEntry::CreateEntry(XMLData& xmlData, float entryTop, int insertedKey)
+void TerritoryEntry::CreateEntry(XMLData& xmlData, float entryTop)
 {
 	sf::RectangleShape* border = new sf::RectangleShape{ { 580,200 } };/*size*/
 	border->setPosition({ 10,entryTop });

@@ -35,8 +35,8 @@ class AdvancedTerritory : public UIEntry
 		NumBoxes
 	};
 public:
-	AdvancedTerritory() {};
-	void CreateEntry(XMLData& xmlData, float entryTop, int insertedKey) override;
+	AdvancedTerritory(int insertedKey) : UIEntry{ insertedKey } {};
+	void CreateEntry(XMLData& xmlData, float entryTop) override;
 
 	void Draw(sf::RenderWindow& window) override;
 	void MouseClick(sf::Vector2i mousePos, bool mouseOnPage) override;
@@ -61,8 +61,8 @@ class BonusLine : public UIEntry
 		NumBoxes
 	};
 public:
-	BonusLine() {};
-	void CreateEntry(XMLData& xmlData, float entryTop, int insertedKey) override;
+	BonusLine(int insertedKey) : UIEntry{ insertedKey } {};
+	void CreateEntry(XMLData& xmlData, float entryTop) override;
 
 	void Draw(sf::RenderWindow& window) override;
 	void MouseClick(sf::Vector2i mousePos, bool mouseOnPage) override;
@@ -109,8 +109,9 @@ public:
 	std::vector<UIEntry*> bonuses;
 	ContinentView selectedView;
 
-	ContinentEntry(ContinentView view) : selectedView{ view } {};
-	void CreateEntry(XMLData& xmlData, float entryTop, int insertedKey) override;
+	ContinentEntry(ContinentView view, int insertedKey) : 
+		selectedView{ view }, UIEntry{ insertedKey } {};
+	void CreateEntry(XMLData& xmlData, float entryTop) override;
 
 	void Draw(sf::RenderWindow& window) override;
 	void MouseClick(sf::Vector2i mousePos, bool mouseOnPage) override;
@@ -132,8 +133,8 @@ public:
 
 	void Draw(sf::RenderWindow& window, bool selected) override;
 	void MouseClick(XMLData& xmlData, sf::RenderWindow& window, sf::Vector2i mousePos) override;
-	void Update(sf::RenderWindow& window, sf::Time timePassed, 
-		UserInput input, bool showCursor) override;
+	void Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
+		UserInput input, bool showCursor, UIPageType pageType) override;
 
 	void AddContinent(XMLData& xmlData);
 	void SwapView();
