@@ -31,12 +31,12 @@ class AdvancedTerritory : public UIEntry
 	};
 	enum class BoxTypes
 	{
-		FactorBox,
+		FactorBox, //can be negative and a float the bastard
 		NumBoxes
 	};
 public:
 	AdvancedTerritory() {};
-	void CreateEntry(XMLData& xmlData, float entryTop) override;
+	void CreateEntry(XMLData& xmlData, float entryTop, int insertedKey) override;
 
 	void Draw(sf::RenderWindow& window) override;
 	void MouseClick(sf::Vector2i mousePos, bool mouseOnPage) override;
@@ -56,13 +56,13 @@ class BonusLine : public UIEntry
 	};
 	enum class BoxTypes
 	{
-		BonusBox,
+		BonusBox, //can be negative
 		RequiredBox,
 		NumBoxes
 	};
 public:
 	BonusLine() {};
-	void CreateEntry(XMLData& xmlData, float entryTop) override;
+	void CreateEntry(XMLData& xmlData, float entryTop, int insertedKey) override;
 
 	void Draw(sf::RenderWindow& window) override;
 	void MouseClick(sf::Vector2i mousePos, bool mouseOnPage) override;
@@ -110,7 +110,7 @@ public:
 	ContinentView selectedView;
 
 	ContinentEntry(ContinentView view) : selectedView{ view } {};
-	void CreateEntry(XMLData& xmlData, float entryTop) override;
+	void CreateEntry(XMLData& xmlData, float entryTop, int insertedKey) override;
 
 	void Draw(sf::RenderWindow& window) override;
 	void MouseClick(sf::Vector2i mousePos, bool mouseOnPage) override;

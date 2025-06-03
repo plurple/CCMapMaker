@@ -23,9 +23,9 @@ class TransformOption : public UIEntry
 	};
 public:
 	TransformOption() {};
-	void CreateEntry(XMLData& xmlData, float entryTop) override;
+	void CreateEntry(XMLData& xmlData, float entryTop, int insertedKey) override;
 	void CreateEntry(XMLData& xmlData, float yCoord, float labelCoord, float leftCoord,
-		float optionCoord, float rightCoord, std::string label);
+		float optionCoord, float rightCoord, std::string label, int insertedKey);
 
 	void Draw(sf::RenderWindow& window) override;
 	void MouseClick(sf::Vector2i mousePos, bool mouseOnPage) override;
@@ -63,7 +63,7 @@ class ConditionEntry : public UIEntry
 	};
 public:
 	ConditionEntry() {};
-	void CreateEntry(XMLData& xmlData, float entryTop) override;
+	void CreateEntry(XMLData& xmlData, float entryTop, int insertedKey) override;
 
 	void Draw(sf::RenderWindow& window) override;
 	void MouseClick(sf::Vector2i mousePos, bool mouseOnPage) override;
@@ -112,7 +112,7 @@ public:
 	std::vector<UIEntry*> conditions;
 
 	TransformEntry() {};
-	void CreateEntry(XMLData& xmlData, float entryTop) override;
+	void CreateEntry(XMLData& xmlData, float entryTop, int insertedKey) override;
 
 	void Draw(sf::RenderWindow& window) override;
 	void MouseClick(sf::Vector2i mousePos, bool mouseOnPage) override;

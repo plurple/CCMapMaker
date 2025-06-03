@@ -16,7 +16,7 @@ public:
 	bool selected;
 
 	UIEntry() : selected{ false } {};
-	virtual void CreateEntry(XMLData& xmlData, float entryTop) = 0;
+	virtual void CreateEntry(XMLData& xmlData, float entryTop, int insertedKey) = 0;
 
 	virtual void Draw(sf::RenderWindow& window);
 	virtual void MouseClick(sf::Vector2i mousePos, bool mouseOnPage);
@@ -45,6 +45,6 @@ public:
 	virtual void Update(sf::RenderWindow& window, sf::Time timePassed, 
 		UserInput input, bool showCursor);
 
-	void AddEntry(XMLData& xmlData, UIEntry* entry);
+	void AddEntry(XMLData& xmlData, UIEntry* entry, int insertedKey);
 };
 

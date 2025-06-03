@@ -61,6 +61,17 @@ void UIPage::MouseClick(XMLData& xmlData, sf::RenderWindow& window, sf::Vector2i
 void UIPage::Update(sf::RenderWindow& window, sf::Time timePassed,
 	UserInput input, bool showCursor)
 {
+	if (input.del)
+	{
+		for (UIEntry* entry : entries)
+		{
+			if (entry->selected)
+			{
+				//todo remove entry and all that entails.
+			}
+		}
+	}
+
 	mouseOnPage = UI::CheckMouseInBounds(sf::Vector2i(window.mapPixelToCoords(sf::Mouse::getPosition(window), scrollBar.scrollWindow)), page);
 
 	if (!input.verticle || !mouseOnPage)
@@ -70,15 +81,6 @@ void UIPage::Update(sf::RenderWindow& window, sf::Time timePassed,
 	else
 	{
 		input.scroll *= 7;
-	}
-
-	if (input.enter)
-	{
-		input.scroll += 50;
-	}
-	if (input.backSpace)
-	{
-		input.scroll -= 50;
 	}
 	scrollBar.Scroll({ 0, input.scroll });
 	int numEntries = entries.size();
@@ -95,12 +97,12 @@ void UIPage::Update(sf::RenderWindow& window, sf::Time timePassed,
 	}
 }
 
-void UIPage::AddEntry(XMLData& xmlData, UIEntry* entry)
+void UIPage::AddEntry(XMLData& xmlData, UIEntry* entry, int insertedKey)
 {
 	int numEntries = entries.size();
 	float topBoxY = numEntries ? entries[0]->shapes[0]->getPosition().y : 0.0f;
 	float boxSize = numEntries ? entries[0]->shapes[0]->getGlobalBounds().size.y : 0.0f;
-	entry->CreateEntry(xmlData, topBoxY + (boxSize + 6) * numEntries);
+	entry->CreateEntry(xmlData, topBoxY + (boxSize + 6) * numEntries, insertedKey);
 	entries.push_back(entry);
 	scrollBar.BarSize({ 0, (boxSize + 6) * (numEntries + 1) });
 	scrollBar.MoveBar({ 0, 10 + (boxSize + 6) * (numEntries + 1) });

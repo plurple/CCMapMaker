@@ -30,7 +30,7 @@ class TerritoryEntry : public UIEntry
 		ConnectionLabel,
 		ConditionLabel,
 		NeutralLabel,
-		BonusLabel,
+		BonusLabel, //can be negative
 		NumLabels
 	};
 	enum class BoxTypes
@@ -56,7 +56,7 @@ public:
 	TerritoryView selectedView;
 
 	TerritoryEntry(TerritoryView view) : selectedView(view) {};
-	void CreateEntry(XMLData& xmlData, float entryTop) override;
+	void CreateEntry(XMLData& xmlData, float entryTop, int insertedKey) override;
 
 	void Draw(sf::RenderWindow& window) override;
 	void MouseClick(sf::Vector2i mousePos, bool mouseOnPage) override;

@@ -86,7 +86,7 @@ void TerritoryPage::Update(sf::RenderWindow& window, sf::Time timePassed,
 void TerritoryPage::AddTerritory(XMLData& xmlData)
 {
 	TerritoryEntry* entry = new TerritoryEntry{ selectedView };
-	UIPage::AddEntry(xmlData, entry);
+	UIPage::AddEntry(xmlData, entry, 0);
 }
 
 void TerritoryPage::SwapView()
@@ -101,7 +101,7 @@ void TerritoryPage::SwapView()
 
 //-----------------------------------------------------------
 
-void TerritoryEntry::CreateEntry(XMLData& xmlData, float entryTop)
+void TerritoryEntry::CreateEntry(XMLData& xmlData, float entryTop, int insertedKey)
 {
 	sf::RectangleShape* border = new sf::RectangleShape{ { 580,200 } };/*size*/
 	border->setPosition({ 10,entryTop });
@@ -158,25 +158,25 @@ void TerritoryEntry::CreateEntry(XMLData& xmlData, float entryTop)
 	bonusLabel->setPosition({ 20, entryTop + 120 });
 	labels.push_back(bonusLabel);
 
-	TextBox* nameBox = new TextBox({ 120, entryTop + 12 }/*position*/, { 450, 30 }/*size*/, "");
+	TextBox* nameBox = new TextBox({ 120, entryTop + 12 }/*position*/, { 450, 30 }/*size*/);
 	boxes.push_back(nameBox);
 
-	TextBox* xSmallBox = new TextBox({ 330, entryTop + 50 }/*position*/, { 50, 30 }/*size*/, "0");
+	TextBox* xSmallBox = new TextBox({ 330, entryTop + 50 }/*position*/, { 50, 30 }/*size*/, new std::string("0"));
 	boxes.push_back(xSmallBox);
 
-	TextBox* ySmallBox = new TextBox({ 440, entryTop + 50 }/*position*/, { 50, 30 }/*size*/, "0");
+	TextBox* ySmallBox = new TextBox({ 440, entryTop + 50 }/*position*/, { 50, 30 }/*size*/, new std::string("0"));
 	boxes.push_back(ySmallBox);
 
-	TextBox* xLargeBox = new TextBox({ 330, entryTop + 88 }/*position*/, { 50, 30 }/*size*/, "0");
+	TextBox* xLargeBox = new TextBox({ 330, entryTop + 88 }/*position*/, { 50, 30 }/*size*/, new std::string("0"));
 	boxes.push_back(xLargeBox);
 
-	TextBox* yLargeBox = new TextBox({ 440, entryTop + 88 }/*position*/, { 50, 30 }/*size*/, "0");
+	TextBox* yLargeBox = new TextBox({ 440, entryTop + 88 }/*position*/, { 50, 30 }/*size*/, new std::string("0"));
 	boxes.push_back(yLargeBox);
 
-	TextBox* neutralBox = new TextBox({ 330, entryTop + 124 }/*position*/, { 50, 30 }/*size*/, "");
+	TextBox* neutralBox = new TextBox({ 330, entryTop + 124 }/*position*/, { 50, 30 }/*size*/);
 	boxes.push_back(neutralBox);
 
-	TextBox* bonusBox = new TextBox({ 120, entryTop + 124 }/*position*/, { 50, 30 }/*size*/, "");
+	TextBox* bonusBox = new TextBox({ 120, entryTop + 124 }/*position*/, { 50, 30 }/*size*/);
 	boxes.push_back(bonusBox);
 
 	Button* killer = new Button({ 390, entryTop + 124 }/*position*/, { 100, 30 }/*size*/, "Killer");

@@ -46,12 +46,12 @@ void PositionPage::Update(sf::RenderWindow& window, sf::Time timePassed,
 void PositionPage::AddPosition(XMLData& xmlData)
 {
 	PositionEntry* entry = new PositionEntry{};
-	UIPage::AddEntry(xmlData, entry);
+	UIPage::AddEntry(xmlData, entry, 0);
 }
 
 //-----------------------------------------------------------
 
-void PositionEntry::CreateEntry(XMLData& xmlData, float entryTop)
+void PositionEntry::CreateEntry(XMLData& xmlData, float entryTop, int insertedKey)
 {
 	sf::RectangleShape* border = new sf::RectangleShape{ {580, 50} };
 	border->setPosition({ 10,entryTop });
@@ -68,7 +68,7 @@ void PositionEntry::CreateEntry(XMLData& xmlData, float entryTop)
 	startLabel->setPosition({ 380, entryTop + 8 });
 	labels.push_back(startLabel);
 
-	TextBox* startBox = new TextBox({ 525, entryTop + 12 }/*position*/, { 50, 30 }/*size*/, "3");
+	TextBox* startBox = new TextBox({ 525, entryTop + 12 }/*position*/, { 50, 30 }/*size*/, new std::string("3"));
 	boxes.push_back(startBox);
 }
 

@@ -79,7 +79,7 @@ void ContinentPage::Update(sf::RenderWindow& window, sf::Time timePassed,
 void ContinentPage::AddContinent(XMLData& xmlData)
 {
 	ContinentEntry* entry = new ContinentEntry{selectedView};
-	UIPage::AddEntry(xmlData, entry);
+	UIPage::AddEntry(xmlData, entry, 0);
 }
 
 void ContinentPage::SwapView()
@@ -94,7 +94,7 @@ void ContinentPage::SwapView()
 }
 //-----------------------------------------------------------
 
-void ContinentEntry::CreateEntry(XMLData& xmlData, float entryTop)
+void ContinentEntry::CreateEntry(XMLData& xmlData, float entryTop, int insertedKey)
 {
 	sf::RectangleShape* border = new sf::RectangleShape{ {580,202 } };/*size*/
 	border->setPosition({ 10,entryTop });
@@ -125,11 +125,11 @@ void ContinentEntry::CreateEntry(XMLData& xmlData, float entryTop)
 	Button* removeBonus = new Button({ 550, entryTop + 50 }/*position*/, { 30, 30 }/*size*/, "-");
 	buttons.push_back(removeBonus);
 
-	TextBox* nameBox = new TextBox({ 120, entryTop + 12 }/*position*/, { 450, 30 }/*size*/, "Continent");
+	TextBox* nameBox = new TextBox({ 120, entryTop + 12 }/*position*/, { 450, 30 }/*size*/, new std::string("Continent"));
 	boxes.push_back(nameBox);
 
 	AdvancedTerritory* advance = new AdvancedTerritory();
-	advance->CreateEntry(xmlData, entryTop);
+	advance->CreateEntry(xmlData, entryTop, insertedKey);
 	entries.push_back(advance);
 
 	sf::Text* territory = new sf::Text(UI::font, "Territory");
@@ -141,7 +141,7 @@ void ContinentEntry::CreateEntry(XMLData& xmlData, float entryTop)
 	continents.push_back(continent);
 
 	BonusLine* bonus = new BonusLine();
-	bonus->CreateEntry(xmlData, entryTop);
+	bonus->CreateEntry(xmlData, entryTop, insertedKey);
 	bonuses.push_back(bonus);
 }
 
@@ -238,7 +238,7 @@ void ContinentEntry::MoveEntry(sf::Vector2f offset)
 
 //-----------------------------------------------------------
 
-void BonusLine::CreateEntry(XMLData& xmlData, float entryTop)
+void BonusLine::CreateEntry(XMLData& xmlData, float entryTop, int insertedKey)
 {
 	sf::Text* bonusLabel = new sf::Text(UI::font, "Bonus:");
 	bonusLabel->setPosition({ 150, entryTop + 46 });
@@ -248,10 +248,10 @@ void BonusLine::CreateEntry(XMLData& xmlData, float entryTop)
 	requiredLabel->setPosition({ 310, entryTop + 46 });
 	labels.push_back(requiredLabel);
 
-	TextBox* bonusBox = new TextBox({ 250, entryTop + 50 }, { 50, 30 }, "5");
+	TextBox* bonusBox = new TextBox({ 250, entryTop + 50 }, { 50, 30 }, new std::string("5"));
 	boxes.push_back(bonusBox);
 
-	TextBox* requiredBox = new TextBox({ 450, entryTop + 50 }, { 50, 30 }, "");
+	TextBox* requiredBox = new TextBox({ 450, entryTop + 50 }, { 50, 30 });
 	boxes.push_back(requiredBox);	
 }
 
@@ -278,7 +278,7 @@ void BonusLine::MoveEntry(sf::Vector2f offset)
 
 //-----------------------------------------------------------
 
-void AdvancedTerritory::CreateEntry(XMLData& xmlData, float entryTop)
+void AdvancedTerritory::CreateEntry(XMLData& xmlData, float entryTop, int insertedKey)
 {
 	sf::RectangleShape* border = new sf::RectangleShape{ {576,78 } };/*size*/
 	border->setPosition({ 12,entryTop + 120 });
@@ -304,7 +304,7 @@ void AdvancedTerritory::CreateEntry(XMLData& xmlData, float entryTop)
 	Button* multiplier = new Button({ 550, entryTop + 160 }/*position*/, { 30, 30 }/*size*/, "Multiplier");
 	buttons.push_back(multiplier);
 
-	TextBox* factor = new TextBox({ 530, entryTop + 124 }/*position*/, { 50, 30 }/*size*/, "1.0");
+	TextBox* factor = new TextBox({ 530, entryTop + 124 }/*position*/, { 50, 30 }/*size*/, new std::string("1.0"));
 	boxes.push_back(factor);
 }
 

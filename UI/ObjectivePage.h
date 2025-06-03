@@ -29,7 +29,8 @@ public:
 
 	ObjectiveEntry(bool isObjective) : 
 		isObjective{ isObjective } {};
-	void CreateEntry(XMLData& xmlData, float entryTop) override;
+	void CreateEntry(XMLData& xmlData, float entryTop, 
+		int insertedKey) override;
 
 	void Draw(sf::RenderWindow& window) override;
 	void MouseClick(sf::Vector2i mousePos, bool mouseOnPage) override;

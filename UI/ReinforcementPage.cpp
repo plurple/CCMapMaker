@@ -5,7 +5,7 @@
 ReinforcementPage::ReinforcementPage(XMLData& xmlData, sf::Vector2f tabPos,
 	sf::Vector2f tabSize, std::string tabLabel, sf::Vector2f buttonBoxSize) :
 	UIPage(tabPos, tabSize, tabLabel, buttonBoxSize),
-	minReinforcements({ 1530, 170 }, { 50, 30 }, "3")
+	minReinforcements({ 1530, 170 }, { 50, 30 })
 {
 	minLabel = new sf::Text(UI::font, "Minium Troops:");
 	minLabel->setPosition({ 1310, 165 });
@@ -13,6 +13,8 @@ ReinforcementPage::ReinforcementPage(XMLData& xmlData, sf::Vector2f tabPos,
 	addEntry.SetPosition({ 1020, 170 });
 	addEntry.rect.setSize({ 270, 30 });
 	addEntry.label->setString("Add Reinforcement");
+
+	minReinforcements.number = &xmlData.minReinforcements;
 }
 
 void ReinforcementPage::Draw(sf::RenderWindow& window, bool selected)
@@ -46,12 +48,13 @@ void ReinforcementPage::Update(sf::RenderWindow& window, sf::Time timePassed,
 void ReinforcementPage::AddReinforcement(XMLData& xmlData)
 {
 	ReinforcementEntry* entry = new ReinforcementEntry{};
-	UIPage::AddEntry(xmlData, entry);
+	auto insertedKey = xmlData.AddReinforcement();
+	UIPage::AddEntry(xmlData, entry, insertedKey);
 }
 
 //-----------------------------------------------------------
 
-void ReinforcementEntry::CreateEntry(XMLData& xmlData, float entryTop)
+void ReinforcementEntry::CreateEntry(XMLData& xmlData, float entryTop, int insertedKey)
 {
 	sf::RectangleShape* border = new sf::RectangleShape{ {580,155}/*size*/ };
 	border->setPosition({ 10,entryTop });
@@ -76,11 +79,15 @@ void ReinforcementEntry::CreateEntry(XMLData& xmlData, float entryTop)
 	explanation->setPosition({ 50, entryTop + 48 });
 	labels.push_back(explanation);
 
-	TextBox* lowerBox = new TextBox({ 160, entryTop + 12 }/*position*/, { 50, 30 }/*size*/, "1");
+	Reinforcement* data = xmlData.reinforcements.at(insertedKey);
+	TextBox* lowerBox = new TextBox({ 160, entryTop + 12 }/*position*/, { 50, 30 }/*size*/);
+	lowerBox->number = &data->lower;
 	boxes.push_back(lowerBox);
-	TextBox* upperBox = new TextBox({ 320, entryTop + 12 }/*position*/, { 50, 30 }/*size*/, "300");
+	TextBox* upperBox = new TextBox({ 320, entryTop + 12 }/*position*/, { 50, 30 }/*size*/);
+	upperBox->number = &data->upper;
 	boxes.push_back(upperBox);
-	TextBox* divisorBox = new TextBox({ 490, entryTop + 12 }/*position*/, { 50, 30 }/*size*/, "3");
+	TextBox* divisorBox = new TextBox({ 490, entryTop + 12 }/*position*/, { 50, 30 }/*size*/);
+	divisorBox->number = &data->divisor;
 	boxes.push_back(divisorBox);
 }
 

@@ -8,9 +8,22 @@ class Objective;
 class Continent;
 class Territory;
 
+enum class UIPageType
+{
+	Territory,
+	Continent,
+	Position,
+	Requirements,
+	Objective,
+	Reinforcement,
+	Transform,
+	NumPageTypes
+};
+
 class XMLData
 {
 public:
+	std::vector<int> nextKey;
 	std::unordered_map<int, Transform*> transforms;
 	int minReinforcements;
 	std::unordered_map<int, Reinforcement*> reinforcements;
@@ -22,5 +35,13 @@ public:
 	std::unordered_map<int, Territory*> territories;
 
 	XMLData();
+	//Transform*		AddTransform();
+	int	AddReinforcement();
+	//Position*		AddPosition();
+	//Objective* 		AddRequirement();
+	//Objective* 		AddObjective();
+	//Continent* 		AddContinent();
+	//Territory* 		AddTerritory();
+
 };
 

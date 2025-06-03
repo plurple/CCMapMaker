@@ -5,18 +5,6 @@
 #include "../UserInput.h"
 #include "../XML/XMLData.h"
 
-enum class UIPageType
-{
-	Territory,
-	Continent,
-	Position,
-	Requirements,
-	Objective,
-	Reinforcement,
-	Transform,
-	NumPageTypes
-};
-
 class UIPage;
 
 class UI

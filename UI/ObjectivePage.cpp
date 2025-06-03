@@ -47,12 +47,12 @@ void ObjectivePage::Update(sf::RenderWindow& window, sf::Time timePassed,
 void ObjectivePage::AddObjective(XMLData& xmlData)
 {
 	ObjectiveEntry* entry = new ObjectiveEntry{isObjective};
-	UIPage::AddEntry(xmlData, entry);
+	UIPage::AddEntry(xmlData, entry, 0);
 }
 
 //-----------------------------------------------------------
 
-void ObjectiveEntry::CreateEntry(XMLData& xmlData, float entryTop)
+void ObjectiveEntry::CreateEntry(XMLData& xmlData, float entryTop, int insertedKey)
 {
 	sf::RectangleShape* border = new sf::RectangleShape{ {580, 165} };
 	border->setPosition({ 10,entryTop });
@@ -86,11 +86,11 @@ void ObjectiveEntry::CreateEntry(XMLData& xmlData, float entryTop)
 	labels.push_back(requiredLabel);
 
 	TextBox* nameBox = new TextBox({ 120, entryTop + 12 }/*position*/, 
-		{ 450, 30 }/*size*/, "Obective Name");
+		{ 450, 30 }/*size*/, new std::string("Obective Name"));
 	boxes.push_back(nameBox);
 
 	TextBox* numRequiredBox = new TextBox({ 235, entryTop + 124 }/*position*/, 
-		{ 50, 30 }/*size*/, isObjective ? "all" : "1");
+		{ 50, 30 }/*size*/, new std::string(isObjective ? "all" : "1"));
 	boxes.push_back(numRequiredBox);
 }
 

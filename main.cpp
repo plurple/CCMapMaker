@@ -32,14 +32,9 @@ int main()
             }
             if (const auto* KeyPressed = event->getIf<sf::Event::KeyPressed>())
             {
-                if (KeyPressed->scancode == sf::Keyboard::Scancode::Backspace)
-                {
-                    input.backSpace = true;
-                }
-                if (KeyPressed->scancode == sf::Keyboard::Scancode::Enter)
-                {
-                    input.enter = true;
-                }
+                input.backSpace = KeyPressed->scancode == sf::Keyboard::Scancode::Backspace;
+                input.enter = KeyPressed->scancode == sf::Keyboard::Scancode::Enter;
+                input.del = KeyPressed->scancode == sf::Keyboard::Scancode::Delete;
             }
         }
 

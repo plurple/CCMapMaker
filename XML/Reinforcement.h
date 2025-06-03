@@ -1,8 +1,13 @@
 #pragma once
+#include "XMLData.h"
+
 class Reinforcement
 {
-	unsigned int lower;
-	unsigned int upper;
-	unsigned int divisor;
+public:
+	int lower;
+	int upper;
+	int divisor;
+
+	Reinforcement(XMLData& xmlData);
 };
 
