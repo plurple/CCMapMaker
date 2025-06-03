@@ -2,6 +2,22 @@
 #include "ReinforcementPage.h"
 #include "../XML/Reinforcement.h"
 
+#include <memory>
+#include <string>
+#include <stdexcept>
+
+template<typename ... Args>
+std::string string_format(const std::string& format, Args ... args)
+{
+	int size_s = std::snprintf(nullptr, 0, format.c_str(), args ...) + 1; // Extra space for '\0'
+	if (size_s <= 0) { throw std::runtime_error("Error during formatting."); }
+	auto size = static_cast<size_t>(size_s);
+	std::unique_ptr<char[]> buf(new char[size]);
+	std::snprintf(buf.get(), size, format.c_str(), args ...);
+	return std::string(buf.get(), buf.get() + size - 1); // We don't want the '\0' inside
+}
+
+
 ReinforcementPage::ReinforcementPage(XMLData& xmlData, sf::Vector2f tabPos,
 	sf::Vector2f tabSize, std::string tabLabel, sf::Vector2f buttonBoxSize) :
 	UIPage(tabPos, tabSize, tabLabel, buttonBoxSize),
@@ -55,7 +71,7 @@ void ReinforcementPage::AddReinforcement(XMLData& xmlData)
 
 void ReinforcementEntry::CreateEntry(XMLData& xmlData, float entryTop)
 {
-	sf::RectangleShape* border = new sf::RectangleShape{ {580,155}/*size*/ };
+	sf::RectangleShape* border = new sf::RectangleShape{ {535,155}/*size*/ };
 	border->setPosition({ 10,entryTop });
 	border->setFillColor(sf::Color(192, 192, 192, 0));
 	border->setOutlineThickness(2.0f);
@@ -63,29 +79,29 @@ void ReinforcementEntry::CreateEntry(XMLData& xmlData, float entryTop)
 	shapes.push_back(border);
 
 	sf::Text* lowerLabel = new sf::Text(UI::font, "Lower:");
-	lowerLabel->setPosition({ 60, entryTop + 8 });
+	lowerLabel->setPosition({ 35, entryTop + 8 });
 	labels.push_back(lowerLabel);
 
 	sf::Text* upperLabel = new sf::Text(UI::font, "Upper:");
-	upperLabel->setPosition({ 220, entryTop + 8 });
+	upperLabel->setPosition({ 195, entryTop + 8 });
 	labels.push_back(upperLabel);
 
 	sf::Text* divisorLabel = new sf::Text(UI::font, "Divisor:");
-	divisorLabel->setPosition({ 380, entryTop + 8 });
+	divisorLabel->setPosition({ 355, entryTop + 8 });
 	labels.push_back(divisorLabel);
 
-	sf::Text* explanation = new sf::Text(UI::font, "1 troop for every divisor regions up to \nmax of (upper-lower)/divisor=max troops \nin the range of lower-upper regions.");
-	explanation->setPosition({ 50, entryTop + 48 });
+	sf::Text* explanation = new sf::Text(UI::font, "1 troop for every %d regions up to \nmax of (%d-%d)/%d=%d troops \nin the range of %d-%d regions.");
+	explanation->setPosition({ 55, entryTop + 48 });
 	labels.push_back(explanation);
 
 	Reinforcement* data = xmlData.reinforcements.at(xmlKey);
-	TextBox* lowerBox = new TextBox({ 160, entryTop + 12 }/*position*/, { 50, 30 }/*size*/);
+	TextBox* lowerBox = new TextBox({ 135, entryTop + 12 }/*position*/, { 50, 30 }/*size*/);
 	lowerBox->number = &data->lower;
 	boxes.push_back(lowerBox);
-	TextBox* upperBox = new TextBox({ 320, entryTop + 12 }/*position*/, { 50, 30 }/*size*/);
+	TextBox* upperBox = new TextBox({ 295, entryTop + 12 }/*position*/, { 50, 30 }/*size*/);
 	upperBox->number = &data->upper;
 	boxes.push_back(upperBox);
-	TextBox* divisorBox = new TextBox({ 490, entryTop + 12 }/*position*/, { 50, 30 }/*size*/);
+	TextBox* divisorBox = new TextBox({ 465, entryTop + 12 }/*position*/, { 50, 30 }/*size*/);
 	divisorBox->number = &data->divisor;
 	boxes.push_back(divisorBox);
 }
@@ -120,6 +136,14 @@ void ReinforcementEntry::Update(sf::RenderWindow& window, sf::Time timePassed,
 	UserInput input, bool showCursor)
 {
 	UIEntry::Update(window, timePassed, input, showCursor);
+
+	std::string explanation = "1 troop for every %d regions up to \n a max of (%d-%d)/%d=%d troops \n in the range of %d-%d regions.";
+	int lower = *boxes[(int)BoxTypes::LowerBox]->number;
+	int upper = *boxes[(int)BoxTypes::UpperBox]->number;
+	int divisor = *boxes[(int)BoxTypes::DivisorBox]->number;
+	int max = (upper - lower+1) / divisor;
+	labels[(int)LabelTypes::Explanation]->setString(string_format(explanation, divisor, upper, lower-1, divisor, max, lower, upper));
+
 	MoveEntry({ 0, input.scroll });
 }
 
