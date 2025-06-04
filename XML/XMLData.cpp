@@ -16,10 +16,17 @@ XMLData::XMLData() :
 	}
 }
 
-//Transform* XMLData::AddTransform()
-//{
-//
-//}
+int XMLData::AddTransform()
+{
+	int key = nextKey[(int)UIPageType::Transform]++;
+	transforms.insert({ key, new Transform() });
+	return key;
+}
+
+void XMLData::RemoveTransform(int key)
+{
+	transforms.erase(key);
+}
 
 int XMLData::AddReinforcement()
 {
@@ -33,26 +40,54 @@ void XMLData::RemoveReinforcement(int key)
 	reinforcements.erase(key);
 }
 
-//Position* XMLData::AddPosition()
-//{
-//
-//}
-//
-//Objective* XMLData::AddRequirement()
-//{
-//	
-//}
-//
-//Objective* XMLData::AddObjective()
-//{
-//
-//}
-//
-//Continent* XMLData::AddContinent()
-//{
-//
-//}
-//
+int XMLData::AddPosition()
+{
+	int key = nextKey[(int)UIPageType::Position]++;
+	positions.insert({ key, new Position() });
+	return key;
+}
+
+void XMLData::RemovePosition(int key)
+{
+	positions.erase(key);
+}
+
+int XMLData::AddRequirement()
+{
+	int key = nextKey[(int)UIPageType::Requirements]++;
+	requirements.insert({ key, new Objective() });
+	return key;
+}
+
+void XMLData::RemoveRequirement(int key)
+{
+	requirements.erase(key);
+}
+
+int XMLData::AddObjective()
+{
+	int key = nextKey[(int)UIPageType::Objective]++;
+	objectives.insert({ key, new Objective() });
+	return key;
+}
+
+void XMLData::RemoveObjective(int key)
+{
+	objectives.erase(key);
+}
+
+int XMLData::AddContinent()
+{
+	int key = nextKey[(int)UIPageType::Continent]++;
+	continents.insert({ key, new Continent() });
+	return key;
+}
+
+void XMLData::RemoveContinent(int key)
+{
+	continents.erase(key);
+}
+
 int XMLData::AddTerritory()
 {
 	int key = nextKey[(int)UIPageType::Territory]++;
@@ -73,17 +108,22 @@ void XMLData::RemoveData(UIPageType type, int key)
 		RemoveTerritory(key);
 		break;
 	case UIPageType::Continent:
+		RemoveContinent(key);
 		break;
 	case UIPageType::Position:
+		RemovePosition(key);
 		break;
 	case UIPageType::Requirements:
+		RemoveRequirement(key);
 		break;
 	case UIPageType::Objective:
+		RemoveObjective(key);
 		break;
 	case UIPageType::Reinforcement:
 		RemoveReinforcement(key);
 		break;
 	case UIPageType::Transform:
+		RemoveTransform(key);
 		break;
 	}
 }

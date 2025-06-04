@@ -3,50 +3,65 @@
 
 enum class TransformType
 {
-	turn,
-	round
+	Turn,
+	Round,
+	NumTypes
 };
 
 enum class ApplyTo
 {
-	self,
-	neutral,
-	players,
-	opponents,
-	others,
-	team,
-	nonTeam,
-	teamMates,
-	all
+	Self,
+	Neutral,
+	Players,
+	Opponents,
+	Others,
+	Team,
+	NonTeam,
+	TeamMates,
+	All,
+	NumApplys
 };
 
+enum class IncType
+{
+	Plus,
+	Minus,
+	Independent,
+	NumIncs
+};
 
 enum class ConditionType
 {
-	round,
-	player,
-	territory,
-	armyCount
+	Round,
+	Player,
+	Territory,
+	ArmyCount,
+	NumTypes
 };
 
 enum class Operators
 {
-	equals,
-	notEquals,
-	greaterThan,
-	greaterEquals,
-	lessThan,
-	lessEquals,
-	in,
-	notIn
+	Equals,
+	NotEquals,
+	GreaterThan,
+	GreaterEquals,
+	LessThan,
+	LessEquals,
+	In,
+	NotIn,
+	NumOperators
 };
 
 struct ConditionData
 {
+public:
 	ConditionType condType;
-	unsigned int index;
+	int index;
 	Operators oper;
-	std::vector<unsigned int> values;
+	ApplyTo valueOption;
+	std::vector<int> values;
+
+	ConditionData();
 };
 
 class Transform
@@ -54,9 +69,13 @@ class Transform
 public:
 	TransformType transformType;
 	ApplyTo apply;
-	int inc;
-	unsigned int amount;
+	IncType inc;
+	int amount;
+	int upper;
+	int lower;
 	bool percentage;
 	std::vector<ConditionData> conditions;
+
+	Transform();
 };
 

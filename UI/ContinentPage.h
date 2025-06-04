@@ -61,7 +61,9 @@ class BonusLine : public UIEntry
 		NumBoxes
 	};
 public:
-	BonusLine(int insertedKey) : UIEntry{ insertedKey } {};
+	int bonusNum;
+	BonusLine(int insertedKey, int bonus) : 
+		UIEntry{ insertedKey }, bonusNum{ bonus } {};
 	void CreateEntry(XMLData& xmlData, float entryTop) override;
 
 	void Draw(sf::RenderWindow& window) override;
@@ -83,7 +85,6 @@ class ContinentEntry : public UIEntry
 	{
 		NameLabel,
 		BonusesLabel,
-		TerritoriesLabel,
 		ContinentsLabel,
 		NumLabels
 	};	
@@ -104,7 +105,6 @@ class ContinentEntry : public UIEntry
 		NumButtons
 	};
 public:
-	std::vector<sf::Text*> territories;
 	std::vector<sf::Text*> continents;
 	std::vector<UIEntry*> bonuses;
 	ContinentView selectedView;

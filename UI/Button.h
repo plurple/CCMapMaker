@@ -7,6 +7,7 @@ public:
 	sf::RectangleShape rect;
 	sf::Text* label;
 	bool selected;
+	bool* xmlLink;
 
 	Button(sf::Vector2f pos, sf::Vector2f dimensions = { 50,50 }, 
 		std::string lab = "", bool select = false);

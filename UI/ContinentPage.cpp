@@ -1,5 +1,6 @@
 #include "ContinentPage.h"
 #include "UI.h"
+#include "../XML/Continent.h"
 
 ContinentPage::ContinentPage(XMLData& xmlData, sf::Vector2f tabPos,
 	sf::Vector2f tabSize, std::string tabLabel, sf::Vector2f buttonBoxSize) :
@@ -78,7 +79,7 @@ void ContinentPage::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time 
 
 void ContinentPage::AddContinent(XMLData& xmlData)
 {
-	ContinentEntry* entry = new ContinentEntry{selectedView, 0};
+	ContinentEntry* entry = new ContinentEntry{selectedView, xmlData.AddContinent()};
 	UIPage::AddEntry(xmlData, entry);
 }
 
@@ -125,22 +126,20 @@ void ContinentEntry::CreateEntry(XMLData& xmlData, float entryTop)
 	Button* removeBonus = new Button({ 550, entryTop + 50 }/*position*/, { 30, 30 }/*size*/, "-");
 	buttons.push_back(removeBonus);
 
+	Continent* data = xmlData.continents.at(xmlKey);
 	TextBox* nameBox = new TextBox({ 120, entryTop + 12 }/*position*/, { 450, 30 }/*size*/, new std::string("Continent"));
+	nameBox->text = &data->name;
 	boxes.push_back(nameBox);
 
 	AdvancedTerritory* advance = new AdvancedTerritory(xmlKey);
 	advance->CreateEntry(xmlData, entryTop);
 	entries.push_back(advance);
 
-	sf::Text* territory = new sf::Text(UI::font, "Territory");
-	territory->setPosition({ 180, entryTop + 84 });
-	territories.push_back(territory);
-
 	sf::Text* continent = new sf::Text(UI::font, "Continent");
 	continent->setPosition({ 180, entryTop + 120 });
 	continents.push_back(continent);
 
-	BonusLine* bonus = new BonusLine(xmlKey);
+	BonusLine* bonus = new BonusLine(xmlKey, bonuses.size());
 	bonus->CreateEntry(xmlData, entryTop);
 	bonuses.push_back(bonus);
 }
@@ -156,10 +155,7 @@ void ContinentEntry::Draw(sf::RenderWindow& window)
 
 	if (selectedView == ContinentView::Basic)
 	{
-		for (sf::Text* territory : territories)
-		{
-			window.draw(*territory);
-		}
+		//todo draw the territory name of advanced Data
 	}
 	if (selectedView != ContinentView::Advanced)
 	{
@@ -222,10 +218,6 @@ void ContinentEntry::Update(sf::RenderWindow& window, sf::Time timePassed,
 void ContinentEntry::MoveEntry(sf::Vector2f offset)
 {
 	UIEntry::MoveEntry(offset);	
-	for (sf::Text* territory : territories)
-	{
-		territory->move(offset);
-	}
 	for (sf::Text* continent : continents)
 	{
 		continent->move(offset);
@@ -248,11 +240,14 @@ void BonusLine::CreateEntry(XMLData& xmlData, float entryTop)
 	requiredLabel->setPosition({ 310, entryTop + 46 });
 	labels.push_back(requiredLabel);
 
-	TextBox* bonusBox = new TextBox({ 250, entryTop + 50 }, { 50, 30 }, new std::string("5"));
+	Continent* data = xmlData.continents.at(xmlKey);
+	TextBox* bonusBox = new TextBox({ 250, entryTop + 50 }, { 50, 30 });
+	bonusBox->number = &data->bonuses[bonusNum].bonusAmount;
 	boxes.push_back(bonusBox);
 
 	TextBox* requiredBox = new TextBox({ 450, entryTop + 50 }, { 50, 30 });
-	boxes.push_back(requiredBox);	
+	requiredBox->number = &data->bonuses[bonusNum].numRequired;
+	boxes.push_back(requiredBox);
 }
 
 void BonusLine::Draw(sf::RenderWindow& window)
@@ -281,30 +276,30 @@ void BonusLine::MoveEntry(sf::Vector2f offset)
 void AdvancedTerritory::CreateEntry(XMLData& xmlData, float entryTop)
 {
 	sf::RectangleShape* border = new sf::RectangleShape{ {576,78 } };/*size*/
-	border->setPosition({ 12,entryTop + 120 });
+	border->setPosition({ 12,entryTop + 84 });
 	border->setFillColor(sf::Color(192, 192, 192, 0));
 	border->setOutlineThickness(2.0f);
 	border->setOutlineColor(sf::Color::Cyan);
 	shapes.push_back(border);
 
 	sf::Text* territory = new sf::Text(UI::font, "TerritoryName");
-	territory->setPosition({ 20, entryTop + 120 });
+	territory->setPosition({ 20, entryTop + 84 });
 	labels.push_back(territory);
 
 	sf::Text* factorLabel = new sf::Text(UI::font, "Factor:");
-	factorLabel->setPosition({ 410, entryTop + 120 });
+	factorLabel->setPosition({ 410, entryTop + 84 });
 	labels.push_back(factorLabel);
 
-	Button* mandatory  = new Button({ 350, entryTop + 160 }/*position*/, { 30, 30 }/*size*/, "Mandatory");
+	Button* mandatory  = new Button({ 30, entryTop + 120 }/*position*/, { 150, 30 }/*size*/, "Mandatory");
 	buttons.push_back(mandatory);
 
-	Button* blocker    = new Button({ 130, entryTop + 160 }/*position*/, { 30, 30 }/*size*/, "Blocker");
+	Button* blocker    = new Button({ 200, entryTop + 120 }/*position*/, { 100, 30 }/*size*/, "Blocker");
 	buttons.push_back(blocker);
 
-	Button* multiplier = new Button({ 550, entryTop + 160 }/*position*/, { 30, 30 }/*size*/, "Multiplier");
+	Button* multiplier = new Button({ 350, entryTop + 120 }/*position*/, { 150, 30 }/*size*/, "Multiplier");
 	buttons.push_back(multiplier);
 
-	TextBox* factor = new TextBox({ 530, entryTop + 124 }/*position*/, { 50, 30 }/*size*/, new std::string("1.0"));
+	TextBox* factor = new TextBox({ 530, entryTop + 88 }/*position*/, { 50, 30 }/*size*/, new std::string("1.0"));
 	boxes.push_back(factor);
 }
 

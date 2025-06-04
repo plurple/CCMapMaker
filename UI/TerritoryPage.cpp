@@ -164,19 +164,19 @@ void TerritoryEntry::CreateEntry(XMLData& xmlData, float entryTop)
 	nameBox->text = &data->name;
 	boxes.push_back(nameBox);
 
-	TextBox* xSmallBox = new TextBox({ 330, entryTop + 50 }/*position*/, { 50, 30 }/*size*/, new std::string("0"));
+	TextBox* xSmallBox = new TextBox({ 330, entryTop + 50 }/*position*/, { 50, 30 }/*size*/);
 	xSmallBox->number = &data->smallPos.x;
 	boxes.push_back(xSmallBox);
 
-	TextBox* ySmallBox = new TextBox({ 440, entryTop + 50 }/*position*/, { 50, 30 }/*size*/, new std::string("0"));
+	TextBox* ySmallBox = new TextBox({ 440, entryTop + 50 }/*position*/, { 50, 30 }/*size*/);
 	ySmallBox->number = &data->smallPos.y;
 	boxes.push_back(ySmallBox);
 
-	TextBox* xLargeBox = new TextBox({ 330, entryTop + 88 }/*position*/, { 50, 30 }/*size*/, new std::string("0"));
+	TextBox* xLargeBox = new TextBox({ 330, entryTop + 88 }/*position*/, { 50, 30 }/*size*/);
 	xLargeBox->number = &data->largePos.x;
 	boxes.push_back(xLargeBox);
 
-	TextBox* yLargeBox = new TextBox({ 440, entryTop + 88 }/*position*/, { 50, 30 }/*size*/, new std::string("0"));
+	TextBox* yLargeBox = new TextBox({ 440, entryTop + 88 }/*position*/, { 50, 30 }/*size*/);
 	yLargeBox->number = &data->largePos.y;
 	boxes.push_back(yLargeBox);
 
@@ -189,7 +189,7 @@ void TerritoryEntry::CreateEntry(XMLData& xmlData, float entryTop)
 	boxes.push_back(bonusBox);
 
 	Button* killer = new Button({ 390, entryTop + 124 }/*position*/, { 100, 30 }/*size*/, "Killer");
-	killer->selected = &data->killer;
+	killer->xmlLink = &data->killer;
 	buttons.push_back(killer);
 
 	//todo link these 3 to the correct list and right name etc.

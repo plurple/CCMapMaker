@@ -62,7 +62,10 @@ class ConditionEntry : public UIEntry
 		NumOptions
 	};
 public:
-	ConditionEntry(int insertedKey) : UIEntry{ insertedKey } {};
+	int conditionNum;
+
+	ConditionEntry(int insertedKey, int condition) : 
+		UIEntry{ insertedKey }, conditionNum{ condition } {};
 	void CreateEntry(XMLData& xmlData, float entryTop) override;
 
 	void Draw(sf::RenderWindow& window) override;

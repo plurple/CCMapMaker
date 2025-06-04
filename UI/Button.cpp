@@ -24,6 +24,7 @@ void Button::Draw(sf::RenderWindow& window)
 void Button::Select()
 {
 	selected = true;
+	if (xmlLink) *xmlLink = true;
 	rect.setOutlineThickness(5.0f);
 	rect.setOutlineColor(sf::Color::Red);
 	label->setFillColor(sf::Color::Red);
@@ -32,6 +33,7 @@ void Button::Select()
 void Button::Unselect()
 {
 	selected = false;
+	if (xmlLink) *xmlLink = false;
 	rect.setOutlineThickness(2.0f);
 	rect.setOutlineColor(sf::Color::White);
 	label->setFillColor(sf::Color::White);

@@ -1,5 +1,6 @@
 #include "TransformPage.h"
 #include "UI.h"
+#include "../XML/Transform.h"
 
 TransformPage::TransformPage(XMLData& xmlData, sf::Vector2f tabPos,
 	sf::Vector2f tabSize, std::string tabLabel, sf::Vector2f buttonBoxSize) :
@@ -41,7 +42,7 @@ void TransformPage::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time 
 
 void TransformPage::AddTransform(XMLData& xmlData)
 {
-	TransformEntry* entry = new TransformEntry{0};
+	TransformEntry* entry = new TransformEntry{xmlData.AddTransform()};
 	UIPage::AddEntry(xmlData, entry);
 }
 
@@ -72,16 +73,21 @@ void TransformEntry::CreateEntry(XMLData& xmlData, float entryTop)
 	conditionsLabel->setPosition({ 20, entryTop + 128 });
 	labels.push_back(conditionsLabel);
 
+	Transform* data = xmlData.transforms.at(xmlKey);
 	TextBox* amountBox = new TextBox({ 140, entryTop + 96 }/*position*/, { 70, 30 }/*size*/);
+	amountBox->number = &data->amount;
 	boxes.push_back(amountBox);
 	
 	TextBox* upperBox = new TextBox({ 320, entryTop + 96 }/*position*/, { 50, 30 }/*size*/);
+	upperBox->number = &data->upper;
 	boxes.push_back(upperBox);
 	
 	TextBox* lowerBox = new TextBox({ 480, entryTop + 96 }/*position*/, { 50, 30 }/*size*/);
+	lowerBox->number = &data->lower;
 	boxes.push_back(lowerBox);
 
 	Button* percentage = new Button({ 540, entryTop + 96 }/*position*/, { 35, 30 }/*size*/, "%");
+	percentage->xmlLink = &data->percentage;
 	buttons.push_back(percentage);
 
 	Button* addCondition = new Button({ 200, entryTop + 132 }/*position*/, { 205, 30 }/*size*/, "Add Condition");
@@ -99,7 +105,7 @@ void TransformEntry::CreateEntry(XMLData& xmlData, float entryTop)
 	incOptions->CreateEntry(xmlData, entryTop + 12, 320, 380, 420, 540, "Inc:");
 	entries.push_back(incOptions);
 	
-	ConditionEntry* condition = new ConditionEntry(xmlKey);
+	ConditionEntry* condition = new ConditionEntry(xmlKey, conditions.size());
 	condition->CreateEntry(xmlData, entryTop);
 	conditions.push_back(condition);
 }
@@ -189,10 +195,13 @@ void ConditionEntry::CreateEntry(XMLData& xmlData, float entryTop)
 	valueLabel->setPosition({ 400, entryTop + 208 });
 	labels.push_back(valueLabel);
 
+	Transform* data = xmlData.transforms.at(xmlKey);
 	TextBox* idBox = new TextBox({ 370, entryTop + 176 }/*position*/, { 50, 30 }/*size*/);
+	idBox->number = &data->conditions[conditionNum].index;
 	boxes.push_back(idBox);
 
 	TextBox* valueBox = new TextBox({ 500, entryTop + 208 }/*position*/, { 50, 30 }/*size*/);
+	valueBox->number = &data->conditions[conditionNum].values[0];
 	boxes.push_back(valueBox);
 
 	TransformOption* typeOptions = new TransformOption(xmlKey);

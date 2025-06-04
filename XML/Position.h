@@ -3,12 +3,18 @@
 
 struct PositionData
 {
-	unsigned int territory;
-	unsigned int startSize;
+public:
+	int territory;
+	int startSize;
+
+	PositionData() : territory{ -1 }, startSize{ 3 } {};
 };
 
 class Position
 {
-	std::vector<PositionData> territories;
+public:
+	std::vector<PositionData> positions;
+
+	Position();
 };
 

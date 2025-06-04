@@ -6,8 +6,10 @@ class Objective
 {
 public:
 	std::string name;
-	std::vector<unsigned int> territories;
-	std::vector<unsigned int> continents;
-	unsigned int numRequired;
+	std::vector<int> territories;
+	std::vector<int> continents;
+	int numRequired;
+
+	Objective() : name{ "" }, numRequired{ 1 } {};
 };
 

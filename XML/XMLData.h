@@ -35,13 +35,18 @@ public:
 	std::unordered_map<int, Territory*> territories;
 
 	XMLData();
-	//Transform*		AddTransform();
+	int	AddTransform();
+	void RemoveTransform(int key);
 	int	AddReinforcement();
 	void RemoveReinforcement(int key);
-	//Position*		AddPosition();
-	//Objective* 		AddRequirement();
-	//Objective* 		AddObjective();
-	//Continent* 		AddContinent();
+	int	AddPosition();
+	void RemovePosition(int key);
+	int	AddRequirement();
+	void RemoveRequirement(int key);
+	int	AddObjective();
+	void RemoveObjective(int key);
+	int	AddContinent();
+	void RemoveContinent(int key);
 	int	AddTerritory();
 	void RemoveTerritory(int key);
 

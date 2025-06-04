@@ -1,5 +1,6 @@
 #include "ObjectivePage.h"
 #include "UI.h"
+#include "../XML/Objective.h"
 
 ObjectivePage::ObjectivePage(XMLData& xmlData, sf::Vector2f tabPos,
 	sf::Vector2f tabSize, std::string tabLabel, sf::Vector2f buttonBoxSize) :
@@ -46,7 +47,8 @@ void ObjectivePage::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time 
 
 void ObjectivePage::AddObjective(XMLData& xmlData)
 {
-	ObjectiveEntry* entry = new ObjectiveEntry{isObjective, 0};
+	ObjectiveEntry* entry = new ObjectiveEntry{ isObjective, 
+		isObjective ? xmlData.AddObjective() : xmlData.AddRequirement() };
 	UIPage::AddEntry(xmlData, entry);
 }
 
@@ -85,12 +87,16 @@ void ObjectiveEntry::CreateEntry(XMLData& xmlData, float entryTop)
 	requiredLabel->setPosition({ 20, entryTop + 120 });
 	labels.push_back(requiredLabel);
 
+	Objective* data = isObjective ? xmlData.objectives.at(xmlKey) :
+		xmlData.requirements.at(xmlKey);
 	TextBox* nameBox = new TextBox({ 120, entryTop + 12 }/*position*/, 
-		{ 450, 30 }/*size*/, new std::string("Obective Name"));
+		{ 450, 30 }/*size*/);
+	nameBox->text = &data->name;
 	boxes.push_back(nameBox);
 
 	TextBox* numRequiredBox = new TextBox({ 235, entryTop + 124 }/*position*/, 
-		{ 50, 30 }/*size*/, new std::string(isObjective ? "all" : "1"));
+		{ 50, 30 }/*size*/);
+	numRequiredBox->number = &data->numRequired;
 	boxes.push_back(numRequiredBox);
 }
 
