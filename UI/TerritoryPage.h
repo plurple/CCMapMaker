@@ -30,7 +30,7 @@ class TerritoryEntry : public UIEntry
 		ConnectionLabel,
 		ConditionLabel,
 		NeutralLabel,
-		BonusLabel, //can be negative
+		BonusLabel,
 		NumLabels
 	};
 	enum class BoxTypes
@@ -41,7 +41,7 @@ class TerritoryEntry : public UIEntry
 		LargeXBox,
 		LargeYBox,
 		NeutralBox,
-		BonusBox,
+		BonusBox, //can be negative
 		NumBoxes
 	};
 	enum class ButtonTypes

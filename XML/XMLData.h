@@ -42,7 +42,8 @@ public:
 	//Objective* 		AddRequirement();
 	//Objective* 		AddObjective();
 	//Continent* 		AddContinent();
-	//Territory* 		AddTerritory();
+	int	AddTerritory();
+	void RemoveTerritory(int key);
 
 	void RemoveData(UIPageType type, int key);
 };

@@ -53,16 +53,24 @@ void XMLData::RemoveReinforcement(int key)
 //
 //}
 //
-//Territory* XMLData::AddTerritory()
-//{
-//
-//}
+int XMLData::AddTerritory()
+{
+	int key = nextKey[(int)UIPageType::Territory]++;
+	territories.insert({ key, new Territory() });
+	return key;
+}
+
+void XMLData::RemoveTerritory(int key)
+{
+	territories.erase(key);
+}
 
 void XMLData::RemoveData(UIPageType type, int key)
 {
 	switch (type)
 	{
 	case UIPageType::Territory:
+		RemoveTerritory(key);
 		break;
 	case UIPageType::Continent:
 		break;

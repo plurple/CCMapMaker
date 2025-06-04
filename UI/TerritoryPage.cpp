@@ -1,5 +1,6 @@
 #include "TerritoryPage.h"
 #include "UI.h"
+#include "../XML/Territory.h"
 
 TerritoryPage::TerritoryPage(XMLData& xmlData, sf::Vector2f tabPos,
 	sf::Vector2f tabSize, std::string tabLabel, sf::Vector2f buttonBoxSize):
@@ -85,7 +86,7 @@ void TerritoryPage::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time 
 
 void TerritoryPage::AddTerritory(XMLData& xmlData)
 {
-	TerritoryEntry* entry = new TerritoryEntry{ selectedView, 0 };
+	TerritoryEntry* entry = new TerritoryEntry{ selectedView, xmlData.AddTerritory() };
 	UIPage::AddEntry(xmlData, entry);
 }
 
@@ -158,30 +159,40 @@ void TerritoryEntry::CreateEntry(XMLData& xmlData, float entryTop)
 	bonusLabel->setPosition({ 20, entryTop + 120 });
 	labels.push_back(bonusLabel);
 
+	Territory* data = xmlData.territories.at(xmlKey);
 	TextBox* nameBox = new TextBox({ 120, entryTop + 12 }/*position*/, { 450, 30 }/*size*/);
+	nameBox->text = &data->name;
 	boxes.push_back(nameBox);
 
 	TextBox* xSmallBox = new TextBox({ 330, entryTop + 50 }/*position*/, { 50, 30 }/*size*/, new std::string("0"));
+	xSmallBox->number = &data->smallPos.x;
 	boxes.push_back(xSmallBox);
 
 	TextBox* ySmallBox = new TextBox({ 440, entryTop + 50 }/*position*/, { 50, 30 }/*size*/, new std::string("0"));
+	ySmallBox->number = &data->smallPos.y;
 	boxes.push_back(ySmallBox);
 
 	TextBox* xLargeBox = new TextBox({ 330, entryTop + 88 }/*position*/, { 50, 30 }/*size*/, new std::string("0"));
+	xLargeBox->number = &data->largePos.x;
 	boxes.push_back(xLargeBox);
 
 	TextBox* yLargeBox = new TextBox({ 440, entryTop + 88 }/*position*/, { 50, 30 }/*size*/, new std::string("0"));
+	yLargeBox->number = &data->largePos.y;
 	boxes.push_back(yLargeBox);
 
 	TextBox* neutralBox = new TextBox({ 330, entryTop + 124 }/*position*/, { 50, 30 }/*size*/);
+	neutralBox->number = &data->neutral;
 	boxes.push_back(neutralBox);
 
 	TextBox* bonusBox = new TextBox({ 120, entryTop + 124 }/*position*/, { 50, 30 }/*size*/);
+	bonusBox->number = &data->bonus;
 	boxes.push_back(bonusBox);
 
 	Button* killer = new Button({ 390, entryTop + 124 }/*position*/, { 100, 30 }/*size*/, "Killer");
+	killer->selected = &data->killer;
 	buttons.push_back(killer);
 
+	//todo link these 3 to the correct list and right name etc.
 	sf::Text* territory = new sf::Text(UI::font, "terr");
 	territory->setPosition({ 170, entryTop + 120 });
 	territories.push_back(territory);

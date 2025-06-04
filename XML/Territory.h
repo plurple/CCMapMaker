@@ -13,15 +13,15 @@ class Territory
 {
 public:
 	std::string name;
-	sf::Vector2u smallPos;
-	sf::Vector2u LargePos;
+	sf::Vector2i smallPos;
+	sf::Vector2i largePos;
 	std::vector<BorderData> borders;
-	std::vector<unsigned int> bombardments;
-	unsigned int neutral;
-	bool killer;
+	std::vector<int> bombardments;
+	int neutral;
 	int bonus;
+	bool killer;
 
-	//Territory() {};
+	Territory(sf::Vector2f small = { 0,0 }, sf::Vector2f large = { 0,0 });
 	/*todo move the positions and such both together and seperatly
 	convert large coord to small and vice versa*/
 };
