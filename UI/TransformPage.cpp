@@ -21,9 +21,10 @@ void TransformPage::Draw(sf::RenderWindow& window, bool selected)
 	}	
 }
 
-void TransformPage::MouseClick(XMLData& xmlData, sf::RenderWindow& window, sf::Vector2i mousePos)
+void TransformPage::MouseClick(XMLData& xmlData, sf::RenderWindow& window, 
+	sf::Vector2i mousePos, Maps& maps)
 {
-	UIPage::MouseClick(xmlData, window, mousePos);
+	UIPage::MouseClick(xmlData, window, mousePos, maps);
     if (UI::CheckMouseInBounds(mousePos, addEntry.rect))
     {
 		AddTransform(xmlData);
@@ -42,7 +43,8 @@ void TransformPage::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time 
 
 void TransformPage::AddTransform(XMLData& xmlData)
 {
-	TransformEntry* entry = new TransformEntry{xmlData.AddTransform()};
+	std::shared_ptr<TransformEntry> entry = 
+		std::make_shared<TransformEntry>(xmlData.AddTransform());
 	UIPage::AddEntry(xmlData, entry);
 }
 
@@ -50,62 +52,81 @@ void TransformPage::AddTransform(XMLData& xmlData)
 
 void TransformEntry::CreateEntry(XMLData& xmlData, float entryTop)
 {
-	sf::RectangleShape* border = new sf::RectangleShape{ { 580,288 } };/*size*/
+	std::shared_ptr<sf::RectangleShape> border = 
+		std::make_shared<sf::RectangleShape>( sf::Vector2f{ 580,288 } );/*size*/
 	border->setPosition({ 10, entryTop });
-	border->setFillColor(sf::Color(192, 192, 192, 0));
+	border->setFillColor(sf::Color::Transparent);
 	border->setOutlineThickness(2.0f);
 	border->setOutlineColor(sf::Color::Blue);
 	shapes.push_back(border);
 
-	sf::Text* amountLabel = new sf::Text(UI::font, "Amount:");
+	std::shared_ptr<sf::Text> amountLabel = 
+		std::make_shared<sf::Text>(UI::font, "Amount:");
 	amountLabel->setPosition({ 20, entryTop + 92 });
 	labels.push_back(amountLabel);
 	
-	sf::Text* upperLabel = new sf::Text(UI::font, "Upper:");
+	std::shared_ptr<sf::Text> upperLabel = 
+		std::make_shared<sf::Text>(UI::font, "Upper:");
 	upperLabel->setPosition({ 220, entryTop + 92 });
 	labels.push_back(upperLabel);
 	
-	sf::Text* lowerLabel = new sf::Text(UI::font, "Lower:");
+	std::shared_ptr<sf::Text> lowerLabel = 
+		std::make_shared<sf::Text>(UI::font, "Lower:");
 	lowerLabel->setPosition({ 380, entryTop + 92 });
 	labels.push_back(lowerLabel);
 	
-	sf::Text* conditionsLabel = new sf::Text(UI::font, "Conditions:");
+	std::shared_ptr<sf::Text> conditionsLabel = 
+		std::make_shared<sf::Text>(UI::font, "Conditions:");
 	conditionsLabel->setPosition({ 20, entryTop + 128 });
 	labels.push_back(conditionsLabel);
 
-	Transform* data = xmlData.transforms.at(xmlKey);
-	TextBox* amountBox = new TextBox({ 140, entryTop + 96 }/*position*/, { 70, 30 }/*size*/);
-	amountBox->number = &data->amount;
+	std::shared_ptr<Transform> data = xmlData.transforms.at(xmlKey);
+	std::shared_ptr<TextBox> amountBox = 
+		std::make_shared<TextBox>(sf::Vector2f{ 140, entryTop + 96 }/*position*/,
+			sf::Vector2f{ 70, 30 }/*size*/);
+	amountBox->number = std::shared_ptr<int>(&data->amount);
 	boxes.push_back(amountBox);
 	
-	TextBox* upperBox = new TextBox({ 320, entryTop + 96 }/*position*/, { 50, 30 }/*size*/);
-	upperBox->number = &data->upper;
+	std::shared_ptr<TextBox> upperBox = 
+		std::make_shared<TextBox>(sf::Vector2f{ 320, entryTop + 96 }/*position*/,
+			sf::Vector2f{ 50, 30 }/*size*/);
+	upperBox->number = std::shared_ptr<int>(&data->upper);
 	boxes.push_back(upperBox);
 	
-	TextBox* lowerBox = new TextBox({ 480, entryTop + 96 }/*position*/, { 50, 30 }/*size*/);
-	lowerBox->number = &data->lower;
+	std::shared_ptr<TextBox> lowerBox = 
+		std::make_shared<TextBox>(sf::Vector2f{ 480, entryTop + 96 }/*position*/,
+			sf::Vector2f{ 50, 30 }/*size*/);
+	lowerBox->number = std::shared_ptr<int>(&data->lower);
 	boxes.push_back(lowerBox);
 
-	Button* percentage = new Button({ 540, entryTop + 96 }/*position*/, { 35, 30 }/*size*/, "%");
-	percentage->xmlLink = &data->percentage;
+	std::shared_ptr<Button> percentage = 
+		std::make_shared<Button>(sf::Vector2f{ 540, entryTop + 96 }/*position*/,
+			sf::Vector2f{ 35, 30 }/*size*/, "%");
+	percentage->xmlLink = std::shared_ptr<bool>(&data->percentage);
 	buttons.push_back(percentage);
 
-	Button* addCondition = new Button({ 200, entryTop + 132 }/*position*/, { 205, 30 }/*size*/, "Add Condition");
+	std::shared_ptr<Button> addCondition = 
+		std::make_shared<Button>(sf::Vector2f{ 200, entryTop + 132 }/*position*/,
+			sf::Vector2f{ 205, 30 }/*size*/, "Add Condition");
 	buttons.push_back(addCondition);
 
-	TransformOption* typeOptions = new TransformOption(xmlKey);
+	std::shared_ptr<TransformOption> typeOptions = 
+		std::make_shared<TransformOption>(xmlKey);
 	typeOptions->CreateEntry(xmlData, entryTop + 12, 20, 100, 140, 260, "Type:");
 	entries.push_back(typeOptions);
 	
-	TransformOption* applyOptions = new TransformOption(xmlKey);
+	std::shared_ptr<TransformOption> applyOptions = 
+		std::make_shared<TransformOption>(xmlKey);
 	applyOptions->CreateEntry(xmlData, entryTop + 46, 20, 150, 190, 310, "Apply To:");
 	entries.push_back(applyOptions);
 	
-	TransformOption* incOptions = new TransformOption(xmlKey);
+	std::shared_ptr<TransformOption> incOptions = 
+		std::make_shared<TransformOption>(xmlKey);
 	incOptions->CreateEntry(xmlData, entryTop + 12, 320, 380, 420, 540, "Inc:");
 	entries.push_back(incOptions);
 	
-	ConditionEntry* condition = new ConditionEntry(xmlKey, conditions.size());
+	std::shared_ptr<ConditionEntry> condition = 
+		std::make_shared<ConditionEntry>(xmlKey, conditions.size());
 	condition->CreateEntry(xmlData, entryTop);
 	conditions.push_back(condition);
 }
@@ -113,7 +134,7 @@ void TransformEntry::CreateEntry(XMLData& xmlData, float entryTop)
 void TransformEntry::Draw(sf::RenderWindow& window)
 {
 	UIEntry::Draw(window);
-	for (UIEntry* entry : conditions)
+	for (std::shared_ptr<UIEntry> entry : conditions)
 	{
 		entry->Draw(window);
 	}
@@ -122,7 +143,7 @@ void TransformEntry::Draw(sf::RenderWindow& window)
 void TransformEntry::MouseClick(sf::Vector2i mousePos, bool mouseOnPage)
 {
 	UIEntry::MouseClick(mousePos, mouseOnPage);
-	sf::Shape* borderBox = shapes[(int)ShapeTypes::Border];
+	std::shared_ptr<sf::Shape> borderBox = shapes[(int)ShapeTypes::Border];
 	if (mouseOnPage && borderBox)
 	{
 		if (UI::CheckMouseInBounds(mousePos, borderBox->getGlobalBounds()))
@@ -139,17 +160,17 @@ void TransformEntry::MouseClick(sf::Vector2i mousePos, bool mouseOnPage)
 			borderBox->setOutlineColor(sf::Color::Blue);
 		}
 	}
-	Button* percentage = buttons[(int)ButtonTypes::Percentage];
+	std::shared_ptr<Button> percentage = buttons[(int)ButtonTypes::Percentage];
 	if (mouseOnPage && percentage && UI::CheckMouseInBounds(mousePos, percentage->rect))
 	{
 		percentage->Toggle();
 	}
-	Button* addCondition = buttons[(int)ButtonTypes::AddCondition];
+	std::shared_ptr<Button> addCondition = buttons[(int)ButtonTypes::AddCondition];
 	if (mouseOnPage && addCondition && UI::CheckMouseInBounds(mousePos, addCondition->rect))
 	{
 		//todo add a conditions stuff
 	}
-	for (UIEntry* entry : conditions)
+	for (std::shared_ptr<UIEntry> entry : conditions)
 	{
 		entry->MouseClick(mousePos, mouseOnPage);
 	}
@@ -161,7 +182,7 @@ void TransformEntry::Update(sf::RenderWindow& window, sf::Time timePassed,
 	UIEntry::Update(window, timePassed, input, showCursor);
 	MoveEntry({ 0, input.scroll });
 
-	for (UIEntry* entry : conditions)
+	for (std::shared_ptr<UIEntry> entry : conditions)
 	{
 		entry->Update(window, timePassed, input, showCursor);
 	}
@@ -170,7 +191,7 @@ void TransformEntry::Update(sf::RenderWindow& window, sf::Time timePassed,
 void TransformEntry::MoveEntry(sf::Vector2f offset)
 {
 	UIEntry::MoveEntry(offset);
-	for (UIEntry* entry : conditions)
+	for (std::shared_ptr<UIEntry> entry : conditions)
 	{
 		entry->MoveEntry(offset);
 	}
@@ -180,39 +201,49 @@ void TransformEntry::MoveEntry(sf::Vector2f offset)
 
 void ConditionEntry::CreateEntry(XMLData& xmlData, float entryTop)
 {
-	sf::RectangleShape* border = new sf::RectangleShape{ { 572,116 } };/*size*/
+	std::shared_ptr<sf::RectangleShape> border = 
+		std::make_shared<sf::RectangleShape>(sf::Vector2f{ 572,116 } );/*size*/
 	border->setPosition({ 14, entryTop + 168});
-	border->setFillColor(sf::Color(192, 192, 192, 0));
+	border->setFillColor(sf::Color::Transparent);
 	border->setOutlineThickness(2.0f);
 	border->setOutlineColor(sf::Color::Cyan);
 	shapes.push_back(border);
 
-	sf::Text* idLabel = new sf::Text(UI::font, "ID:");
+	std::shared_ptr<sf::Text> idLabel = 
+		std::make_shared<sf::Text>(UI::font, "ID:");
 	idLabel->setPosition({ 310, entryTop + 172 });
 	labels.push_back(idLabel);
 
-	sf::Text* valueLabel = new sf::Text(UI::font, "Value:");
+	std::shared_ptr<sf::Text> valueLabel = 
+		std::make_shared<sf::Text>(UI::font, "Value:");
 	valueLabel->setPosition({ 400, entryTop + 208 });
 	labels.push_back(valueLabel);
 
-	Transform* data = xmlData.transforms.at(xmlKey);
-	TextBox* idBox = new TextBox({ 370, entryTop + 176 }/*position*/, { 50, 30 }/*size*/);
-	idBox->number = &data->conditions[conditionNum].index;
+	std::shared_ptr<Transform> data = xmlData.transforms.at(xmlKey);
+	std::shared_ptr<TextBox> idBox = 
+		std::make_shared<TextBox>(sf::Vector2f{ 370, entryTop + 176 }/*position*/,
+			sf::Vector2f{ 50, 30 }/*size*/);
+	idBox->number = std::shared_ptr<int>(&data->conditions[conditionNum].index);
 	boxes.push_back(idBox);
 
-	TextBox* valueBox = new TextBox({ 500, entryTop + 208 }/*position*/, { 50, 30 }/*size*/);
-	valueBox->number = &data->conditions[conditionNum].values[0];
+	std::shared_ptr<TextBox> valueBox = 
+		std::make_shared<TextBox>(sf::Vector2f{ 500, entryTop + 208 }/*position*/, 
+			sf::Vector2f{ 50, 30 }/*size*/);
+	valueBox->number = std::shared_ptr<int>(&data->conditions[conditionNum].values[0]);
 	boxes.push_back(valueBox);
 
-	TransformOption* typeOptions = new TransformOption(xmlKey);
+	std::shared_ptr<TransformOption> typeOptions =
+		std::make_shared<TransformOption>(xmlKey);
 	typeOptions->CreateEntry(xmlData, entryTop + 172, 20, 100, 140, 260, "Type:");
 	entries.push_back(typeOptions);
 
-	TransformOption* operatorOptions = new TransformOption(xmlKey);
+	std::shared_ptr<TransformOption> operatorOptions =
+		std::make_shared<TransformOption>(xmlKey);
 	operatorOptions->CreateEntry(xmlData, entryTop + 208, 20, 150, 190, 310, "Operator:");
 	entries.push_back(operatorOptions);
 
-	TransformOption* valueOptions = new TransformOption(xmlKey);
+	std::shared_ptr<TransformOption> valueOptions = 
+		std::make_shared< TransformOption>(xmlKey);
 	valueOptions->CreateEntry(xmlData, entryTop + 244, 20, 120, 160, 280, "Value:");
 	entries.push_back(valueOptions);
 }
@@ -247,7 +278,8 @@ void TransformOption::CreateEntry(XMLData& xmlData, float yCoord,
 	float labelCoord, float leftCoord, float optionCoord, 
 	float rightCoord, std::string label)
 {
-	sf::CircleShape* leftArrow = new sf::CircleShape{ (15) /*radius*/ };
+	std::shared_ptr<sf::CircleShape> leftArrow = 
+		std::make_shared<sf::CircleShape>( (15) /*radius*/ );
 	leftArrow->setPointCount(3);
 	leftArrow->setPosition({ leftCoord + 4, yCoord + 4 });
 	leftArrow->setFillColor(sf::Color::White);
@@ -255,25 +287,32 @@ void TransformOption::CreateEntry(XMLData& xmlData, float yCoord,
 	leftArrow->setScale({ 1.0f, -1.0f });
 	shapes.push_back(leftArrow);
 
-	sf::CircleShape* rightArrow = new sf::CircleShape{ (15)/*radius*/ };
+	std::shared_ptr<sf::CircleShape> rightArrow = 
+		std::make_shared<sf::CircleShape>( (15)/*radius*/ );
 	rightArrow->setPointCount(3);
 	rightArrow->setPosition({ rightCoord + 26, yCoord + 4 });
 	rightArrow->setFillColor(sf::Color::White);
 	rightArrow->setRotation(sf::degrees(90));
 	shapes.push_back(rightArrow);
 
-	sf::Text* optionLabel = new sf::Text(UI::font, label);
+	std::shared_ptr<sf::Text> optionLabel = 
+		std::make_shared<sf::Text>(UI::font, label);
 	optionLabel->setPosition({ labelCoord, yCoord });
 	labels.push_back(optionLabel);
 	
-	sf::Text* selectedOption = new sf::Text(UI::font, "selected");
+	std::shared_ptr<sf::Text> selectedOption = 
+		std::make_shared<sf::Text>(UI::font, "selected");
 	selectedOption->setPosition({ optionCoord, yCoord });
 	labels.push_back(selectedOption);
 
-	Button* leftButton  = new Button({ leftCoord, yCoord + 4 }/*position*/, { 30, 30 }/*size*/, " ");
+	std::shared_ptr<Button> leftButton  = 
+		std::make_shared<Button>(sf::Vector2f{ leftCoord, yCoord + 4 }/*position*/, 
+			sf::Vector2f{ 30, 30 }/*size*/);
 	buttons.push_back(leftButton);
 
-	Button* rightButton = new Button({ rightCoord, yCoord + 4 }/*position*/, { 30, 30 }/*size*/, " ");
+	std::shared_ptr<Button> rightButton = 
+		std::make_shared<Button>(sf::Vector2f{ rightCoord, yCoord + 4 }/*position*/, 
+			sf::Vector2f{ 30, 30 }/*size*/);
 	buttons.push_back(rightButton);
 }
 
@@ -286,12 +325,12 @@ void TransformOption::MouseClick(sf::Vector2i mousePos, bool mouseOnPage)
 {
 	UIEntry::MouseClick(mousePos, mouseOnPage);
 
-	Button* leftButton = buttons[(int)ButtonTypes::LeftButton];
+	std::shared_ptr<Button> leftButton = buttons[(int)ButtonTypes::LeftButton];
 	if (UI::CheckMouseInBounds(mousePos, leftButton->rect))
 	{
 		//todo swap the opttion left
 	}
-	Button* rightButton = buttons[(int)ButtonTypes::RightButton];
+	std::shared_ptr<Button> rightButton = buttons[(int)ButtonTypes::RightButton];
 	if (UI::CheckMouseInBounds(mousePos, rightButton->rect))
 	{
 		//todo swap the opttion right

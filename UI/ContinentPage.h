@@ -105,8 +105,8 @@ class ContinentEntry : public UIEntry
 		NumButtons
 	};
 public:
-	std::vector<sf::Text*> continents;
-	std::vector<UIEntry*> bonuses;
+	std::vector<std::shared_ptr<sf::Text>> continents;
+	std::vector<std::shared_ptr<UIEntry>> bonuses;
 	ContinentView selectedView;
 
 	ContinentEntry(ContinentView view, int insertedKey) : 
@@ -124,7 +124,7 @@ public:
 class ContinentPage : public UIPage
 {
 public:
-	std::vector<Button> continentViews;
+	std::vector<std::shared_ptr<Button>> continentViews;
 	ContinentView selectedView;
 
 	ContinentPage(XMLData& xmlData, sf::Vector2f tabPos, 
@@ -132,7 +132,8 @@ public:
 		sf::Vector2f buttonBoxSize);
 
 	void Draw(sf::RenderWindow& window, bool selected) override;
-	void MouseClick(XMLData& xmlData, sf::RenderWindow& window, sf::Vector2i mousePos) override;
+	void MouseClick(XMLData& xmlData, sf::RenderWindow& window, 
+		sf::Vector2i mousePos, Maps& maps) override;
 	void Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
 		UserInput input, bool showCursor, UIPageType pageType) override;
 

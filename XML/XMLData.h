@@ -1,5 +1,6 @@
 #pragma once
 #include <unordered_map>
+#include <memory>
 
 class Transform;
 class Reinforcement;
@@ -24,15 +25,15 @@ class XMLData
 {
 public:
 	std::vector<int> nextKey;
-	std::unordered_map<int, Transform*> transforms;
+	std::unordered_map<int, std::shared_ptr<Transform>> transforms;
 	int minReinforcements;
-	std::unordered_map<int, Reinforcement*> reinforcements;
+	std::unordered_map<int, std::shared_ptr<Reinforcement>> reinforcements;
 	int maxPositions;
-	std::unordered_map<int, Position*> positions;
-	std::unordered_map<int, Objective*> requirements; //by default required is 1
-	std::unordered_map<int, Objective*> objectives; //by default required is all
-	std::unordered_map<int, Continent*> continents;
-	std::unordered_map<int, Territory*> territories;
+	std::unordered_map<int, std::shared_ptr<Position>> positions;
+	std::unordered_map<int, std::shared_ptr<Objective>> requirements; //by default required is 1
+	std::unordered_map<int, std::shared_ptr<Objective>> objectives; //by default required is all
+	std::unordered_map<int, std::shared_ptr<Continent>> continents;
+	std::unordered_map<int, std::shared_ptr<Territory>> territories;
 
 	XMLData();
 	int	AddTransform();

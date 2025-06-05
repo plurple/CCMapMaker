@@ -9,7 +9,7 @@ Button::Button(sf::Vector2f pos, sf::Vector2f dimensions,
 	rect.setPosition(pos);
 	rect.setFillColor(sf::Color::Black);
 
-	label = new sf::Text(UI::font, lab);
+	label = std::make_shared<sf::Text>(UI::font, lab);
 	label->setPosition({ pos.x +5, pos.y-5 });
 
 	selected ? Select() : Unselect();

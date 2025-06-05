@@ -38,7 +38,7 @@ public:
 class ReinforcementPage : public UIPage
 {
 public:
-	sf::Text* minLabel;
+	std::shared_ptr<sf::Text> minLabel;
 	TextBox minReinforcements;
 
 	ReinforcementPage(XMLData& xmlData, sf::Vector2f tabPos, 
@@ -46,7 +46,8 @@ public:
 		sf::Vector2f buttonBoxSize);
 
 	void Draw(sf::RenderWindow& window, bool selected) override;
-	void MouseClick(XMLData& xmlData, sf::RenderWindow& window, sf::Vector2i mousePos) override;
+	void MouseClick(XMLData& xmlData, sf::RenderWindow& window, 
+		sf::Vector2i mousePos, Maps& maps) override;
 	void Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
 		UserInput input, bool showCursor, UIPageType pageType) override;
 

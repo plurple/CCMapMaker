@@ -4,12 +4,12 @@
 
 MapData::MapData(std::string fileName) : filePath{ fileName }, mapTexture{nullptr}, mapSprite{nullptr}
 {
-    mapTexture = new sf::Texture();
+    mapTexture = std::make_shared<sf::Texture>();
     if (!mapTexture->loadFromFile(filePath))
     {
         std::cout << "error with file path:" << filePath << "\n";
     }
-    mapSprite = new sf::Sprite(*mapTexture);
+    mapSprite = std::make_shared<sf::Sprite>(*mapTexture);
 }
 
 Maps::Maps() :
@@ -21,12 +21,12 @@ Maps::Maps() :
         { mapCanvas.getSize().x - 150, 30 }/*size*/, true, true)
 {
     mapCanvas.setPosition({ 0, 0 });
-    mapCanvas.setFillColor(sf::Color(192, 192, 192, 0));
+    mapCanvas.setFillColor(sf::Color::Transparent);
 
     scrollBar.scrollWindow = sf::View{ mapCanvas.getGlobalBounds() };
-    float bob = (mapCanvas.getSize().y) / UI::windowSize.y;
-    float bob2 = (mapCanvas.getSize().x) / UI::windowSize.x;
-    scrollBar.scrollWindow.setViewport(sf::FloatRect({ 0.0f, 0.0f }, { bob2, bob }));
+    float heightRatio = (mapCanvas.getSize().y) / UI::windowSize.y;
+    float widthRatio = (mapCanvas.getSize().x) / UI::windowSize.x;
+    scrollBar.scrollWindow.setViewport(sf::FloatRect({ 0.0f, 0.0f }, { widthRatio, heightRatio }));
     scrollBar.BarSize(sf::Vector2f{largeMap.mapTexture->getSize()});
 }
 
@@ -36,6 +36,10 @@ void Maps::Draw(sf::RenderWindow& window, bool isLarge)
     window.draw(mapCanvas);
     window.draw(isLarge ? *largeMap.mapSprite : *smallMap.mapSprite);
     scrollBar.Draw(window);
+    for (std::shared_ptr<sf::RectangleShape> box : mapBoxes)
+    {
+        window.draw(*box);
+    }
     window.setView(window.getDefaultView());
 }
 
@@ -66,4 +70,20 @@ void Maps::MoveMap(sf::Vector2f offset)
 {
     largeMap.mapSprite->move(offset);
     smallMap.mapSprite->move(offset);
+    for (std::shared_ptr<sf::RectangleShape> box : mapBoxes)
+    {
+        box->move(offset);
+    }
+}
+
+std::shared_ptr<sf::RectangleShape> Maps::AddMapBox(sf::Vector2i position)
+{
+    std::shared_ptr<sf::RectangleShape> mapBox = 
+        std::make_shared<sf::RectangleShape>( sf::Vector2f{25, 25} );
+    mapBox->setPosition(sf::Vector2f{ position + sf::Vector2i{ 3, 24 } });
+    mapBox->setFillColor(sf::Color::Transparent);
+    mapBox->setOutlineThickness(3.0f);
+    mapBox->setOutlineColor(sf::Color::White);
+    mapBoxes.push_back(mapBox);
+    return mapBox;
 }

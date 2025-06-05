@@ -6,8 +6,8 @@
 struct MapData
 {
 	std::string filePath;
-	sf::Texture* mapTexture = nullptr;
-	sf::Sprite* mapSprite = nullptr;
+	std::shared_ptr<sf::Texture> mapTexture = nullptr;
+	std::shared_ptr<sf::Sprite> mapSprite = nullptr;
 
 	MapData(std::string fileName);
 };
@@ -19,6 +19,7 @@ public:
 	MapData smallMap;
 	sf::RectangleShape mapCanvas;
 	ScrollBar scrollBar;
+	std::vector<std::shared_ptr<sf::RectangleShape>> mapBoxes;
 
 	Maps();
 	void Draw(sf::RenderWindow& window, bool isLarge);
@@ -26,4 +27,5 @@ public:
 		UserInput input);
 
 	void MoveMap(sf::Vector2f offset);
+	std::shared_ptr<sf::RectangleShape> AddMapBox(sf::Vector2i position);
 };

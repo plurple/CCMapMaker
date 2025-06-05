@@ -112,7 +112,7 @@ class TransformEntry : public UIEntry
 		NumOptions
 	};
 public:
-	std::vector<UIEntry*> conditions;
+	std::vector<std::shared_ptr<UIEntry>> conditions;
 
 	TransformEntry(int insertedKey) : UIEntry{ insertedKey } {};
 	void CreateEntry(XMLData& xmlData, float entryTop) override;
@@ -135,7 +135,8 @@ public:
 		sf::Vector2f buttonBoxSize);
 
 	void Draw(sf::RenderWindow& window, bool selected) override;
-	void MouseClick(XMLData& xmlData, sf::RenderWindow& window, sf::Vector2i mousePos) override;
+	void MouseClick(XMLData& xmlData, sf::RenderWindow& window,
+		sf::Vector2i mousePos, Maps& maps) override;
 	void Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
 		UserInput input, bool showCursor, UIPageType pageType) override;
 

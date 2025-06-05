@@ -50,13 +50,15 @@ class TerritoryEntry : public UIEntry
 		NumButtons
 	};
 public:
-	std::vector<sf::Text*> territories;
-	std::vector<sf::Text*> conditions;
-	std::vector<sf::Text*> bombardments;
+	std::vector<std::shared_ptr<sf::Text>> territories;
+	std::vector<std::shared_ptr<sf::Text>> conditions;
+	std::vector<std::shared_ptr<sf::Text>> bombardments;
 	TerritoryView selectedView;
+	std::shared_ptr<sf::RectangleShape> mapBox;
 
-	TerritoryEntry(TerritoryView view, int insertedKey) :
-		selectedView(view), UIEntry{ insertedKey } {};
+	TerritoryEntry(TerritoryView view, int insertedKey, 
+		std::shared_ptr<sf::RectangleShape> mapbox) :
+		selectedView(view), UIEntry{ insertedKey }, mapBox{ mapbox } {};
 	void CreateEntry(XMLData& xmlData, float entryTop) override;
 
 	void Draw(sf::RenderWindow& window) override;
@@ -73,7 +75,7 @@ class TerritoryPage : public UIPage
 {
 public:
 	Button linkCoordinates;
-	std::vector<Button> territoryViews;
+	std::vector<std::shared_ptr<Button>> territoryViews;
 	TerritoryView selectedView;
 
 	TerritoryPage(XMLData& xmlData, sf::Vector2f tabPos, 
@@ -81,11 +83,13 @@ public:
 		sf::Vector2f buttonBoxSize); 
 
 	void Draw(sf::RenderWindow& window, bool selected) override;
-	void MouseClick(XMLData& xmlData, sf::RenderWindow& window, sf::Vector2i mousePos) override;
+	void MouseClick(XMLData& xmlData, sf::RenderWindow& window, 
+		sf::Vector2i mousePos, Maps& maps) override;
+	bool MapClick(XMLData& xmlData, Maps& maps, sf::Vector2i mousePos);
 	void Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
 		UserInput input, bool showCursor, UIPageType pageType) override;
 
-	void AddTerritory(XMLData& xmlData);
+	void AddTerritory(XMLData& xmlData, std::shared_ptr<sf::RectangleShape> mapBox);
 	void SwapView();
 };
 

@@ -24,9 +24,10 @@ void ObjectivePage::Draw(sf::RenderWindow& window, bool selected)
 	}
 }
 
-void ObjectivePage::MouseClick(XMLData& xmlData, sf::RenderWindow& window, sf::Vector2i mousePos)
+void ObjectivePage::MouseClick(XMLData& xmlData, sf::RenderWindow& window, 
+	sf::Vector2i mousePos, Maps& maps)
 {
-	UIPage::MouseClick(xmlData, window, mousePos);
+	UIPage::MouseClick(xmlData, window, mousePos, maps);
     if (UI::CheckMouseInBounds(mousePos, showContinents.rect))
     {
         showContinents.Toggle();
@@ -47,8 +48,9 @@ void ObjectivePage::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time 
 
 void ObjectivePage::AddObjective(XMLData& xmlData)
 {
-	ObjectiveEntry* entry = new ObjectiveEntry{ isObjective, 
-		isObjective ? xmlData.AddObjective() : xmlData.AddRequirement() };
+	std::shared_ptr<ObjectiveEntry> entry = 
+		std::make_shared<ObjectiveEntry>( isObjective,
+		isObjective ? xmlData.AddObjective() : xmlData.AddRequirement() );
 	UIPage::AddEntry(xmlData, entry);
 }
 
@@ -56,47 +58,56 @@ void ObjectivePage::AddObjective(XMLData& xmlData)
 
 void ObjectiveEntry::CreateEntry(XMLData& xmlData, float entryTop)
 {
-	sf::RectangleShape* border = new sf::RectangleShape{ {580, 165} };
+	std::shared_ptr<sf::RectangleShape> border = 
+		std::make_shared<sf::RectangleShape>( sf::Vector2f{580, 165} );
 	border->setPosition({ 10,entryTop });
-	border->setFillColor({ 192, 192, 192, 0 });
+	border->setFillColor({ sf::Color::Transparent });
 	border->setOutlineThickness(2.0f);
 	border->setOutlineColor(isObjective ? sf::Color(230, 100, 110) : sf::Color::Magenta);
 	shapes.push_back(border);
 
-	sf::Text* nameLabel = new sf::Text(UI::font, "Name:");
+	std::shared_ptr<sf::Text> nameLabel = 
+		std::make_shared<sf::Text>(UI::font, "Name:");
 	nameLabel->setPosition({ 20, entryTop + 8 });
 	labels.push_back(nameLabel);
 
-	sf::Text* territoryLabel = new sf::Text(UI::font, "Territories:");
+	std::shared_ptr<sf::Text> territoryLabel = 
+		std::make_shared<sf::Text>(UI::font, "Territories:");
 	territoryLabel->setPosition({ 20, entryTop + 46 });
 	labels.push_back(territoryLabel);
 
-	sf::Text* territories = new sf::Text(UI::font, "Territory");
+	std::shared_ptr<sf::Text> territories = 
+		std::make_shared<sf::Text>(UI::font, "Territory");
 	territories->setPosition({ 180, entryTop + 46 });
 	labels.push_back(territories);
 	
-	sf::Text* continentLabel = new sf::Text(UI::font, "Continents:");
+	std::shared_ptr<sf::Text> continentLabel = 
+		std::make_shared<sf::Text>(UI::font, "Continents:");
 	continentLabel->setPosition({ 20, entryTop + 84 });
 	labels.push_back(continentLabel);
 	
-	sf::Text* continents = new sf::Text(UI::font, "Continent");
+	std::shared_ptr<sf::Text> continents = 
+		std::make_shared<sf::Text>(UI::font, "Continent");
 	continents->setPosition({ 180, entryTop + 84 });
 	labels.push_back(continents);
 	
-	sf::Text* requiredLabel = new sf::Text(UI::font, "Num Required:");
+	std::shared_ptr<sf::Text> requiredLabel = 
+		std::make_shared<sf::Text>(UI::font, "Num Required:");
 	requiredLabel->setPosition({ 20, entryTop + 120 });
 	labels.push_back(requiredLabel);
 
-	Objective* data = isObjective ? xmlData.objectives.at(xmlKey) :
+	std::shared_ptr<Objective> data = isObjective ? xmlData.objectives.at(xmlKey) :
 		xmlData.requirements.at(xmlKey);
-	TextBox* nameBox = new TextBox({ 120, entryTop + 12 }/*position*/, 
-		{ 450, 30 }/*size*/);
-	nameBox->text = &data->name;
+	std::shared_ptr<TextBox> nameBox = 
+		std::make_shared<TextBox>(sf::Vector2f{ 120, entryTop + 12 }/*position*/,
+		sf::Vector2f{ 450, 30 }/*size*/);
+	nameBox->text = std::shared_ptr<std::string>(&data->name);
 	boxes.push_back(nameBox);
 
-	TextBox* numRequiredBox = new TextBox({ 235, entryTop + 124 }/*position*/, 
-		{ 50, 30 }/*size*/);
-	numRequiredBox->number = &data->numRequired;
+	std::shared_ptr<TextBox> numRequiredBox = 
+		std::make_shared<TextBox>(sf::Vector2f{ 235, entryTop + 124 }/*position*/,
+		sf::Vector2f{ 50, 30 }/*size*/);
+	numRequiredBox->number = std::shared_ptr<int>(&data->numRequired);
 	boxes.push_back(numRequiredBox);
 }
 
@@ -109,7 +120,7 @@ void ObjectiveEntry::MouseClick(sf::Vector2i mousePos, bool mouseOnPage)
 {
 	UIEntry::MouseClick(mousePos, mouseOnPage);
 
-	sf::Shape* borderBox = shapes[(int)ShapeTypes::Border];
+	std::shared_ptr<sf::Shape> borderBox = shapes[(int)ShapeTypes::Border];
 	if (mouseOnPage && borderBox)
 	{
 		if (UI::CheckMouseInBounds(mousePos, borderBox->getGlobalBounds()))

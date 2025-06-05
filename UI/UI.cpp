@@ -28,7 +28,7 @@ UI::UI(XMLData& xmlData) :
     uiPanel.setFillColor(grey);
 
     mapPanel.setPosition({ 1004,4 });
-    mapPanel.setFillColor(grey); 
+    mapPanel.setFillColor(grey);
     mapPanel.setOutlineThickness(4.0f);
     mapPanel.setOutlineColor(sf::Color::Blue);
 
@@ -48,34 +48,48 @@ UI::UI(XMLData& xmlData) :
     mapArrow.setRotation(sf::degrees(90));
     mapArrow.setScale({ 1.0f, -1.0f });
 
-    mapSizeLabel = new sf::Text(font, "Map Size:");
+    mapSizeLabel = std::make_shared<sf::Text>(font, "Map Size:");
     mapSizeLabel->setPosition({ 1010, 8 });
-    largeLabel = new sf::Text(font, "Large");
+    largeLabel = std::make_shared < sf::Text>(font, "Large");
     largeLabel->setPosition({ 1150, 8 });
     largeLabel->setFillColor(sf::Color::Red);
-    smallLabel = new sf::Text(font, "Small");
+    smallLabel = std::make_shared < sf::Text>(font, "Small");
     smallLabel->setPosition({ 1275, 8 });
 
-    TerritoryPage* territoryPage = new TerritoryPage(xmlData, 
-        { 1010, 60 }, { 150, 30 }, "Territories", { 592, 142 });
+    std::shared_ptr<TerritoryPage> territoryPage =
+        std::make_shared<TerritoryPage>(xmlData,
+            sf::Vector2f{ 1010, 60 }, sf::Vector2f{ 150, 30 },
+            "Territories", sf::Vector2f{ 592, 142 });
     uiPages.push_back(territoryPage);
-    ContinentPage* continentPage = new ContinentPage(xmlData, 
-        { 1175, 60 }, { 150, 30 }, "Continents", { 592, 97 });
+    std::shared_ptr<ContinentPage> continentPage = 
+        std::make_shared < ContinentPage>(xmlData,
+            sf::Vector2f{ 1175, 60 }, sf::Vector2f{ 150, 30 }, 
+            "Continents", sf::Vector2f{ 592, 97 });
     uiPages.push_back(continentPage);
-    PositionPage* positionPage = new PositionPage(xmlData,
-        { 1010, 100 }, { 130, 30 }, "Positions", { 592, 52 });
-    uiPages.push_back(positionPage);    
-    ObjectivePage* requirementPage = new ObjectivePage(xmlData, 
-        { 1340, 100 }, { 200, 30 }, "Requirements", { 592, 52 });
+    std::shared_ptr < PositionPage> positionPage = 
+        std::make_shared < PositionPage>(xmlData,
+        sf::Vector2f{ 1010, 100 }, sf::Vector2f{ 130, 30 }, 
+            "Positions", sf::Vector2f{ 592, 52 });
+    uiPages.push_back(positionPage);
+    std::shared_ptr < ObjectivePage> requirementPage =
+        std::make_shared < ObjectivePage>(xmlData,
+        sf::Vector2f{ 1340, 100 }, sf::Vector2f{ 200, 30 },
+            "Requirements", sf::Vector2f{ 592, 52 });
     uiPages.push_back(requirementPage);
-    ObjectivePage* objectivePage = new ObjectivePage(xmlData, 
-        { 1175, 100 }, { 150, 30 }, "Objectives", { 592, 52 });
+    std::shared_ptr < ObjectivePage> objectivePage = 
+        std::make_shared < ObjectivePage>(xmlData,
+        sf::Vector2f{ 1175, 100 }, sf::Vector2f{ 150, 30 }, 
+            "Objectives", sf::Vector2f{ 592, 52 });
     uiPages.push_back(objectivePage);
-    ReinforcementPage* reinforcementPage = new ReinforcementPage(xmlData, 
-        { 1340, 60 }, { 220, 30 }, "Reinforcements", { 592, 52 });
+    std::shared_ptr < ReinforcementPage> reinforcementPage =
+        std::make_shared < ReinforcementPage>(xmlData,
+            sf::Vector2f{ 1340, 60 }, sf::Vector2f{ 220, 30 },
+            "Reinforcements", sf::Vector2f{ 592, 52 });
     uiPages.push_back(reinforcementPage);
-    TransformPage* transformPage = new TransformPage(xmlData, 
-        { 1400, 20 }, { 160, 30 }, "Transforms", { 592, 52 });
+    std::shared_ptr < TransformPage> transformPage = 
+        std::make_shared < TransformPage>(xmlData,
+        sf::Vector2f{ 1400, 20 }, sf::Vector2f{ 160, 30 }, 
+            "Transforms", sf::Vector2f{ 592, 52 });
     uiPages.push_back(transformPage);
     uiPages[(int)selectedPage]->tabButton.Select();
 }
@@ -99,8 +113,9 @@ void UI::Draw(sf::RenderWindow& window)
 
 bool UI::CheckMouseInBounds(sf::Vector2i mousePos, sf::RectangleShape rect)
 {
-    sf::Vector2f rectPos = rect.getPosition();
-    sf::Vector2f rectSize = rect.getSize();
+    float outlineThickness = rect.getOutlineThickness();
+    sf::Vector2f rectPos = rect.getPosition() - sf::Vector2f{outlineThickness, outlineThickness};
+    sf::Vector2f rectSize = rect.getSize() + sf::Vector2f{ outlineThickness * 2, outlineThickness * 2 };
 
     return mousePos.x > rectPos.x && mousePos.x < rectPos.x + rectSize.x &&
         mousePos.y > rectPos.y && mousePos.y < rectPos.y + rectSize.y;
@@ -139,7 +154,12 @@ void UI::MouseClick(XMLData& xmlData, sf::RenderWindow& window, sf::Vector2i mou
     {
         SwapMaps();
     }
-    maps.scrollBar.MouseClick(sf::Vector2i(window.mapPixelToCoords(mousePos, maps.scrollBar.scrollWindow)));
+    sf::Vector2i mapMouse = sf::Vector2i(window.mapPixelToCoords(mousePos, maps.scrollBar.scrollWindow));
+    maps.scrollBar.MouseClick(mapMouse);
+    if (CheckMouseInBounds(mapMouse, maps.largeMap.mapSprite->getGlobalBounds()))
+    {
+        uiPages[(int)selectedPage]->MapClick(xmlData, maps, mapMouse);
+    }
     for (int i = 0; i < (int)UIPageType::NumPageTypes; i++)
     {
         if (CheckMouseInBounds(mousePos, uiPages[i]->tabButton.rect))
@@ -149,7 +169,7 @@ void UI::MouseClick(XMLData& xmlData, sf::RenderWindow& window, sf::Vector2i mou
             uiPages[(int)selectedPage]->tabButton.Toggle();
         }
     }
-    uiPages[(int)selectedPage]->MouseClick(xmlData, window, mousePos);
+    uiPages[(int)selectedPage]->MouseClick(xmlData, window, mousePos, maps);
 }
 
 void UI::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,

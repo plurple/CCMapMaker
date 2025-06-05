@@ -4,8 +4,8 @@
 
 struct BorderData
 {
-	unsigned int territory;
-	unsigned int condition;
+	int territory;
+	int condition;
 	bool conditionIsContintent;
 };
 

@@ -1,7 +1,9 @@
 #include "TextBox.h"
 #include "UI.h"
 
-TextBox::TextBox(sf::Vector2f pos, sf::Vector2f boxSize, std::string* defaultText, int* defaultNumber) :
+TextBox::TextBox(sf::Vector2f pos, sf::Vector2f boxSize, 
+    std::shared_ptr<std::string> defaultText, 
+    std::shared_ptr<int> defaultNumber) :
 	box{ boxSize },
 	active{false},
 	text{defaultText},
@@ -13,7 +15,7 @@ TextBox::TextBox(sf::Vector2f pos, sf::Vector2f boxSize, std::string* defaultTex
 	box.setOutlineColor(sf::Color::White);
 
     std::string startText = text ? *text : (number ? std::to_string(*number) : "");
-	displayText = new sf::Text(UI::font, startText);
+	displayText = std::make_shared<sf::Text>(UI::font, startText);
 	displayText->setPosition({ pos.x, pos.y-5});
 }
 

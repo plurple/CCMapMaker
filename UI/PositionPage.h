@@ -42,7 +42,7 @@ class PositionEntry : public UIEntry
 		NumBoxes
 	};
 public:
-	std::vector<UIEntry*> positionPairs;
+	std::vector<std::shared_ptr<UIEntry>> positionPairs;
 
 	PositionEntry(int insertedKey) : UIEntry{ insertedKey } {};
 	void CreateEntry(XMLData& xmlData, float entryTop) override;
@@ -58,7 +58,7 @@ public:
 class PositionPage : public UIPage
 {
 public:
-	sf::Text* maxLabel;
+	std::shared_ptr<sf::Text> maxLabel;
 	TextBox maxBox;
 
 	PositionPage(XMLData& xmlData, sf::Vector2f tabPos, 
@@ -66,7 +66,8 @@ public:
 		sf::Vector2f buttonBoxSize);
 
 	void Draw(sf::RenderWindow& window, bool selected) override;
-	void MouseClick(XMLData& xmlData, sf::RenderWindow& window, sf::Vector2i mousePos) override;
+	void MouseClick(XMLData& xmlData, sf::RenderWindow& window, 
+		sf::Vector2i mousePos, Maps& maps) override;
 	void Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
 		UserInput input, bool showCursor, UIPageType pageType) override;
 

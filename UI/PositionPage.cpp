@@ -7,14 +7,14 @@ PositionPage::PositionPage(XMLData& xmlData, sf::Vector2f tabPos,
 	UIPage(tabPos, tabSize, tabLabel, buttonBoxSize),
     maxBox({ 1470, 170 }, { 50, 30 })
 {
-    maxLabel = new sf::Text(UI::font, "Max Positions:");
+    maxLabel = std::make_shared<sf::Text>(UI::font, "Max Positions:");
     maxLabel->setPosition({ 1270, 165 });
 
 	addEntry.SetPosition({ 1070, 170 });
 	addEntry.rect.setSize({ 185, 30 });
 	addEntry.label->setString("Add Position");
 
-	maxBox.number = &xmlData.maxPositions;
+	maxBox.number = std::shared_ptr<int>(&xmlData.maxPositions);
 }
 
 void PositionPage::Draw(sf::RenderWindow& window, bool selected)
@@ -28,9 +28,10 @@ void PositionPage::Draw(sf::RenderWindow& window, bool selected)
 	}
 }
 
-void PositionPage::MouseClick(XMLData& xmlData, sf::RenderWindow& window, sf::Vector2i mousePos)
+void PositionPage::MouseClick(XMLData& xmlData, sf::RenderWindow& window, 
+	sf::Vector2i mousePos, Maps& maps)
 {
-	UIPage::MouseClick(xmlData, window, mousePos);
+	UIPage::MouseClick(xmlData, window, mousePos, maps);
 	if (UI::CheckMouseInBounds(mousePos, addEntry.rect))
 	{
 		AddPosition(xmlData);
@@ -48,7 +49,8 @@ void PositionPage::Update(XMLData& xmlData, sf::RenderWindow& window,
 
 void PositionPage::AddPosition(XMLData& xmlData)
 {
-	PositionEntry* entry = new PositionEntry{xmlData.AddPosition()};
+	std::shared_ptr<PositionEntry> entry = 
+		std::make_shared<PositionEntry>(xmlData.AddPosition());
 	UIPage::AddEntry(xmlData, entry);
 }
 
@@ -56,17 +58,21 @@ void PositionPage::AddPosition(XMLData& xmlData)
 
 void PositionEntry::CreateEntry(XMLData& xmlData, float entryTop)
 {
-	sf::RectangleShape* border = new sf::RectangleShape{ {580, 50} };
+	std::shared_ptr<sf::RectangleShape> border = 
+		std::make_shared<sf::RectangleShape>( sf::Vector2f{580, 50} );
 	border->setPosition({ 10,entryTop });
-	border->setFillColor(sf::Color(192, 192, 192, 0));
+	border->setFillColor(sf::Color::Transparent);
 	border->setOutlineThickness(2.0f);
 	border->setOutlineColor(sf::Color::Green);
 	shapes.push_back(border);
 
-	Button* add = new Button({ 220, entryTop + 12 }/*position*/, { 200, 30 }/*size*/, "Add Position");
+	std::shared_ptr<Button> add = 
+		std::make_shared<Button>(sf::Vector2f{ 220, entryTop + 12 }/*position*/,
+		sf::Vector2f{ 200, 30 }/*size*/, "Add Position");
 	buttons.push_back(add);
 
-	PositionPair* posPair = new PositionPair(xmlKey, positionPairs.size());
+	std::shared_ptr<PositionPair> posPair =
+		std::make_shared<PositionPair>(xmlKey, positionPairs.size());
 	posPair->CreateEntry(xmlData, entryTop);
 	positionPairs.push_back(posPair);
 }
@@ -74,7 +80,7 @@ void PositionEntry::CreateEntry(XMLData& xmlData, float entryTop)
 void PositionEntry::Draw(sf::RenderWindow& window)
 {
 	UIEntry::Draw(window);
-	for (UIEntry* entry : positionPairs)
+	for (std::shared_ptr<UIEntry> entry : positionPairs)
 	{
 		entry->Draw(window);
 	}
@@ -83,7 +89,7 @@ void PositionEntry::Draw(sf::RenderWindow& window)
 void PositionEntry::MouseClick(sf::Vector2i mousePos, bool mouseOnPage)
 {
 	UIEntry::MouseClick(mousePos, mouseOnPage);
-	sf::Shape* borderBox = shapes[(int)ShapeTypes::Border];
+	std::shared_ptr<sf::Shape> borderBox = shapes[(int)ShapeTypes::Border];
 	if (mouseOnPage && borderBox)
 	{
 		if (UI::CheckMouseInBounds(mousePos, borderBox->getGlobalBounds()))
@@ -100,7 +106,7 @@ void PositionEntry::MouseClick(sf::Vector2i mousePos, bool mouseOnPage)
 			borderBox->setOutlineColor(sf::Color::Green);
 		}
 	}
-	for (UIEntry* entry : positionPairs)
+	for (std::shared_ptr<UIEntry> entry : positionPairs)
 	{
 		entry->MouseClick(mousePos, mouseOnPage);
 	}
@@ -111,7 +117,7 @@ void PositionEntry::Update(sf::RenderWindow& window, sf::Time timePassed,
 {
 	UIEntry::Update(window, timePassed, input, showCursor);
 	MoveEntry({ 0, input.scroll });
-	for (UIEntry* entry : positionPairs)
+	for (std::shared_ptr<UIEntry> entry : positionPairs)
 	{
 		entry->Update(window, timePassed, input, showCursor);
 	}
@@ -120,7 +126,7 @@ void PositionEntry::Update(sf::RenderWindow& window, sf::Time timePassed,
 void PositionEntry::MoveEntry(sf::Vector2f offset)
 {
 	UIEntry::MoveEntry(offset);
-	for (UIEntry* entry : positionPairs)
+	for (std::shared_ptr<UIEntry> entry : positionPairs)
 	{
 		entry->MoveEntry(offset);
 	}
@@ -128,17 +134,21 @@ void PositionEntry::MoveEntry(sf::Vector2f offset)
 
 void PositionPair::CreateEntry(XMLData& xmlData, float entryTop)
 {
-	sf::Text* territoryName = new sf::Text(UI::font, "Territory Name");
+	std::shared_ptr<sf::Text> territoryName = 
+		std::make_shared<sf::Text>(UI::font, "Territory Name");
 	territoryName->setPosition({ 30, entryTop + 8 });
 	labels.push_back(territoryName);
 
-	sf::Text* startLabel = new sf::Text(UI::font, "Start Size:");
+	std::shared_ptr<sf::Text> startLabel =
+		std::make_shared<sf::Text>(UI::font, "Start Size:");
 	startLabel->setPosition({ 380, entryTop + 8 });
 	labels.push_back(startLabel);
 
-	Position* data = xmlData.positions.at(xmlKey);
-	TextBox* startBox = new TextBox({ 525, entryTop + 12 }/*position*/, { 50, 30 }/*size*/);
-	startBox->number = &data->positions[pairNum].startSize;
+	std::shared_ptr<Position> data = xmlData.positions.at(xmlKey);
+	std::shared_ptr<TextBox> startBox = 
+		std::make_shared<TextBox>(sf::Vector2f{ 525, entryTop + 12 }/*position*/, 
+			sf::Vector2f{ 50, 30 }/*size*/);
+	startBox->number = std::shared_ptr<int>(&data->positions[pairNum].startSize);
 	boxes.push_back(startBox);
 }
 

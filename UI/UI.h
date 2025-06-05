@@ -4,6 +4,7 @@
 #include "Button.h"
 #include "../UserInput.h"
 #include "../XML/XMLData.h"
+#include <memory>
 
 class UIPage;
 
@@ -13,14 +14,14 @@ public:
 	sf::RectangleShape uiPanel;
 	sf::RectangleShape mapPanel;
 	sf::RectangleShape tabPanel;
-	std::vector<UIPage*> uiPages;
+	std::vector<std::shared_ptr<UIPage>> uiPages;
 	UIPageType selectedPage;
 	Maps maps;
 	static sf::Font font;
 	static sf::Vector2u windowSize;
-	sf::Text* mapSizeLabel;
-	sf::Text* largeLabel;
-	sf::Text* smallLabel;
+	std::shared_ptr<sf::Text> mapSizeLabel;
+	std::shared_ptr<sf::Text> largeLabel;
+	std::shared_ptr<sf::Text> smallLabel;
 	sf::CircleShape mapArrow;
 	Button mapCheckBox;
 	bool isLarge;

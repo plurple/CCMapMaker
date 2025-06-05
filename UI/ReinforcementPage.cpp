@@ -12,7 +12,7 @@ std::string string_format(const std::string& format, Args ... args)
 	int size_s = std::snprintf(nullptr, 0, format.c_str(), args ...) + 1; // Extra space for '\0'
 	if (size_s <= 0) { throw std::runtime_error("Error during formatting."); }
 	auto size = static_cast<size_t>(size_s);
-	std::unique_ptr<char[]> buf(new char[size]);
+	std::shared_ptr<char[]> buf(new char[size]);
 	std::snprintf(buf.get(), size, format.c_str(), args ...);
 	return std::string(buf.get(), buf.get() + size - 1); // We don't want the '\0' inside
 }
@@ -23,14 +23,14 @@ ReinforcementPage::ReinforcementPage(XMLData& xmlData, sf::Vector2f tabPos,
 	UIPage(tabPos, tabSize, tabLabel, buttonBoxSize),
 	minReinforcements({ 1530, 170 }, { 50, 30 })
 {
-	minLabel = new sf::Text(UI::font, "Minium Troops:");
+	minLabel = std::make_shared<sf::Text>(UI::font, "Minium Troops:");
 	minLabel->setPosition({ 1310, 165 });
 
 	addEntry.SetPosition({ 1020, 170 });
 	addEntry.rect.setSize({ 270, 30 });
 	addEntry.label->setString("Add Reinforcement");
 
-	minReinforcements.number = &xmlData.minReinforcements;
+	minReinforcements.number = std::shared_ptr<int>(&xmlData.minReinforcements);
 }
 
 void ReinforcementPage::Draw(sf::RenderWindow& window, bool selected)
@@ -43,9 +43,10 @@ void ReinforcementPage::Draw(sf::RenderWindow& window, bool selected)
 	}
 }
 
-void ReinforcementPage::MouseClick(XMLData& xmlData, sf::RenderWindow& window, sf::Vector2i mousePos)
+void ReinforcementPage::MouseClick(XMLData& xmlData, sf::RenderWindow& window,
+	sf::Vector2i mousePos, Maps& maps)
 {
-	UIPage::MouseClick(xmlData, window, mousePos);
+	UIPage::MouseClick(xmlData, window, mousePos, maps);
     if (UI::CheckMouseInBounds(mousePos, addEntry.rect))
     {
 		AddReinforcement(xmlData);
@@ -63,7 +64,8 @@ void ReinforcementPage::Update(XMLData& xmlData, sf::RenderWindow& window, sf::T
 
 void ReinforcementPage::AddReinforcement(XMLData& xmlData)
 {
-	ReinforcementEntry* entry = new ReinforcementEntry{ xmlData.AddReinforcement() };
+	std::shared_ptr<ReinforcementEntry> entry = 
+		std::make_shared<ReinforcementEntry>( xmlData.AddReinforcement() );
 	UIPage::AddEntry(xmlData, entry);
 }
 
@@ -71,38 +73,51 @@ void ReinforcementPage::AddReinforcement(XMLData& xmlData)
 
 void ReinforcementEntry::CreateEntry(XMLData& xmlData, float entryTop)
 {
-	sf::RectangleShape* border = new sf::RectangleShape{ {535,155}/*size*/ };
+	std::shared_ptr<sf::RectangleShape> border =
+		std::make_shared<sf::RectangleShape>( sf::Vector2f{535,155}/*size*/ );
 	border->setPosition({ 10,entryTop });
-	border->setFillColor(sf::Color(192, 192, 192, 0));
+	border->setFillColor(sf::Color::Transparent);
 	border->setOutlineThickness(2.0f);
 	border->setOutlineColor(sf::Color::Yellow);
 	shapes.push_back(border);
 
-	sf::Text* lowerLabel = new sf::Text(UI::font, "Lower:");
+	std::shared_ptr<sf::Text> lowerLabel =
+		std::make_shared<sf::Text>(UI::font, "Lower:");
 	lowerLabel->setPosition({ 35, entryTop + 8 });
 	labels.push_back(lowerLabel);
 
-	sf::Text* upperLabel = new sf::Text(UI::font, "Upper:");
+	std::shared_ptr<sf::Text> upperLabel =
+		std::make_shared<sf::Text>(UI::font, "Upper:");
 	upperLabel->setPosition({ 195, entryTop + 8 });
 	labels.push_back(upperLabel);
 
-	sf::Text* divisorLabel = new sf::Text(UI::font, "Divisor:");
+	std::shared_ptr<sf::Text> divisorLabel =
+		std::make_shared<sf::Text>(UI::font, "Divisor:");
 	divisorLabel->setPosition({ 355, entryTop + 8 });
 	labels.push_back(divisorLabel);
 
-	sf::Text* explanation = new sf::Text(UI::font, "1 troop for every %d regions up to \nmax of (%d-%d)/%d=%d troops \nin the range of %d-%d regions.");
+	std::shared_ptr<sf::Text> explanation =
+		std::make_shared<sf::Text>(UI::font, "1 troop for every %d regions up to \nmax of (%d-%d)/%d=%d troops \nin the range of %d-%d regions.");
 	explanation->setPosition({ 55, entryTop + 48 });
 	labels.push_back(explanation);
 
-	Reinforcement* data = xmlData.reinforcements.at(xmlKey);
-	TextBox* lowerBox = new TextBox({ 135, entryTop + 12 }/*position*/, { 50, 30 }/*size*/);
-	lowerBox->number = &data->lower;
+	std::shared_ptr<Reinforcement> data = xmlData.reinforcements.at(xmlKey);
+	std::shared_ptr<TextBox> lowerBox = 
+		std::make_shared<TextBox>(sf::Vector2f{ 135, entryTop + 12 }/*position*/, 
+			sf::Vector2f{ 50, 30 }/*size*/);
+	lowerBox->number = std::shared_ptr<int>(&data->lower);
 	boxes.push_back(lowerBox);
-	TextBox* upperBox = new TextBox({ 295, entryTop + 12 }/*position*/, { 50, 30 }/*size*/);
-	upperBox->number = &data->upper;
+
+	std::shared_ptr<TextBox> upperBox = 
+		std::make_shared<TextBox>(sf::Vector2f{ 295, entryTop + 12 }/*position*/,
+			sf::Vector2f{ 50, 30 }/*size*/);
+	upperBox->number = std::shared_ptr<int>(&data->upper);
 	boxes.push_back(upperBox);
-	TextBox* divisorBox = new TextBox({ 465, entryTop + 12 }/*position*/, { 50, 30 }/*size*/);
-	divisorBox->number = &data->divisor;
+
+	std::shared_ptr<TextBox> divisorBox = 
+		std::make_shared<TextBox>(sf::Vector2f{ 465, entryTop + 12 }/*position*/, 
+			sf::Vector2f{ 50, 30 }/*size*/);
+	divisorBox->number = std::shared_ptr<int>(&data->divisor);
 	boxes.push_back(divisorBox);
 }
 
@@ -114,7 +129,7 @@ void ReinforcementEntry::Draw(sf::RenderWindow& window)
 void ReinforcementEntry::MouseClick(sf::Vector2i mousePos, bool mouseOnPage)
 {
 	UIEntry::MouseClick(mousePos, mouseOnPage);
-	sf::Shape* borderBox = shapes[(int)ShapeTypes::Border];
+	std::shared_ptr<sf::Shape> borderBox = shapes[(int)ShapeTypes::Border];
 	if (mouseOnPage && borderBox)
 	{
 		if (UI::CheckMouseInBounds(mousePos, borderBox->getGlobalBounds()))

@@ -19,7 +19,7 @@ XMLData::XMLData() :
 int XMLData::AddTransform()
 {
 	int key = nextKey[(int)UIPageType::Transform]++;
-	transforms.insert({ key, new Transform() });
+	transforms.insert({ key, std::make_shared<Transform>() });
 	return key;
 }
 
@@ -31,7 +31,7 @@ void XMLData::RemoveTransform(int key)
 int XMLData::AddReinforcement()
 {
 	int key = nextKey[(int)UIPageType::Reinforcement]++;
-	reinforcements.insert({ key, new Reinforcement(*this) });
+	reinforcements.insert({ key, std::make_shared<Reinforcement>(*this) });
 	return key;
 }
 
@@ -43,7 +43,7 @@ void XMLData::RemoveReinforcement(int key)
 int XMLData::AddPosition()
 {
 	int key = nextKey[(int)UIPageType::Position]++;
-	positions.insert({ key, new Position() });
+	positions.insert({ key, std::make_shared < Position>() });
 	return key;
 }
 
@@ -55,7 +55,7 @@ void XMLData::RemovePosition(int key)
 int XMLData::AddRequirement()
 {
 	int key = nextKey[(int)UIPageType::Requirements]++;
-	requirements.insert({ key, new Objective() });
+	requirements.insert({ key, std::make_shared < Objective>() });
 	return key;
 }
 
@@ -67,7 +67,7 @@ void XMLData::RemoveRequirement(int key)
 int XMLData::AddObjective()
 {
 	int key = nextKey[(int)UIPageType::Objective]++;
-	objectives.insert({ key, new Objective() });
+	objectives.insert({ key, std::make_shared < Objective>() });
 	return key;
 }
 
@@ -79,7 +79,7 @@ void XMLData::RemoveObjective(int key)
 int XMLData::AddContinent()
 {
 	int key = nextKey[(int)UIPageType::Continent]++;
-	continents.insert({ key, new Continent() });
+	continents.insert({ key, std::make_shared < Continent>() });
 	return key;
 }
 
@@ -91,7 +91,7 @@ void XMLData::RemoveContinent(int key)
 int XMLData::AddTerritory()
 {
 	int key = nextKey[(int)UIPageType::Territory]++;
-	territories.insert({ key, new Territory() });
+	territories.insert({ key, std::make_shared < Territory>() });
 	return key;
 }
 
