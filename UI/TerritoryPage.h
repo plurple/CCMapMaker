@@ -56,7 +56,7 @@ public:
 	TerritoryView selectedView;
 	std::shared_ptr<sf::RectangleShape> mapBox;
 
-	~TerritoryEntry() {};
+	~TerritoryEntry();
 	TerritoryEntry(TerritoryView view, int insertedKey, 
 		std::shared_ptr<sf::RectangleShape> mapbox) :
 		selectedView(view), UIEntry{ insertedKey }, mapBox{ mapbox } {};

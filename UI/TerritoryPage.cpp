@@ -131,6 +131,11 @@ void TerritoryPage::SwapView()
 
 //-----------------------------------------------------------
 
+TerritoryEntry::~TerritoryEntry()
+{
+	mapBox->scale({ 0.0f, 0.0f });
+}
+
 void TerritoryEntry::CreateEntry(XMLData& xmlData, float entryTop)
 {
 	std::shared_ptr<sf::RectangleShape> border = 
