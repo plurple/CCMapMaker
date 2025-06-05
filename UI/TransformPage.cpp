@@ -84,25 +84,25 @@ void TransformEntry::CreateEntry(XMLData& xmlData, float entryTop)
 	std::shared_ptr<TextBox> amountBox = 
 		std::make_shared<TextBox>(sf::Vector2f{ 140, entryTop + 96 }/*position*/,
 			sf::Vector2f{ 70, 30 }/*size*/);
-	amountBox->number = std::shared_ptr<int>(&data->amount);
+	amountBox->number = &data->amount;
 	boxes.push_back(amountBox);
 	
 	std::shared_ptr<TextBox> upperBox = 
 		std::make_shared<TextBox>(sf::Vector2f{ 320, entryTop + 96 }/*position*/,
 			sf::Vector2f{ 50, 30 }/*size*/);
-	upperBox->number = std::shared_ptr<int>(&data->upper);
+	upperBox->number = &data->upper;
 	boxes.push_back(upperBox);
 	
 	std::shared_ptr<TextBox> lowerBox = 
 		std::make_shared<TextBox>(sf::Vector2f{ 480, entryTop + 96 }/*position*/,
 			sf::Vector2f{ 50, 30 }/*size*/);
-	lowerBox->number = std::shared_ptr<int>(&data->lower);
+	lowerBox->number = &data->lower;
 	boxes.push_back(lowerBox);
 
 	std::shared_ptr<Button> percentage = 
 		std::make_shared<Button>(sf::Vector2f{ 540, entryTop + 96 }/*position*/,
 			sf::Vector2f{ 35, 30 }/*size*/, "%");
-	percentage->xmlLink = std::shared_ptr<bool>(&data->percentage);
+	percentage->xmlLink = &data->percentage;
 	buttons.push_back(percentage);
 
 	std::shared_ptr<Button> addCondition = 
@@ -223,13 +223,13 @@ void ConditionEntry::CreateEntry(XMLData& xmlData, float entryTop)
 	std::shared_ptr<TextBox> idBox = 
 		std::make_shared<TextBox>(sf::Vector2f{ 370, entryTop + 176 }/*position*/,
 			sf::Vector2f{ 50, 30 }/*size*/);
-	idBox->number = std::shared_ptr<int>(&data->conditions[conditionNum].index);
+	idBox->number = &data->conditions[conditionNum].index;
 	boxes.push_back(idBox);
 
 	std::shared_ptr<TextBox> valueBox = 
 		std::make_shared<TextBox>(sf::Vector2f{ 500, entryTop + 208 }/*position*/, 
 			sf::Vector2f{ 50, 30 }/*size*/);
-	valueBox->number = std::shared_ptr<int>(&data->conditions[conditionNum].values[0]);
+	valueBox->number = &data->conditions[conditionNum].values[0];
 	boxes.push_back(valueBox);
 
 	std::shared_ptr<TransformOption> typeOptions =

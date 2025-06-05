@@ -56,6 +56,7 @@ public:
 	TerritoryView selectedView;
 	std::shared_ptr<sf::RectangleShape> mapBox;
 
+	~TerritoryEntry() {};
 	TerritoryEntry(TerritoryView view, int insertedKey, 
 		std::shared_ptr<sf::RectangleShape> mapbox) :
 		selectedView(view), UIEntry{ insertedKey }, mapBox{ mapbox } {};
@@ -78,6 +79,7 @@ public:
 	std::vector<std::shared_ptr<Button>> territoryViews;
 	TerritoryView selectedView;
 
+	~TerritoryPage() {};
 	TerritoryPage(XMLData& xmlData, sf::Vector2f tabPos, 
 		sf::Vector2f tabSize, std::string tabLabel, 
 		sf::Vector2f buttonBoxSize); 

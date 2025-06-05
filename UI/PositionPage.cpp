@@ -14,7 +14,7 @@ PositionPage::PositionPage(XMLData& xmlData, sf::Vector2f tabPos,
 	addEntry.rect.setSize({ 185, 30 });
 	addEntry.label->setString("Add Position");
 
-	maxBox.number = std::shared_ptr<int>(&xmlData.maxPositions);
+	maxBox.number = &xmlData.maxPositions;
 }
 
 void PositionPage::Draw(sf::RenderWindow& window, bool selected)
@@ -148,7 +148,7 @@ void PositionPair::CreateEntry(XMLData& xmlData, float entryTop)
 	std::shared_ptr<TextBox> startBox = 
 		std::make_shared<TextBox>(sf::Vector2f{ 525, entryTop + 12 }/*position*/, 
 			sf::Vector2f{ 50, 30 }/*size*/);
-	startBox->number = std::shared_ptr<int>(&data->positions[pairNum].startSize);
+	startBox->number = &data->positions[pairNum].startSize;
 	boxes.push_back(startBox);
 }
 

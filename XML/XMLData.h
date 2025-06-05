@@ -35,6 +35,7 @@ public:
 	std::unordered_map<int, std::shared_ptr<Continent>> continents;
 	std::unordered_map<int, std::shared_ptr<Territory>> territories;
 
+	~XMLData() {};
 	XMLData();
 	int	AddTransform();
 	void RemoveTransform(int key);

@@ -113,20 +113,18 @@ void ScrollBar::BarSize(sf::Vector2f contentSize)
 	if (verticle)
 	{
 		float ratio = contentSize.y / scrollWindow.getSize().y;
-		if (ratio > 1.0f)
-		{
-			sf::Vector2f size = verticleTrack.getSize();
-			verticleBar.setSize({ size.x, size.y * (1.0f / ratio) });
-		}
+		if (ratio < 1.0f) ratio = 1.0f;
+		
+		sf::Vector2f size = verticleTrack.getSize();
+		verticleBar.setSize({ size.x, size.y * (1.0f / ratio) });		
 	}
 	if (horizontal)
 	{
 		float ratio = contentSize.x / scrollWindow.getSize().x;
-		if (ratio > 1.0f)
-		{
-			sf::Vector2f size = horizontalTrack.getSize();
-			horizontalBar.setSize({ size.x * (1.0f / ratio), size.y });
-		}
+		if (ratio < 1.0f) ratio = 1.0f;
+		
+		sf::Vector2f size = horizontalTrack.getSize();
+		horizontalBar.setSize({ size.x * (1.0f / ratio), size.y });		
 	}
 }
 

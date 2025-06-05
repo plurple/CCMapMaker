@@ -27,6 +27,7 @@ class ObjectiveEntry : public UIEntry
 public:
 	bool isObjective;
 
+	~ObjectiveEntry() {};
 	ObjectiveEntry(bool isObjective, int insertedKey) :
 		isObjective{ isObjective }, UIEntry{ insertedKey }{};
 	void CreateEntry(XMLData& xmlData, float entryTop) override;
@@ -44,6 +45,7 @@ class ObjectivePage : public UIPage
 public:
 	bool isObjective;
 
+	~ObjectivePage() {};
 	ObjectivePage(XMLData& xmlData, sf::Vector2f tabPos, 
 		sf::Vector2f tabSize, std::string tabLabel, 
 		sf::Vector2f buttonBoxSize);

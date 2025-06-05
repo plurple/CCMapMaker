@@ -24,6 +24,7 @@ public:
 	sf::Vector2f maxScroll;
 	sf::Vector2f minScroll;
 
+	~ScrollBar() {};
 	ScrollBar(sf::View view, sf::Vector2f verticlePos, 
 		sf::Vector2f verticleSize, sf::Vector2f horizontalPos = { 0,0 },
 		sf::Vector2f horizontalSize = { 0, 0 }, bool vert = true, bool horiz = false);

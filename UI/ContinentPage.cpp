@@ -147,7 +147,7 @@ void ContinentEntry::CreateEntry(XMLData& xmlData, float entryTop)
 	std::shared_ptr<TextBox> nameBox = 
 		std::make_shared<TextBox>(sf::Vector2f{ 120, entryTop + 12 }/*position*/,
 			sf::Vector2f{ 450, 30 }/*size*/);
-	nameBox->text = std::shared_ptr<std::string>(&data->name);
+	nameBox->text = &data->name;
 	boxes.push_back(nameBox);
 
 	std::shared_ptr<AdvancedTerritory> advance = 
@@ -268,13 +268,13 @@ void BonusLine::CreateEntry(XMLData& xmlData, float entryTop)
 	std::shared_ptr<TextBox> bonusBox = 
 		std::make_shared<TextBox>(sf::Vector2f{ 250, entryTop + 50 }, 
 			sf::Vector2f{ 50, 30 });
-	bonusBox->number = std::shared_ptr<int>(&data->bonuses[bonusNum].bonusAmount);
+	bonusBox->number = &data->bonuses[bonusNum].bonusAmount;
 	boxes.push_back(bonusBox);
 
 	std::shared_ptr<TextBox> requiredBox = 
 		std::make_shared<TextBox>(sf::Vector2f{ 450, entryTop + 50 }, 
 			sf::Vector2f{ 50, 30 });
-	requiredBox->number = std::shared_ptr<int>(&data->bonuses[bonusNum].numRequired);
+	requiredBox->number = &data->bonuses[bonusNum].numRequired;
 	boxes.push_back(requiredBox);
 }
 
@@ -338,7 +338,7 @@ void AdvancedTerritory::CreateEntry(XMLData& xmlData, float entryTop)
 
 	std::shared_ptr<TextBox> factor = 
 		std::make_shared<TextBox>(sf::Vector2f{ 530, entryTop + 88 }/*position*/,
-			sf::Vector2f{ 50, 30 }/*size*/, std::make_shared<std::string>("1.0"));
+			sf::Vector2f{ 50, 30 }/*size*/, new std::string("1.0"));
 	boxes.push_back(factor);
 }
 

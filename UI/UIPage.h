@@ -17,6 +17,7 @@ public:
 	bool selected;
 	int xmlKey;
 
+	~UIEntry() {};
 	UIEntry(int insertedKey) : selected{ false }, xmlKey{ insertedKey } {};
 	virtual void CreateEntry(XMLData& xmlData, float entryTop) = 0;
 
@@ -40,6 +41,7 @@ public:
 	bool mouseOnPage;
 	std::vector<std::shared_ptr<UIEntry>> entries;
 
+	~UIPage() {};
 	UIPage(sf::Vector2f tabPos, sf::Vector2f tabSize, 
 		std::string tabLabel, sf::Vector2f buttonBoxSize);
 	virtual void Draw(sf::RenderWindow& window, bool selected);

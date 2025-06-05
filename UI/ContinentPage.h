@@ -35,6 +35,7 @@ class AdvancedTerritory : public UIEntry
 		NumBoxes
 	};
 public:
+	~AdvancedTerritory() {};
 	AdvancedTerritory(int insertedKey) : UIEntry{ insertedKey } {};
 	void CreateEntry(XMLData& xmlData, float entryTop) override;
 
@@ -62,6 +63,8 @@ class BonusLine : public UIEntry
 	};
 public:
 	int bonusNum;
+
+	~BonusLine() {};
 	BonusLine(int insertedKey, int bonus) : 
 		UIEntry{ insertedKey }, bonusNum{ bonus } {};
 	void CreateEntry(XMLData& xmlData, float entryTop) override;
@@ -109,6 +112,7 @@ public:
 	std::vector<std::shared_ptr<UIEntry>> bonuses;
 	ContinentView selectedView;
 
+	~ContinentEntry() {};
 	ContinentEntry(ContinentView view, int insertedKey) : 
 		selectedView{ view }, UIEntry{ insertedKey } {};
 	void CreateEntry(XMLData& xmlData, float entryTop) override;

@@ -9,6 +9,7 @@ struct MapData
 	std::shared_ptr<sf::Texture> mapTexture = nullptr;
 	std::shared_ptr<sf::Sprite> mapSprite = nullptr;
 
+	~MapData() {};
 	MapData(std::string fileName);
 };
 
@@ -21,6 +22,7 @@ public:
 	ScrollBar scrollBar;
 	std::vector<std::shared_ptr<sf::RectangleShape>> mapBoxes;
 
+	~Maps() {};
 	Maps();
 	void Draw(sf::RenderWindow& window, bool isLarge);
 	void Update(sf::RenderWindow& window, sf::Time timePassed,

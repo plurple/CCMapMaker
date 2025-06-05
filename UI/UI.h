@@ -29,6 +29,7 @@ public:
 	sf::Vector2f smallArrowPos;
 	bool showCursor;
 
+	~UI() {};
 	UI(XMLData& xmlData);
 	void Draw(sf::RenderWindow &window);
 	static bool CheckMouseInBounds(sf::Vector2i mousePos, sf::RectangleShape rect);

@@ -44,6 +44,7 @@ class PositionEntry : public UIEntry
 public:
 	std::vector<std::shared_ptr<UIEntry>> positionPairs;
 
+	~PositionEntry() {};
 	PositionEntry(int insertedKey) : UIEntry{ insertedKey } {};
 	void CreateEntry(XMLData& xmlData, float entryTop) override;
 
@@ -61,6 +62,7 @@ public:
 	std::shared_ptr<sf::Text> maxLabel;
 	TextBox maxBox;
 
+	~PositionPage() {};
 	PositionPage(XMLData& xmlData, sf::Vector2f tabPos, 
 		sf::Vector2f tabSize, std::string tabLabel, 
 		sf::Vector2f buttonBoxSize);

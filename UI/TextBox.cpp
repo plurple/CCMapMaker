@@ -2,8 +2,7 @@
 #include "UI.h"
 
 TextBox::TextBox(sf::Vector2f pos, sf::Vector2f boxSize, 
-    std::shared_ptr<std::string> defaultText, 
-    std::shared_ptr<int> defaultNumber) :
+    std::string* defaultText, int* defaultNumber) :
 	box{ boxSize },
 	active{false},
 	text{defaultText},

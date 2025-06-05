@@ -30,7 +30,7 @@ ReinforcementPage::ReinforcementPage(XMLData& xmlData, sf::Vector2f tabPos,
 	addEntry.rect.setSize({ 270, 30 });
 	addEntry.label->setString("Add Reinforcement");
 
-	minReinforcements.number = std::shared_ptr<int>(&xmlData.minReinforcements);
+	minReinforcements.number = &xmlData.minReinforcements;
 }
 
 void ReinforcementPage::Draw(sf::RenderWindow& window, bool selected)
@@ -105,19 +105,19 @@ void ReinforcementEntry::CreateEntry(XMLData& xmlData, float entryTop)
 	std::shared_ptr<TextBox> lowerBox = 
 		std::make_shared<TextBox>(sf::Vector2f{ 135, entryTop + 12 }/*position*/, 
 			sf::Vector2f{ 50, 30 }/*size*/);
-	lowerBox->number = std::shared_ptr<int>(&data->lower);
+	lowerBox->number = &data->lower;
 	boxes.push_back(lowerBox);
 
 	std::shared_ptr<TextBox> upperBox = 
 		std::make_shared<TextBox>(sf::Vector2f{ 295, entryTop + 12 }/*position*/,
 			sf::Vector2f{ 50, 30 }/*size*/);
-	upperBox->number = std::shared_ptr<int>(&data->upper);
+	upperBox->number = &data->upper;
 	boxes.push_back(upperBox);
 
 	std::shared_ptr<TextBox> divisorBox = 
 		std::make_shared<TextBox>(sf::Vector2f{ 465, entryTop + 12 }/*position*/, 
 			sf::Vector2f{ 50, 30 }/*size*/);
-	divisorBox->number = std::shared_ptr<int>(&data->divisor);
+	divisorBox->number = &data->divisor;
 	boxes.push_back(divisorBox);
 }
 

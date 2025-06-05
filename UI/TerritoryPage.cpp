@@ -207,49 +207,49 @@ void TerritoryEntry::CreateEntry(XMLData& xmlData, float entryTop)
 	std::shared_ptr<TextBox> nameBox =
 		std::make_shared<TextBox>(sf::Vector2f{ 120, entryTop + 12 }/*position*/, 
 			sf::Vector2f{ 450, 30 }/*size*/);
-	nameBox->text = std::shared_ptr<std::string>(&data->name);
+	nameBox->text = &data->name;
 	boxes.push_back(nameBox);
 
 	std::shared_ptr<TextBox> xSmallBox =
 		std::make_shared<TextBox>(sf::Vector2f{ 330, entryTop + 50 }/*position*/,
 			sf::Vector2f{ 50, 30 }/*size*/);
-	xSmallBox->number = std::shared_ptr<int>(&data->smallPos.x);
+	xSmallBox->number = &data->smallPos.x;
 	boxes.push_back(xSmallBox);
 
 	std::shared_ptr<TextBox> ySmallBox =
 		std::make_shared<TextBox>(sf::Vector2f{ 440, entryTop + 50 }/*position*/,
 			sf::Vector2f{ 50, 30 }/*size*/);
-	ySmallBox->number = std::shared_ptr<int>(&data->smallPos.y);
+	ySmallBox->number = &data->smallPos.y;
 	boxes.push_back(ySmallBox);
 
 	std::shared_ptr<TextBox> xLargeBox =
 		std::make_shared<TextBox>(sf::Vector2f{ 330, entryTop + 88 }/*position*/,
 			sf::Vector2f{ 50, 30 }/*size*/);
-	xLargeBox->number = std::shared_ptr<int>(&data->largePos.x);
+	xLargeBox->number = &data->largePos.x;
 	boxes.push_back(xLargeBox);
 
 	std::shared_ptr<TextBox> yLargeBox =
 		std::make_shared<TextBox>(sf::Vector2f{ 440, entryTop + 88 }/*position*/,
 			sf::Vector2f{ 50, 30 }/*size*/);
-	yLargeBox->number = std::shared_ptr<int>(&data->largePos.y);
+	yLargeBox->number = &data->largePos.y;
 	boxes.push_back(yLargeBox);
 
 	std::shared_ptr<TextBox> neutralBox =
 		std::make_shared<TextBox>(sf::Vector2f{ 330, entryTop + 124 }/*position*/,
 			sf::Vector2f{ 50, 30 }/*size*/);
-	neutralBox->number = std::shared_ptr<int>(&data->neutral);
+	neutralBox->number = &data->neutral;
 	boxes.push_back(neutralBox);
 
 	std::shared_ptr<TextBox> bonusBox =
 		std::make_shared<TextBox>(sf::Vector2f{ 120, entryTop + 124 }/*position*/,
 			sf::Vector2f{ 50, 30 }/*size*/);
-	bonusBox->number = std::shared_ptr<int>(&data->bonus);
+	bonusBox->number = &data->bonus;
 	boxes.push_back(bonusBox);
 
 	std::shared_ptr<Button> killer = 
 		std::make_shared<Button>(sf::Vector2f{ 390, entryTop + 124 }/*position*/, 
 			sf::Vector2f{ 100, 30 }/*size*/, "Killer");
-	killer->xmlLink = std::shared_ptr<bool>(&data->killer);
+	killer->xmlLink = &data->killer;
 	buttons.push_back(killer);
 
 	//todo link these 3 to the correct list and right name etc.

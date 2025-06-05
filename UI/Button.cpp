@@ -4,7 +4,8 @@
 Button::Button(sf::Vector2f pos, sf::Vector2f dimensions,
 	std::string lab, bool select) :
 	rect{dimensions},
-	selected{select}
+	selected{select},
+	xmlLink(nullptr)
 {
 	rect.setPosition(pos);
 	rect.setFillColor(sf::Color::Black);

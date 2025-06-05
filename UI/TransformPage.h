@@ -22,6 +22,7 @@ class TransformOption : public UIEntry
 		NumButtons
 	};
 public:
+	~TransformOption() {};
 	TransformOption(int insertedKey) : UIEntry{ insertedKey } {};
 	void CreateEntry(XMLData& xmlData, float entryTop) override;
 	void CreateEntry(XMLData& xmlData, float yCoord, float labelCoord, float leftCoord,
@@ -64,6 +65,7 @@ class ConditionEntry : public UIEntry
 public:
 	int conditionNum;
 
+	~ConditionEntry() {};
 	ConditionEntry(int insertedKey, int condition) : 
 		UIEntry{ insertedKey }, conditionNum{ condition } {};
 	void CreateEntry(XMLData& xmlData, float entryTop) override;
@@ -114,6 +116,7 @@ class TransformEntry : public UIEntry
 public:
 	std::vector<std::shared_ptr<UIEntry>> conditions;
 
+	~TransformEntry() {};
 	TransformEntry(int insertedKey) : UIEntry{ insertedKey } {};
 	void CreateEntry(XMLData& xmlData, float entryTop) override;
 
@@ -130,6 +133,7 @@ class TransformPage : public UIPage
 public:
 	Button testTransforms;
 
+	~TransformPage() {};
 	TransformPage(XMLData& xmlData, sf::Vector2f tabPos, 
 		sf::Vector2f tabSize, std::string tabLabel, 
 		sf::Vector2f buttonBoxSize);

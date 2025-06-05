@@ -24,6 +24,7 @@ class ReinforcementEntry : public UIEntry
 		NumBoxes
 	};
 public:
+	~ReinforcementEntry() {};
 	ReinforcementEntry(int insertedKey) : UIEntry{ insertedKey } {};
 	void CreateEntry(XMLData& xmlData, float entryTop) override;
 
@@ -41,6 +42,7 @@ public:
 	std::shared_ptr<sf::Text> minLabel;
 	TextBox minReinforcements;
 
+	~ReinforcementPage() {};
 	ReinforcementPage(XMLData& xmlData, sf::Vector2f tabPos, 
 		sf::Vector2f tabSize, std::string tabLabel, 
 		sf::Vector2f buttonBoxSize);

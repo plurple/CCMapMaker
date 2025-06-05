@@ -101,13 +101,13 @@ void ObjectiveEntry::CreateEntry(XMLData& xmlData, float entryTop)
 	std::shared_ptr<TextBox> nameBox = 
 		std::make_shared<TextBox>(sf::Vector2f{ 120, entryTop + 12 }/*position*/,
 		sf::Vector2f{ 450, 30 }/*size*/);
-	nameBox->text = std::shared_ptr<std::string>(&data->name);
+	nameBox->text = &data->name;
 	boxes.push_back(nameBox);
 
 	std::shared_ptr<TextBox> numRequiredBox = 
 		std::make_shared<TextBox>(sf::Vector2f{ 235, entryTop + 124 }/*position*/,
 		sf::Vector2f{ 50, 30 }/*size*/);
-	numRequiredBox->number = std::shared_ptr<int>(&data->numRequired);
+	numRequiredBox->number = &data->numRequired;
 	boxes.push_back(numRequiredBox);
 }
 
