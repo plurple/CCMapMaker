@@ -84,7 +84,7 @@ public:
 	void Draw(sf::RenderWindow& window, bool selected) override;
 	void MouseClick(XMLData& xmlData, sf::RenderWindow& window, 
 		sf::Vector2i mousePos, Maps& maps) override;
-	bool MapClick(XMLData& xmlData, Maps& maps, sf::Vector2i mousePos);
+	bool MapClick(XMLData& xmlData, Maps& maps, sf::Vector2i mousePos, int& boxIndex) override;
 	void Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
 		UserInput input, bool showCursor, UIPageType pageType) override;
 

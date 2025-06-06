@@ -86,16 +86,19 @@ void TerritoryPage::MouseClick(XMLData& xmlData, sf::RenderWindow& window,
 	}	
 }
 
-bool TerritoryPage::MapClick(XMLData& xmlData, Maps& maps, sf::Vector2i mousePos)
+bool TerritoryPage::MapClick(XMLData& xmlData, Maps& maps, sf::Vector2i mousePos, int& boxIndex)
 {
-	if (UIPage::MapClick(xmlData, maps, mousePos))
+	if (UIPage::MapClick(xmlData, maps, mousePos, boxIndex))
 	{
-		/*select this territory entry if none selected
-		if one selected dependent on view type
-		border- add the clicked territory to the borders
-		bombardment- add to the bombardments
-		condition- need to select a territory then add to condition
-		extras- do nothing same if no condition territory selected*/
+		for (std::shared_ptr<UIEntry> entry : entries)
+		{
+			/*if one selected dependent on view type
+				border - add the clicked territory to the borders
+				bombardment - add to the bombardments
+				condition - need to select a territory then add to condition
+				extras - do nothing same if no condition territory selected*/
+		}
+		entries[boxIndex]->Select();		
 	}
 	else
 	{

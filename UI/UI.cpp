@@ -168,7 +168,8 @@ void UI::MouseClick(XMLData& xmlData, sf::RenderWindow& window, sf::Vector2i mou
     uiPages[(int)selectedPage]->MouseClick(xmlData, window, mousePos, maps);
     if (CheckMouseInBounds(mapMouse, maps.largeMap.mapSprite->getGlobalBounds()))
     {
-        uiPages[(int)selectedPage]->MapClick(xmlData, maps, mapMouse);
+        int index;
+        uiPages[(int)selectedPage]->MapClick(xmlData, maps, mapMouse, index);
     }
 }
 
