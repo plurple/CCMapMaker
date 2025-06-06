@@ -98,7 +98,9 @@ bool TerritoryPage::MapClick(XMLData& xmlData, Maps& maps, sf::Vector2i mousePos
 				condition - need to select a territory then add to condition
 				extras - do nothing same if no condition territory selected*/
 		}
-		entries[boxIndex]->Select();		
+		entries[boxIndex]->Select();
+		auto bob = entries[boxIndex]->boxes[(int)UIEntry::ShapeTypes::Border]->box.getPosition();
+		scrollBar.Scroll({ 0, -bob.y+20 });
 	}
 	else
 	{
@@ -149,7 +151,7 @@ void TerritoryEntry::CreateEntry(XMLData& xmlData, float entryTop)
 	border->setPosition({ 10,entryTop });
 	border->setFillColor(sf::Color::Transparent);
 	border->setOutlineThickness(2.0f);
-	border->setOutlineColor({ 150, 60, 255 });
+	border->setOutlineColor(baseColor);
 	shapes.push_back(border);
 
 	std::shared_ptr<sf::Text> nameLabel =

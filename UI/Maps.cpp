@@ -48,7 +48,7 @@ void Maps::Update(sf::RenderWindow& window, sf::Time timePassed,
 {
     for (int i = mapBoxes.size()-1; i >= 0;)
     {
-        if (mapBoxes.size() && mapBoxes[i]->getScale().lengthSquared() == 0.0f)
+        if (i < mapBoxes.size() && mapBoxes[i]->getScale().lengthSquared() == 0.0f)
         {
             mapBoxes.erase(mapBoxes.begin() + i);
         }
