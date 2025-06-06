@@ -147,7 +147,7 @@ void TerritoryEntry::CreateEntry(XMLData& xmlData, float entryTop)
 	selectedColor = sf::Color{ 120, 0, 255 };
 
 	std::shared_ptr<sf::RectangleShape> border = 
-		std::make_shared<sf::RectangleShape>( sf::Vector2f{ 580,200 } );/*size*/
+		std::make_shared<sf::RectangleShape>( sf::Vector2f{ 530,200 } );/*size*/
 	border->setPosition({ 10,entryTop });
 	border->setFillColor(sf::Color::Transparent);
 	border->setOutlineThickness(2.0f);
@@ -219,7 +219,7 @@ void TerritoryEntry::CreateEntry(XMLData& xmlData, float entryTop)
 
 	std::shared_ptr<TextBox> nameBox =
 		std::make_shared<TextBox>(sf::Vector2f{ 120, entryTop + 12 }/*position*/, 
-			sf::Vector2f{ 450, 30 }/*size*/);
+			sf::Vector2f{ 400, 30 }/*size*/);
 	nameBox->text = &data->name;
 	boxes.push_back(nameBox);
 
