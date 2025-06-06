@@ -12,11 +12,6 @@ enum class TerritoryView
 
 class TerritoryEntry : public UIEntry
 {
-	enum class ShapeTypes
-	{
-		Border,
-		NumShapes
-	};
 	enum class LabelTypes
 	{
 		NameLabel,
@@ -69,6 +64,8 @@ public:
 
 	void MoveEntry(sf::Vector2f offset) override;
 	void SwapView(TerritoryView view);
+	void Select() override;
+	void Unselect() override;
 };
 
 

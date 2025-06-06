@@ -105,6 +105,9 @@ void ContinentPage::SwapView()
 
 void ContinentEntry::CreateEntry(XMLData& xmlData, float entryTop)
 {
+	baseColor = sf::Color{ 255, 170, 0 };
+	selectedColor = sf::Color{ 230, 150, 0 };
+
 	std::shared_ptr<sf::RectangleShape> border = 
 		std::make_shared<sf::RectangleShape>( sf::Vector2f{580,202 } );/*size*/
 	border->setPosition({ 10,entryTop });
@@ -164,6 +167,8 @@ void ContinentEntry::CreateEntry(XMLData& xmlData, float entryTop)
 		std::make_shared<BonusLine>(xmlKey, bonuses.size());
 	bonus->CreateEntry(xmlData, entryTop);
 	bonuses.push_back(bonus);
+
+	Select();
 }
 
 void ContinentEntry::Draw(sf::RenderWindow& window)
@@ -191,23 +196,6 @@ void ContinentEntry::Draw(sf::RenderWindow& window)
 void ContinentEntry::MouseClick(sf::Vector2i mousePos, bool mouseOnPage)
 {
 	UIEntry::MouseClick(mousePos, mouseOnPage);
-	std::shared_ptr<sf::Shape> borderBox = shapes[(int)ShapeTypes::Border];
-	if (mouseOnPage && borderBox)
-	{
-		if (UI::CheckMouseInBounds(mousePos, borderBox->getGlobalBounds()))
-		{
-			selected = true;
-			borderBox->setOutlineThickness(4.0f);
-			borderBox->setOutlineColor({ 230, 150, 0 });
-			//TODO be able to pick a territory from the map
-		}
-		else
-		{
-			selected = false;
-			borderBox->setOutlineThickness(2.0f);
-			borderBox->setOutlineColor({ 255, 170, 0 });
-		}
-	}
 
 	std::shared_ptr<Button> addBonus = buttons[(int)ButtonTypes::AddBonus];
 	if (mouseOnPage && addBonus && UI::CheckMouseInBounds(mousePos, addBonus->rect))
@@ -377,8 +365,8 @@ void AdvancedTerritory::MouseClick(sf::Vector2i mousePos, bool mouseOnPage)
 	std::shared_ptr<TextBox> factor = boxes[(int)BoxTypes::FactorBox];
 	if (factor)
 	{
-		factor->active = multiplier && multiplier->selected &&
-			mouseOnPage && UI::CheckMouseInBounds(mousePos, factor->box);
+		factor->Toggle(multiplier && multiplier->selected &&
+			mouseOnPage && UI::CheckMouseInBounds(mousePos, factor->box));
 	}
 }
 

@@ -52,6 +52,9 @@ void TransformPage::AddTransform(XMLData& xmlData)
 
 void TransformEntry::CreateEntry(XMLData& xmlData, float entryTop)
 {
+	baseColor = sf::Color::Blue;
+	selectedColor = sf::Color{ 60, 120, 240 };
+
 	std::shared_ptr<sf::RectangleShape> border = 
 		std::make_shared<sf::RectangleShape>( sf::Vector2f{ 580,288 } );/*size*/
 	border->setPosition({ 10, entryTop });
@@ -129,6 +132,8 @@ void TransformEntry::CreateEntry(XMLData& xmlData, float entryTop)
 		std::make_shared<ConditionEntry>(xmlKey, conditions.size());
 	condition->CreateEntry(xmlData, entryTop);
 	conditions.push_back(condition);
+
+	Select();
 }
 
 void TransformEntry::Draw(sf::RenderWindow& window)
@@ -143,23 +148,7 @@ void TransformEntry::Draw(sf::RenderWindow& window)
 void TransformEntry::MouseClick(sf::Vector2i mousePos, bool mouseOnPage)
 {
 	UIEntry::MouseClick(mousePos, mouseOnPage);
-	std::shared_ptr<sf::Shape> borderBox = shapes[(int)ShapeTypes::Border];
-	if (mouseOnPage && borderBox)
-	{
-		if (UI::CheckMouseInBounds(mousePos, borderBox->getGlobalBounds()))
-		{
-			selected = true;
-			borderBox->setOutlineThickness(4.0f);
-			borderBox->setOutlineColor({ 60, 120, 240 });
-			//TODO be able to pick a territory from the map
-		}
-		else
-		{
-			selected = false;
-			borderBox->setOutlineThickness(2.0f);
-			borderBox->setOutlineColor(sf::Color::Blue);
-		}
-	}
+
 	std::shared_ptr<Button> percentage = buttons[(int)ButtonTypes::Percentage];
 	if (mouseOnPage && percentage && UI::CheckMouseInBounds(mousePos, percentage->rect))
 	{

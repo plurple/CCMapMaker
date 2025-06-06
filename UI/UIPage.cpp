@@ -160,9 +160,15 @@ void UIEntry::Draw(sf::RenderWindow& window)
 
 void UIEntry::MouseClick(sf::Vector2i mousePos, bool mouseOnPage)
 {
+	if (shapes.size())
+	{
+		std::shared_ptr<sf::Shape> borderBox = shapes[(int)ShapeTypes::Border];
+		Toggle(mouseOnPage && borderBox && UI::CheckMouseInBounds(mousePos, borderBox->getGlobalBounds()));
+	}
+
 	for (std::shared_ptr<TextBox> box : boxes)
 	{
-		box->active = UI::CheckMouseInBounds(mousePos, box->box);
+		box->Toggle(UI::CheckMouseInBounds(mousePos, box->box));
 	}
 	for (std::shared_ptr<UIEntry> entry : entries)
 	{
@@ -205,4 +211,23 @@ void UIEntry::MoveEntry(sf::Vector2f offset)
 	{
 		entry->MoveEntry(offset);
 	}
+}
+
+void UIEntry::Select()
+{
+	selected = true;
+	shapes[0]->setOutlineThickness(4.0f);
+	shapes[0]->setOutlineColor(selectedColor);
+}
+
+void UIEntry::Unselect()
+{
+	selected = false;
+	shapes[0]->setOutlineThickness(2.0f);
+	shapes[0]->setOutlineColor(baseColor);
+}
+
+void UIEntry::Toggle(bool toggle)
+{
+	toggle ? Select() : Unselect();
 }

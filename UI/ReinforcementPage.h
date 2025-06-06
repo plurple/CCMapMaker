@@ -3,11 +3,6 @@
 
 class ReinforcementEntry : public UIEntry
 {
-	enum class ShapeTypes
-	{
-		Border,
-		NumShapes
-	};
 	enum class LabelTypes
 	{
 		LowerLabel,

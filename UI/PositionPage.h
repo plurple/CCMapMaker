@@ -31,11 +31,6 @@ public:
 
 class PositionEntry : public UIEntry
 {
-	enum class ShapeTypes
-	{
-		Border,
-		NumShapes
-	};
 	enum class ButtonTypes
 	{
 		AddPosition,

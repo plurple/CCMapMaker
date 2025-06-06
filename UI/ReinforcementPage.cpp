@@ -51,7 +51,7 @@ void ReinforcementPage::MouseClick(XMLData& xmlData, sf::RenderWindow& window,
     {
 		AddReinforcement(xmlData);
     }
-	minReinforcements.active = UI::CheckMouseInBounds(mousePos, minReinforcements.box);
+	minReinforcements.Toggle(UI::CheckMouseInBounds(mousePos, minReinforcements.box));
 }
 
 void ReinforcementPage::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
@@ -73,6 +73,9 @@ void ReinforcementPage::AddReinforcement(XMLData& xmlData)
 
 void ReinforcementEntry::CreateEntry(XMLData& xmlData, float entryTop)
 {
+	baseColor = sf::Color::Yellow;
+	selectedColor = sf::Color{ 230, 200, 90 };
+
 	std::shared_ptr<sf::RectangleShape> border =
 		std::make_shared<sf::RectangleShape>( sf::Vector2f{535,155}/*size*/ );
 	border->setPosition({ 10,entryTop });
@@ -119,6 +122,8 @@ void ReinforcementEntry::CreateEntry(XMLData& xmlData, float entryTop)
 			sf::Vector2f{ 50, 30 }/*size*/);
 	divisorBox->number = &data->divisor;
 	boxes.push_back(divisorBox);
+
+	Select();
 }
 
 void ReinforcementEntry::Draw(sf::RenderWindow& window)
@@ -129,22 +134,6 @@ void ReinforcementEntry::Draw(sf::RenderWindow& window)
 void ReinforcementEntry::MouseClick(sf::Vector2i mousePos, bool mouseOnPage)
 {
 	UIEntry::MouseClick(mousePos, mouseOnPage);
-	std::shared_ptr<sf::Shape> borderBox = shapes[(int)ShapeTypes::Border];
-	if (mouseOnPage && borderBox)
-	{
-		if (UI::CheckMouseInBounds(mousePos, borderBox->getGlobalBounds()))
-		{
-			selected = true;
-			borderBox->setOutlineThickness(4.0f);
-			borderBox->setOutlineColor({ 230, 200, 90 });
-		}
-		else
-		{
-			selected = false;
-			borderBox->setOutlineThickness(2.0f);
-			borderBox->setOutlineColor(sf::Color::Yellow);
-		}
-	}
 }
 
 void ReinforcementEntry::Update(sf::RenderWindow& window, sf::Time timePassed,

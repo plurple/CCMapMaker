@@ -6,7 +6,9 @@ TextBox::TextBox(sf::Vector2f pos, sf::Vector2f boxSize,
 	box{ boxSize },
 	active{false},
 	text{defaultText},
-    number{defaultNumber}
+    number{defaultNumber},
+    baseColor{sf::Color::White},
+    activeColor{ sf::Color::White }
 {
 	box.setPosition(pos);
 	box.setFillColor(sf::Color::Black);
@@ -37,7 +39,7 @@ void TextBox::Update(sf::RenderWindow& window, sf::Time timePassed,
                 RemoveNumber();
         }
         if (input.enter)
-            active = false;       
+            Unselect();       
     }
 
     std::string currentText = "";
@@ -93,4 +95,23 @@ void TextBox::RemoveNumber()
         temp.pop_back();
         *number = std::stoi(temp);
     }
+}
+
+void TextBox::Select()
+{
+    active = true;
+    box.setOutlineThickness(3.5f);
+    box.setOutlineColor(activeColor);
+}
+
+void TextBox::Unselect()
+{
+    active = false;
+    box.setOutlineThickness(2.0f);
+    box.setOutlineColor(baseColor);
+}
+
+void TextBox::Toggle(bool toggle)
+{
+    toggle ? Select() : Unselect();
 }

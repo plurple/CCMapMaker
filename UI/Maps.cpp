@@ -94,7 +94,7 @@ std::shared_ptr<sf::RectangleShape> Maps::AddMapBox(sf::Vector2i position)
     mapBox->setPosition(sf::Vector2f{ position + sf::Vector2i{ 3, 24 } });
     mapBox->setFillColor(sf::Color::Transparent);
     mapBox->setOutlineThickness(3.0f);
-    mapBox->setOutlineColor(sf::Color::White);
+    mapBox->setOutlineColor(sf::Color::Red);
     mapBoxes.push_back(mapBox);
     return mapBox;
 }

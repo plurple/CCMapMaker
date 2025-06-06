@@ -10,6 +10,8 @@ public:
 	std::string* text;
 	int* number;
 	bool active;
+	sf::Color activeColor;
+	sf::Color baseColor;
 
 	~TextBox() {};
 	TextBox(sf::Vector2f pos, sf::Vector2f boxSize = { 400, 32 }, std::string* defaultText = nullptr, 
@@ -22,5 +24,8 @@ public:
 	bool IsNumber(char key);
 	void AddNumber(std::string key);
 	void RemoveNumber();
+	void Select();
+	void Unselect();
+	void Toggle(bool toggle);
 };
 

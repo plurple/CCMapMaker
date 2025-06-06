@@ -138,6 +138,9 @@ TerritoryEntry::~TerritoryEntry()
 
 void TerritoryEntry::CreateEntry(XMLData& xmlData, float entryTop)
 {
+	baseColor = sf::Color{ 150, 60, 255 };
+	selectedColor = sf::Color{ 120, 0, 255 };
+
 	std::shared_ptr<sf::RectangleShape> border = 
 		std::make_shared<sf::RectangleShape>( sf::Vector2f{ 580,200 } );/*size*/
 	border->setPosition({ 10,entryTop });
@@ -274,6 +277,7 @@ void TerritoryEntry::CreateEntry(XMLData& xmlData, float entryTop)
 	bombardments.push_back(bombardment);
 
 	SwapView(selectedView);
+	Select();
 }
 
 void TerritoryEntry::Draw(sf::RenderWindow& window)
@@ -302,23 +306,6 @@ void TerritoryEntry::Draw(sf::RenderWindow& window)
 void TerritoryEntry::MouseClick(sf::Vector2i mousePos, bool mouseOnPage)
 {
 	UIEntry::MouseClick(mousePos, mouseOnPage);
-	std::shared_ptr<sf::Shape> borderBox = shapes[(int)ShapeTypes::Border];
-	if (mouseOnPage && borderBox)
-	{
-		if (UI::CheckMouseInBounds(mousePos, borderBox->getGlobalBounds()))
-		{
-			selected = true;
-			borderBox->setOutlineThickness(4.0f);
-			borderBox->setOutlineColor({ 120, 0, 255 });
-			//TODO be able to pick a territory from the map
-		}
-		else
-		{
-			selected = false;
-			borderBox->setOutlineThickness(2.0f);
-			borderBox->setOutlineColor({ 150, 60, 255 });
-		}
-	}
 
 	std::shared_ptr<Button> killer = buttons[(int)ButtonTypes::Killer];
 	if (killer && mouseOnPage && selectedView == TerritoryView::Extras && 
@@ -328,10 +315,9 @@ void TerritoryEntry::MouseClick(sf::Vector2i mousePos, bool mouseOnPage)
 	}
 
 	std::shared_ptr<TextBox> neutralBox = boxes[(int)BoxTypes::NeutralBox];
-	if(neutralBox) neutralBox->active &= selectedView == TerritoryView::Extras;
+	if(neutralBox) neutralBox->active = selectedView == TerritoryView::Extras;
 	std::shared_ptr<TextBox> bonusBox = boxes[(int)BoxTypes::BonusBox];
-	if(bonusBox) bonusBox->active &= selectedView == TerritoryView::Extras;
-		
+	if(bonusBox) bonusBox->active = selectedView == TerritoryView::Extras;		
 }
 
 void TerritoryEntry::Update(sf::RenderWindow& window, sf::Time timePassed,
@@ -375,4 +361,16 @@ void TerritoryEntry::SwapView(TerritoryView view)
 	buttons[(int)ButtonTypes::Killer]->Hide(extra);
 	boxes[(int)BoxTypes::BonusBox]->Hide(extra);
 	boxes[(int)BoxTypes::NeutralBox]->Hide(extra);
+}
+
+void TerritoryEntry::Select()
+{
+	UIEntry::Select();
+	mapBox->setOutlineColor(sf::Color::Red);
+}
+
+void TerritoryEntry::Unselect()
+{
+	UIEntry::Unselect();
+	mapBox->setOutlineColor(sf::Color::White);
 }

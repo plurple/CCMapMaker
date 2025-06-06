@@ -9,6 +9,11 @@
 class UIEntry
 {
 public:
+	enum class ShapeTypes
+	{
+		Border,
+		NumShapes
+	};
 	std::vector<std::shared_ptr<sf::Shape>> shapes;
 	std::vector<std::shared_ptr<sf::Text>> labels;
 	std::vector<std::shared_ptr<Button>> buttons;
@@ -16,6 +21,8 @@ public:
 	std::vector<std::shared_ptr<UIEntry>> entries;
 	bool selected;
 	int xmlKey;
+	sf::Color baseColor;
+	sf::Color selectedColor;
 
 	~UIEntry() {};
 	UIEntry(int insertedKey) : selected{ false }, xmlKey{ insertedKey } {};
@@ -27,6 +34,9 @@ public:
 		UserInput input, bool showCursor);
 
 	virtual void MoveEntry(sf::Vector2f offset);
+	virtual void Select();
+	virtual void Unselect();
+	void Toggle(bool toggle);
 };
 
 class UIPage

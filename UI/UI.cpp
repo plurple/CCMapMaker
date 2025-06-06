@@ -156,10 +156,6 @@ void UI::MouseClick(XMLData& xmlData, sf::RenderWindow& window, sf::Vector2i mou
     }
     sf::Vector2i mapMouse = sf::Vector2i(window.mapPixelToCoords(mousePos, maps.scrollBar.scrollWindow));
     maps.scrollBar.MouseClick(mapMouse);
-    if (CheckMouseInBounds(mapMouse, maps.largeMap.mapSprite->getGlobalBounds()))
-    {
-        uiPages[(int)selectedPage]->MapClick(xmlData, maps, mapMouse);
-    }
     for (int i = 0; i < (int)UIPageType::NumPageTypes; i++)
     {
         if (CheckMouseInBounds(mousePos, uiPages[i]->tabButton.rect))
@@ -170,6 +166,10 @@ void UI::MouseClick(XMLData& xmlData, sf::RenderWindow& window, sf::Vector2i mou
         }
     }
     uiPages[(int)selectedPage]->MouseClick(xmlData, window, mousePos, maps);
+    if (CheckMouseInBounds(mapMouse, maps.largeMap.mapSprite->getGlobalBounds()))
+    {
+        uiPages[(int)selectedPage]->MapClick(xmlData, maps, mapMouse);
+    }
 }
 
 void UI::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,

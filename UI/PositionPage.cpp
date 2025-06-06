@@ -36,7 +36,7 @@ void PositionPage::MouseClick(XMLData& xmlData, sf::RenderWindow& window,
 	{
 		AddPosition(xmlData);
 	}
-	maxBox.active = UI::CheckMouseInBounds(mousePos, maxBox.box);	
+	maxBox.Toggle(UI::CheckMouseInBounds(mousePos, maxBox.box));	
 }
 
 void PositionPage::Update(XMLData& xmlData, sf::RenderWindow& window, 
@@ -58,6 +58,9 @@ void PositionPage::AddPosition(XMLData& xmlData)
 
 void PositionEntry::CreateEntry(XMLData& xmlData, float entryTop)
 {
+	baseColor = sf::Color::Green;
+	selectedColor = sf::Color{ 26, 176, 26 };
+
 	std::shared_ptr<sf::RectangleShape> border = 
 		std::make_shared<sf::RectangleShape>( sf::Vector2f{580, 50} );
 	border->setPosition({ 10,entryTop });
@@ -75,6 +78,8 @@ void PositionEntry::CreateEntry(XMLData& xmlData, float entryTop)
 		std::make_shared<PositionPair>(xmlKey, positionPairs.size());
 	posPair->CreateEntry(xmlData, entryTop);
 	positionPairs.push_back(posPair);
+
+	Select();
 }
 
 void PositionEntry::Draw(sf::RenderWindow& window)
@@ -89,23 +94,7 @@ void PositionEntry::Draw(sf::RenderWindow& window)
 void PositionEntry::MouseClick(sf::Vector2i mousePos, bool mouseOnPage)
 {
 	UIEntry::MouseClick(mousePos, mouseOnPage);
-	std::shared_ptr<sf::Shape> borderBox = shapes[(int)ShapeTypes::Border];
-	if (mouseOnPage && borderBox)
-	{
-		if (UI::CheckMouseInBounds(mousePos, borderBox->getGlobalBounds()))
-		{
-			selected = true;
-			borderBox->setOutlineThickness(4.0f);
-			borderBox->setOutlineColor({ 26, 176, 26 });
-			//TODO be able to pick a territory from the map
-		}
-		else
-		{
-			selected = false;
-			borderBox->setOutlineThickness(2.0f);
-			borderBox->setOutlineColor(sf::Color::Green);
-		}
-	}
+	
 	for (std::shared_ptr<UIEntry> entry : positionPairs)
 	{
 		entry->MouseClick(mousePos, mouseOnPage);

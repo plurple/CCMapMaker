@@ -3,11 +3,6 @@
 
 class ObjectiveEntry : public UIEntry
 {
-	enum class ShapeTypes
-	{
-		Border,
-		NumShapes
-	};
 	enum class LabelTypes
 	{
 		Name,

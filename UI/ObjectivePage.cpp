@@ -58,6 +58,9 @@ void ObjectivePage::AddObjective(XMLData& xmlData)
 
 void ObjectiveEntry::CreateEntry(XMLData& xmlData, float entryTop)
 {
+	baseColor = isObjective ? sf::Color(230, 100, 110) : sf::Color::Magenta;
+	selectedColor = isObjective ? sf::Color{ 250, 170, 180 } : sf::Color{ 175, 0, 175 };
+
 	std::shared_ptr<sf::RectangleShape> border = 
 		std::make_shared<sf::RectangleShape>( sf::Vector2f{580, 165} );
 	border->setPosition({ 10,entryTop });
@@ -109,6 +112,8 @@ void ObjectiveEntry::CreateEntry(XMLData& xmlData, float entryTop)
 		sf::Vector2f{ 50, 30 }/*size*/);
 	numRequiredBox->number = &data->numRequired;
 	boxes.push_back(numRequiredBox);
+
+	Select();
 }
 
 void ObjectiveEntry::Draw(sf::RenderWindow& window)
@@ -119,24 +124,6 @@ void ObjectiveEntry::Draw(sf::RenderWindow& window)
 void ObjectiveEntry::MouseClick(sf::Vector2i mousePos, bool mouseOnPage)
 {
 	UIEntry::MouseClick(mousePos, mouseOnPage);
-
-	std::shared_ptr<sf::Shape> borderBox = shapes[(int)ShapeTypes::Border];
-	if (mouseOnPage && borderBox)
-	{
-		if (UI::CheckMouseInBounds(mousePos, borderBox->getGlobalBounds()))
-		{
-			selected = true;
-			borderBox->setOutlineThickness(4.0f);
-			borderBox->setOutlineColor(isObjective ? sf::Color{ 250, 170, 180 } : sf::Color{ 175, 0, 175 });
-			//TODO be able to pick a territory from the map
-		}
-		else
-		{
-			selected = false;
-			borderBox->setOutlineThickness(2.0f);
-			borderBox->setOutlineColor(isObjective ? sf::Color(230, 100, 110) : sf::Color::Magenta);
-		}
-	}
 }
 
 void ObjectiveEntry::Update(sf::RenderWindow& window, sf::Time timePassed,

@@ -38,11 +38,6 @@ public:
 
 class ConditionEntry : public UIEntry
 {
-	enum class ShapeTypes
-	{
-		Border,
-		NumShapes
-	};
 	enum class LabelTypes
 	{
 		IDLabel,
@@ -80,11 +75,6 @@ public:
 
 class TransformEntry : public UIEntry
 {
-	enum class ShapeTypes
-	{
-		Border,
-		NumShapes
-	};
 	enum class LabelTypes
 	{
 		AmountLabel,

@@ -79,11 +79,6 @@ public:
 
 class ContinentEntry : public UIEntry
 {
-	enum class ShapeTypes
-	{
-		Border,
-		NumShapes
-	};
 	enum class LabelTypes
 	{
 		NameLabel,
