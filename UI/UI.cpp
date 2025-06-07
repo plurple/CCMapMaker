@@ -9,13 +9,13 @@
 
 sf::Font UI::font;
 sf::Vector2u UI::windowSize{ 1600, 900 };
+bool UI::isLarge{ true };
 
 UI::UI(XMLData& xmlData) :
     selectedPage{UIPageType::Territory}, 
     uiPanel{ {600,1000} },
     mapPanel{ {370,45} },
     tabPanel{ {592,142} },
-    isLarge{ true },
     mapCheckBox({ 1238,13 }, { 30,30 }),
     mapArrow{ (15) },
     largeArrowPos{ 1240, 13 },

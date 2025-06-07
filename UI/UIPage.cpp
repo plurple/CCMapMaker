@@ -9,6 +9,7 @@ UIPage::UIPage(sf::Vector2f tabPos, sf::Vector2f tabSize,
 	buttonBox{ buttonBoxSize },
 	mouseOnPage{false},
 	showContinents(tabPos, { 240, 30 }, "Show Continents"),
+	selectedEntry{ -1 },
 	scrollBar(sf::View{ page.getGlobalBounds() }, { 555, 50 }/*position*/, { 30, page.getSize().y - 100 }/*size*/)
 {
 	page.setPosition({ 0, 0 });
@@ -53,9 +54,15 @@ void UIPage::MouseClick(XMLData& xmlData, sf::RenderWindow& window,
 	{
 		scrollBar.MouseClick(sf::Vector2i(window.mapPixelToCoords(mousePos, scrollBar.scrollWindow)));
 	}
+	selectedEntry = -1;
+	int index = 0;
 	for (std::shared_ptr<UIEntry> entry : entries)
 	{
-		entry->MouseClick(sf::Vector2i(window.mapPixelToCoords(mousePos, scrollBar.scrollWindow)), mouseOnPage);
+		bool select = false;
+		entry->MouseClick(sf::Vector2i(window.mapPixelToCoords(mousePos, scrollBar.scrollWindow)), mouseOnPage, select);
+		if (select)
+			selectedEntry = index;
+		index++;
 	}
 }
 
@@ -80,21 +87,20 @@ void UIPage::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePas
 {
 	if (input.del)
 	{
-		bool selected{ false };
-		for (int i = 0; i < entries.size(); i++)
+		if (entries[selectedEntry]->selected)
 		{
-			if (entries[i]->selected)
+			//todo remove entry and all that entails.
+			xmlData.RemoveData(pageType, entries[selectedEntry]->xmlKey);
+			entries.erase(entries.begin() + selectedEntry);
+		}
+		if (selectedEntry < entries.size())
+		{
+			for (int i = selectedEntry; i < entries.size(); i++)
 			{
-				selected = true;
-				//todo remove entry and all that entails.
-				xmlData.RemoveData(pageType, entries[i]->xmlKey);
-				entries.erase(entries.begin() + i);
-			}
-			if (selected && entries.size() && i < entries.size())
-			{
-				entries[i]->MoveEntry({ 0,  -entries[0]->shapes[0]->getGlobalBounds().size.y-6 });
+				entries[i]->MoveEntry({ 0,  -entries[0]->shapes[0]->getGlobalBounds().size.y - 6 });
 			}
 		}
+		selectedEntry = -1;		
 	}
 
 	mouseOnPage = UI::CheckMouseInBounds(sf::Vector2i(window.mapPixelToCoords(sf::Mouse::getPosition(window), scrollBar.scrollWindow)), page);
@@ -128,6 +134,7 @@ void UIPage::AddEntry(XMLData& xmlData, std::shared_ptr<UIEntry> entry)
 	float topBoxY = numEntries ? entries[0]->shapes[0]->getPosition().y : 0.0f;
 	float boxSize = numEntries ? entries[0]->shapes[0]->getGlobalBounds().size.y : 0.0f;
 	entry->CreateEntry(xmlData, topBoxY + (boxSize + 6) * numEntries);
+	selectedEntry = entries.size();
 	entries.push_back(entry);
 	scrollBar.BarSize({ 0, (boxSize + 6) * (numEntries + 1) });
 	scrollBar.MoveBar({ 0, 10 + (boxSize + 6) * (numEntries + 1) });
@@ -160,12 +167,14 @@ void UIEntry::Draw(sf::RenderWindow& window)
 	}
 }
 
-void UIEntry::MouseClick(sf::Vector2i mousePos, bool mouseOnPage)
+void UIEntry::MouseClick(sf::Vector2i mousePos, bool mouseOnPage, bool& select)
 {
 	if (shapes.size())
 	{
 		std::shared_ptr<sf::Shape> borderBox = shapes[(int)ShapeTypes::Border];
 		Toggle(mouseOnPage && borderBox && UI::CheckMouseInBounds(mousePos, borderBox->getGlobalBounds()));
+
+		select = selected;
 	}
 
 	for (std::shared_ptr<TextBox> box : boxes)
@@ -174,7 +183,7 @@ void UIEntry::MouseClick(sf::Vector2i mousePos, bool mouseOnPage)
 	}
 	for (std::shared_ptr<UIEntry> entry : entries)
 	{
-		entry->MouseClick(mousePos, mouseOnPage);
+		entry->MouseClick(mousePos, mouseOnPage, select);
 	}
 }
 

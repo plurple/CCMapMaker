@@ -12,6 +12,7 @@ enum class TerritoryView
 
 class TerritoryEntry : public UIEntry
 {
+public:
 	enum class LabelTypes
 	{
 		NameLabel,
@@ -44,21 +45,21 @@ class TerritoryEntry : public UIEntry
 		Killer,
 		NumButtons
 	};
-public:
 	std::vector<std::shared_ptr<sf::Text>> territories;
 	std::vector<std::shared_ptr<sf::Text>> conditions;
 	std::vector<std::shared_ptr<sf::Text>> bombardments;
 	TerritoryView selectedView;
 	std::shared_ptr<sf::RectangleShape> mapBox;
+	bool* linkedCoords;
 
 	~TerritoryEntry();
 	TerritoryEntry(TerritoryView view, int insertedKey, 
 		std::shared_ptr<sf::RectangleShape> mapbox) :
-		selectedView(view), UIEntry{ insertedKey }, mapBox{ mapbox } {};
+		selectedView(view), UIEntry{ insertedKey }, mapBox{ mapbox }, linkedCoords{ nullptr } {};
 	void CreateEntry(XMLData& xmlData, float entryTop) override;
 
 	void Draw(sf::RenderWindow& window) override;
-	void MouseClick(sf::Vector2i mousePos, bool mouseOnPage) override;
+	void MouseClick(sf::Vector2i mousePos, bool mouseOnPage, bool& select) override;
 	void Update(sf::RenderWindow& window, sf::Time timePassed,
 		UserInput input, bool showCursor) override;
 

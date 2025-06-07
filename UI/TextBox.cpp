@@ -71,7 +71,7 @@ void TextBox::Hide(bool show)
 
 bool TextBox::IsNumber(char key)
 {
-    return (int)key >= 48 && (int)key <= 57;
+    return (int)key >= '0' && (int)key <= '9';
 }
 
 void TextBox::AddNumber(std::string key)

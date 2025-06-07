@@ -24,7 +24,7 @@ public:
 	std::shared_ptr<sf::Text> smallLabel;
 	sf::CircleShape mapArrow;
 	Button mapCheckBox;
-	bool isLarge;
+	static bool isLarge;
 	sf::Vector2f largeArrowPos;
 	sf::Vector2f smallArrowPos;
 	bool showCursor;

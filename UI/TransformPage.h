@@ -3,6 +3,7 @@
 
 class TransformOption : public UIEntry
 {
+public:
 	enum class ShapeTypes
 	{
 		LeftArrow,
@@ -21,7 +22,6 @@ class TransformOption : public UIEntry
 		RightButton,
 		NumButtons
 	};
-public:
 	~TransformOption() {};
 	TransformOption(int insertedKey) : UIEntry{ insertedKey } {};
 	void CreateEntry(XMLData& xmlData, float entryTop) override;
@@ -29,7 +29,7 @@ public:
 		float optionCoord, float rightCoord, std::string label);
 
 	void Draw(sf::RenderWindow& window) override;
-	void MouseClick(sf::Vector2i mousePos, bool mouseOnPage) override;
+	void MouseClick(sf::Vector2i mousePos, bool mouseOnPage, bool& select) override;
 	void Update(sf::RenderWindow& window, sf::Time timePassed,
 		UserInput input, bool showCursor) override;
 
@@ -38,6 +38,7 @@ public:
 
 class ConditionEntry : public UIEntry
 {
+public:
 	enum class LabelTypes
 	{
 		IDLabel,
@@ -57,7 +58,6 @@ class ConditionEntry : public UIEntry
 		Value,
 		NumOptions
 	};
-public:
 	int conditionNum;
 
 	~ConditionEntry() {};
@@ -66,7 +66,7 @@ public:
 	void CreateEntry(XMLData& xmlData, float entryTop) override;
 
 	void Draw(sf::RenderWindow& window) override;
-	void MouseClick(sf::Vector2i mousePos, bool mouseOnPage) override;
+	void MouseClick(sf::Vector2i mousePos, bool mouseOnPage, bool& select) override;
 	void Update(sf::RenderWindow& window, sf::Time timePassed,
 		UserInput input, bool showCursor) override;
 
@@ -75,6 +75,7 @@ public:
 
 class TransformEntry : public UIEntry
 {
+public:
 	enum class LabelTypes
 	{
 		AmountLabel,
@@ -103,7 +104,6 @@ class TransformEntry : public UIEntry
 		Inc,
 		NumOptions
 	};
-public:
 	std::vector<std::shared_ptr<UIEntry>> conditions;
 
 	~TransformEntry() {};
@@ -111,7 +111,7 @@ public:
 	void CreateEntry(XMLData& xmlData, float entryTop) override;
 
 	void Draw(sf::RenderWindow& window) override;
-	void MouseClick(sf::Vector2i mousePos, bool mouseOnPage) override;
+	void MouseClick(sf::Vector2i mousePos, bool mouseOnPage, bool& select) override;
 	void Update(sf::RenderWindow& window, sf::Time timePassed,
 		UserInput input, bool showCursor) override;
 

@@ -131,9 +131,9 @@ void ReinforcementEntry::Draw(sf::RenderWindow& window)
 	UIEntry::Draw(window);
 }
 
-void ReinforcementEntry::MouseClick(sf::Vector2i mousePos, bool mouseOnPage)
+void ReinforcementEntry::MouseClick(sf::Vector2i mousePos, bool mouseOnPage, bool& select)
 {
-	UIEntry::MouseClick(mousePos, mouseOnPage);
+	UIEntry::MouseClick(mousePos, mouseOnPage, select);
 }
 
 void ReinforcementEntry::Update(sf::RenderWindow& window, sf::Time timePassed,

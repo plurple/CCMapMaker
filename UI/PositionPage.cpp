@@ -91,13 +91,13 @@ void PositionEntry::Draw(sf::RenderWindow& window)
 	}
 }
 
-void PositionEntry::MouseClick(sf::Vector2i mousePos, bool mouseOnPage)
+void PositionEntry::MouseClick(sf::Vector2i mousePos, bool mouseOnPage, bool& select)
 {
-	UIEntry::MouseClick(mousePos, mouseOnPage);
+	UIEntry::MouseClick(mousePos, mouseOnPage, select);
 	
 	for (std::shared_ptr<UIEntry> entry : positionPairs)
 	{
-		entry->MouseClick(mousePos, mouseOnPage);
+		entry->MouseClick(mousePos, mouseOnPage, select);
 	}
 }
 
@@ -146,9 +146,9 @@ void PositionPair::Draw(sf::RenderWindow& window)
 	UIEntry::Draw(window);
 }
 
-void PositionPair::MouseClick(sf::Vector2i mousePos, bool mouseOnPage)
+void PositionPair::MouseClick(sf::Vector2i mousePos, bool mouseOnPage, bool& select)
 {
-	UIEntry::MouseClick(mousePos, mouseOnPage);
+	UIEntry::MouseClick(mousePos, mouseOnPage, select);
 }
 
 void PositionPair::Update(sf::RenderWindow& window, sf::Time timePassed,

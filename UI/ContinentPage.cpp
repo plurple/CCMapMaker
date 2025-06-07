@@ -193,9 +193,9 @@ void ContinentEntry::Draw(sf::RenderWindow& window)
 	}
 }
 
-void ContinentEntry::MouseClick(sf::Vector2i mousePos, bool mouseOnPage)
+void ContinentEntry::MouseClick(sf::Vector2i mousePos, bool mouseOnPage, bool& select)
 {
-	UIEntry::MouseClick(mousePos, mouseOnPage);
+	UIEntry::MouseClick(mousePos, mouseOnPage, select);
 
 	std::shared_ptr<Button> addBonus = buttons[(int)ButtonTypes::AddBonus];
 	if (mouseOnPage && addBonus && UI::CheckMouseInBounds(mousePos, addBonus->rect))
@@ -209,7 +209,7 @@ void ContinentEntry::MouseClick(sf::Vector2i mousePos, bool mouseOnPage)
 	}
 	for (std::shared_ptr<UIEntry> bonus : bonuses)
 	{
-		bonus->MouseClick(mousePos, mouseOnPage);
+		bonus->MouseClick(mousePos, mouseOnPage, select);
 	}
 }
 
@@ -271,9 +271,9 @@ void BonusLine::Draw(sf::RenderWindow& window)
 	UIEntry::Draw(window);
 }
 
-void BonusLine::MouseClick(sf::Vector2i mousePos, bool mouseOnPage)
+void BonusLine::MouseClick(sf::Vector2i mousePos, bool mouseOnPage, bool& select)
 {
-	UIEntry::MouseClick(mousePos, mouseOnPage);
+	UIEntry::MouseClick(mousePos, mouseOnPage, select);
 }
 
 void BonusLine::Update(sf::RenderWindow& window, sf::Time timePassed,
@@ -335,7 +335,7 @@ void AdvancedTerritory::Draw(sf::RenderWindow& window)
 	UIEntry::Draw(window);
 }
 
-void AdvancedTerritory::MouseClick(sf::Vector2i mousePos, bool mouseOnPage)
+void AdvancedTerritory::MouseClick(sf::Vector2i mousePos, bool mouseOnPage, bool& select)
 {
 	std::shared_ptr<Button> mandatory = buttons[(int)ButtonTypes::Mandatory];
 	std::shared_ptr<Button> multiplier = buttons[(int)ButtonTypes::Multiplier];

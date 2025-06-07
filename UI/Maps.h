@@ -21,6 +21,8 @@ public:
 	sf::RectangleShape mapCanvas;
 	ScrollBar scrollBar;
 	std::vector<std::shared_ptr<sf::RectangleShape>> mapBoxes;
+	static float widthRatio;
+	static float heightRatio;
 
 	~Maps() {};
 	Maps();
@@ -30,4 +32,6 @@ public:
 
 	void MoveMap(sf::Vector2f offset);
 	std::shared_ptr<sf::RectangleShape> AddMapBox(sf::Vector2i position);
+	static int ConvertLarge(int small, bool width);
+	static int ConvertSmall(int large, bool width);
 };

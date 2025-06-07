@@ -11,11 +11,7 @@ enum class ContinentView
 
 class AdvancedTerritory : public UIEntry
 {
-	enum class ShapeTypes
-	{
-		Border,
-		NumShapes
-	};
+public:
 	enum class LabelTypes
 	{
 		TerritoryName,
@@ -34,13 +30,12 @@ class AdvancedTerritory : public UIEntry
 		FactorBox, //can be negative and a float the bastard
 		NumBoxes
 	};
-public:
 	~AdvancedTerritory() {};
 	AdvancedTerritory(int insertedKey) : UIEntry{ insertedKey } {};
 	void CreateEntry(XMLData& xmlData, float entryTop) override;
 
 	void Draw(sf::RenderWindow& window) override;
-	void MouseClick(sf::Vector2i mousePos, bool mouseOnPage) override;
+	void MouseClick(sf::Vector2i mousePos, bool mouseOnPage, bool& select) override;
 	void Update(sf::RenderWindow& window, sf::Time timePassed,
 		UserInput input, bool showCursor) override;
 
@@ -49,6 +44,7 @@ public:
 
 class BonusLine : public UIEntry
 {
+public:
 	enum class LabelTypes
 	{
 		BonusLabel,
@@ -61,7 +57,6 @@ class BonusLine : public UIEntry
 		RequiredBox,
 		NumBoxes
 	};
-public:
 	int bonusNum;
 
 	~BonusLine() {};
@@ -70,7 +65,7 @@ public:
 	void CreateEntry(XMLData& xmlData, float entryTop) override;
 
 	void Draw(sf::RenderWindow& window) override;
-	void MouseClick(sf::Vector2i mousePos, bool mouseOnPage) override;
+	void MouseClick(sf::Vector2i mousePos, bool mouseOnPage, bool& select) override;
 	void Update(sf::RenderWindow& window, sf::Time timePassed,
 		UserInput input, bool showCursor) override;
 
@@ -79,6 +74,7 @@ public:
 
 class ContinentEntry : public UIEntry
 {
+public:
 	enum class LabelTypes
 	{
 		NameLabel,
@@ -102,7 +98,6 @@ class ContinentEntry : public UIEntry
 		Advanced,
 		NumButtons
 	};
-public:
 	std::vector<std::shared_ptr<sf::Text>> continents;
 	std::vector<std::shared_ptr<UIEntry>> bonuses;
 	ContinentView selectedView;
@@ -113,7 +108,7 @@ public:
 	void CreateEntry(XMLData& xmlData, float entryTop) override;
 
 	void Draw(sf::RenderWindow& window) override;
-	void MouseClick(sf::Vector2i mousePos, bool mouseOnPage) override;
+	void MouseClick(sf::Vector2i mousePos, bool mouseOnPage, bool& select) override;
 	void Update(sf::RenderWindow& window, sf::Time timePassed,
 		UserInput input, bool showCursor) override;
 

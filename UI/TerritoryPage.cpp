@@ -98,9 +98,10 @@ bool TerritoryPage::MapClick(XMLData& xmlData, Maps& maps, sf::Vector2i mousePos
 				condition - need to select a territory then add to condition
 				extras - do nothing same if no condition territory selected*/
 		}
+		selectedEntry = boxIndex;
 		entries[boxIndex]->Select();
-		auto bob = entries[boxIndex]->boxes[(int)UIEntry::ShapeTypes::Border]->box.getPosition();
-		scrollBar.Scroll({ 0, -bob.y+20 });
+		auto entryPos = entries[boxIndex]->boxes[(int)UIEntry::ShapeTypes::Border]->box.getPosition();
+		scrollBar.Scroll({ 0, -entryPos.y+20 });
 	}
 	else
 	{
@@ -112,6 +113,11 @@ bool TerritoryPage::MapClick(XMLData& xmlData, Maps& maps, sf::Vector2i mousePos
 void TerritoryPage::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
 	UserInput input, bool showCursor, UIPageType pageType)
 {
+	if (*input.keyPressed.c_str() == 'x' && (selectedEntry == -1 || !entries[selectedEntry]->boxes[(int)TerritoryEntry::BoxTypes::NameBox]->active))
+	{
+		linkCoordinates.Toggle();
+	}
+
 	UIPage::Update(xmlData, window, timePassed, input, showCursor, pageType);
 }
 
@@ -121,6 +127,7 @@ void TerritoryPage::AddTerritory(XMLData& xmlData, std::shared_ptr<sf::Rectangle
 	std::shared_ptr<TerritoryEntry> entry = 
 		std::make_shared<TerritoryEntry>( selectedView, 
 			xmlData.AddTerritory(), mapBox );
+	entry->linkedCoords = &linkCoordinates.selected;
 	UIPage::AddEntry(xmlData, entry);
 }
 
@@ -215,7 +222,9 @@ void TerritoryEntry::CreateEntry(XMLData& xmlData, float entryTop)
 	labels.push_back(bonusLabel);
 
 	std::shared_ptr<Territory> data = xmlData.territories.at(xmlKey);
-	data->largePos = sf::Vector2i{ mapBox->getPosition() };
+	sf::Vector2f mapBoxPos = mapBox->getPosition();
+	data->largePos = UI::isLarge ? sf::Vector2i{ mapBoxPos } : sf::Vector2i{ Maps::ConvertSmall(mapBoxPos.x, true), Maps::ConvertSmall(mapBoxPos.y, false) };
+	data->smallPos = UI::isLarge ? sf::Vector2i{ Maps::ConvertSmall(mapBoxPos.x, true), Maps::ConvertSmall(mapBoxPos.y, false)} : sf::Vector2i{ mapBoxPos };
 
 	std::shared_ptr<TextBox> nameBox =
 		std::make_shared<TextBox>(sf::Vector2f{ 120, entryTop + 12 }/*position*/, 
@@ -308,9 +317,9 @@ void TerritoryEntry::Draw(sf::RenderWindow& window)
 	}
 }	
 
-void TerritoryEntry::MouseClick(sf::Vector2i mousePos, bool mouseOnPage)
+void TerritoryEntry::MouseClick(sf::Vector2i mousePos, bool mouseOnPage, bool& select)
 {
-	UIEntry::MouseClick(mousePos, mouseOnPage);
+	UIEntry::MouseClick(mousePos, mouseOnPage, select);
 
 	std::shared_ptr<Button> killer = buttons[(int)ButtonTypes::Killer];
 	if (killer && mouseOnPage && selectedView == TerritoryView::Extras && 
@@ -319,18 +328,54 @@ void TerritoryEntry::MouseClick(sf::Vector2i mousePos, bool mouseOnPage)
 		killer->Toggle();
 	}
 
+	//the &= is so that they are only active on the extras view
 	std::shared_ptr<TextBox> neutralBox = boxes[(int)BoxTypes::NeutralBox];
-	if(neutralBox) neutralBox->active = selectedView == TerritoryView::Extras;
+	if(neutralBox) neutralBox->active &= selectedView == TerritoryView::Extras;
 	std::shared_ptr<TextBox> bonusBox = boxes[(int)BoxTypes::BonusBox];
-	if(bonusBox) bonusBox->active = selectedView == TerritoryView::Extras;		
+	if(bonusBox) bonusBox->active &= selectedView == TerritoryView::Extras;		
 }
 
 void TerritoryEntry::Update(sf::RenderWindow& window, sf::Time timePassed,
 	UserInput input, bool showCursor)
 {
+	int smallx = *boxes[(int)BoxTypes::SmallXBox]->number;
+	int largex = *boxes[(int)BoxTypes::LargeXBox]->number;
+	int smally = *boxes[(int)BoxTypes::SmallYBox]->number;
+	int largey = *boxes[(int)BoxTypes::LargeYBox]->number;
 	UIEntry::Update(window, timePassed, input, showCursor);
 	MoveEntry({ 0, input.scroll });
-	mapBox->setPosition({ (float)(*boxes[(int)BoxTypes::LargeXBox]->number)-7, (float)(*boxes[(int)BoxTypes::LargeYBox]->number)-34 });
+	if (*linkedCoords)
+	{
+		if (smallx != *boxes[(int)BoxTypes::SmallXBox]->number)
+		{
+			smallx = *boxes[(int)BoxTypes::SmallXBox]->number;
+			largex = Maps::ConvertLarge(smallx, true);
+			*boxes[(int)BoxTypes::LargeXBox]->number = largex;
+		}
+		else if (largex != *boxes[(int)BoxTypes::LargeXBox]->number)
+		{
+			largex = *boxes[(int)BoxTypes::LargeXBox]->number;
+			smallx = Maps::ConvertSmall(largex, true);
+			*boxes[(int)BoxTypes::SmallXBox]->number = smallx;
+		}
+		else if (smally != *boxes[(int)BoxTypes::SmallYBox]->number)
+		{
+			smally = *boxes[(int)BoxTypes::SmallYBox]->number;
+			largey = Maps::ConvertLarge(smally, false);
+			*boxes[(int)BoxTypes::LargeYBox]->number = largey;
+		}
+		else if (largey != *boxes[(int)BoxTypes::LargeYBox]->number)
+		{
+			largey = *boxes[(int)BoxTypes::LargeYBox]->number;
+			smally = Maps::ConvertSmall(largey, false);
+			*boxes[(int)BoxTypes::SmallYBox]->number = smally;
+		}
+	}
+
+	if (UI::isLarge)
+		mapBox->setPosition({ (float)(largex) - 7, (float)(largey) - 34 });
+	else
+		mapBox->setPosition({ (float)(smallx) - 7, (float)(smally) - 34 });
 }
 
 void TerritoryEntry::MoveEntry(sf::Vector2f offset)

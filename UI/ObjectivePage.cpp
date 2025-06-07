@@ -121,9 +121,9 @@ void ObjectiveEntry::Draw(sf::RenderWindow& window)
 	UIEntry::Draw(window);
 }
 
-void ObjectiveEntry::MouseClick(sf::Vector2i mousePos, bool mouseOnPage)
+void ObjectiveEntry::MouseClick(sf::Vector2i mousePos, bool mouseOnPage, bool& select)
 {
-	UIEntry::MouseClick(mousePos, mouseOnPage);
+	UIEntry::MouseClick(mousePos, mouseOnPage, select);
 }
 
 void ObjectiveEntry::Update(sf::RenderWindow& window, sf::Time timePassed,

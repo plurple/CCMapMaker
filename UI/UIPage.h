@@ -29,7 +29,7 @@ public:
 	virtual void CreateEntry(XMLData& xmlData, float entryTop) = 0;
 
 	virtual void Draw(sf::RenderWindow& window);
-	virtual void MouseClick(sf::Vector2i mousePos, bool mouseOnPage);
+	virtual void MouseClick(sf::Vector2i mousePos, bool mouseOnPage, bool& select);
 	virtual void Update(sf::RenderWindow& window, sf::Time timePassed,
 		UserInput input, bool showCursor);
 
@@ -50,6 +50,7 @@ public:
 	ScrollBar scrollBar;
 	bool mouseOnPage;
 	std::vector<std::shared_ptr<UIEntry>> entries;
+	int selectedEntry;
 
 	~UIPage() {};
 	UIPage(sf::Vector2f tabPos, sf::Vector2f tabSize, 

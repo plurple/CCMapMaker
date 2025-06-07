@@ -3,6 +3,7 @@
 
 class PositionPair : public UIEntry
 {
+public:
 	enum class LabelTypes
 	{
 		TerritoryName,
@@ -14,7 +15,6 @@ class PositionPair : public UIEntry
 		StartBox,
 		NumBoxes
 	};
-public:
 	int pairNum;
 
 	PositionPair(int insertedKey, int pair) :
@@ -22,7 +22,7 @@ public:
 	void CreateEntry(XMLData& xmlData, float entryTop) override;
 
 	void Draw(sf::RenderWindow& window) override;
-	void MouseClick(sf::Vector2i mousePos, bool mouseOnPage) override;
+	void MouseClick(sf::Vector2i mousePos, bool mouseOnPage, bool& select) override;
 	void Update(sf::RenderWindow& window, sf::Time timePassed,
 		UserInput input, bool showCursor) override;
 
@@ -31,12 +31,12 @@ public:
 
 class PositionEntry : public UIEntry
 {
+public:
 	enum class ButtonTypes
 	{
 		AddPosition,
 		NumBoxes
 	};
-public:
 	std::vector<std::shared_ptr<UIEntry>> positionPairs;
 
 	~PositionEntry() {};
@@ -44,7 +44,7 @@ public:
 	void CreateEntry(XMLData& xmlData, float entryTop) override;
 
 	void Draw(sf::RenderWindow& window) override;
-	void MouseClick(sf::Vector2i mousePos, bool mouseOnPage) override;
+	void MouseClick(sf::Vector2i mousePos, bool mouseOnPage, bool& select) override;
 	void Update(sf::RenderWindow& window, sf::Time timePassed,
 		UserInput input, bool showCursor) override;
 
