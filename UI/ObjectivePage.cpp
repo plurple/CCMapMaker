@@ -126,10 +126,10 @@ void ObjectiveEntry::MouseClick(sf::Vector2i mousePos, bool mouseOnPage, bool& s
 	UIEntry::MouseClick(mousePos, mouseOnPage, select);
 }
 
-void ObjectiveEntry::Update(sf::RenderWindow& window, sf::Time timePassed,
+void ObjectiveEntry::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
 	UserInput input, bool showCursor)
 {
-	UIEntry::Update(window, timePassed, input, showCursor);
+	UIEntry::Update(xmlData, window, timePassed, input, showCursor);
 	MoveEntry({ 0, input.scroll});
 }
 

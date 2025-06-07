@@ -136,10 +136,10 @@ void ReinforcementEntry::MouseClick(sf::Vector2i mousePos, bool mouseOnPage, boo
 	UIEntry::MouseClick(mousePos, mouseOnPage, select);
 }
 
-void ReinforcementEntry::Update(sf::RenderWindow& window, sf::Time timePassed,
+void ReinforcementEntry::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
 	UserInput input, bool showCursor)
 {
-	UIEntry::Update(window, timePassed, input, showCursor);
+	UIEntry::Update(xmlData, window, timePassed, input, showCursor);
 
 	std::string explanation = "1 troop for every %d regions up to \n a max of (%d-%d)/%d=%d troops \n in the range of %d-%d regions.";
 	int lower = *boxes[(int)BoxTypes::LowerBox]->number;

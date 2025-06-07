@@ -102,6 +102,24 @@ void UIPage::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePas
 		}
 		selectedEntry = -1;		
 	}
+	if (input.tab)
+	{
+		if (selectedEntry >= 0)
+		{
+			entries[selectedEntry]->Unselect();
+		}
+		input.shift ? selectedEntry-- : selectedEntry++;
+		if (selectedEntry < 0)
+			selectedEntry = entries.size() - 1;
+		else if (selectedEntry >= entries.size())
+			selectedEntry = 0;
+		if(selectedEntry >= 0)
+		{
+			entries[selectedEntry]->Select();
+			auto entryPos = entries[selectedEntry]->boxes[(int)UIEntry::ShapeTypes::Border]->box.getPosition();
+			scrollBar.Scroll({ 0, -entryPos.y + 20 });
+		}
+	}
 
 	mouseOnPage = UI::CheckMouseInBounds(sf::Vector2i(window.mapPixelToCoords(sf::Mouse::getPosition(window), scrollBar.scrollWindow)), page);
 
@@ -124,7 +142,7 @@ void UIPage::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePas
 
 	for (std::shared_ptr<UIEntry> entry : entries)
 	{
-		entry->Update(window, timePassed, input, showCursor);
+		entry->Update(xmlData, window, timePassed, input, showCursor);
 	}
 }
 
@@ -134,6 +152,7 @@ void UIPage::AddEntry(XMLData& xmlData, std::shared_ptr<UIEntry> entry)
 	float topBoxY = numEntries ? entries[0]->shapes[0]->getPosition().y : 0.0f;
 	float boxSize = numEntries ? entries[0]->shapes[0]->getGlobalBounds().size.y : 0.0f;
 	entry->CreateEntry(xmlData, topBoxY + (boxSize + 6) * numEntries);
+	if (selectedEntry != -1) entries[selectedEntry]->Unselect();
 	selectedEntry = entries.size();
 	entries.push_back(entry);
 	scrollBar.BarSize({ 0, (boxSize + 6) * (numEntries + 1) });
@@ -173,7 +192,6 @@ void UIEntry::MouseClick(sf::Vector2i mousePos, bool mouseOnPage, bool& select)
 	{
 		std::shared_ptr<sf::Shape> borderBox = shapes[(int)ShapeTypes::Border];
 		Toggle(mouseOnPage && borderBox && UI::CheckMouseInBounds(mousePos, borderBox->getGlobalBounds()));
-
 		select = selected;
 	}
 
@@ -187,7 +205,7 @@ void UIEntry::MouseClick(sf::Vector2i mousePos, bool mouseOnPage, bool& select)
 	}
 }
 
-void UIEntry::Update(sf::RenderWindow& window, sf::Time timePassed,
+void UIEntry::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
 	UserInput input, bool showCursor)
 {
 	for (std::shared_ptr<TextBox> box : boxes)
@@ -196,7 +214,7 @@ void UIEntry::Update(sf::RenderWindow& window, sf::Time timePassed,
 	}
 	for (std::shared_ptr<UIEntry> entry : entries)
 	{
-		entry->Update(window, timePassed, input, showCursor);
+		entry->Update(xmlData, window, timePassed, input, showCursor);
 	}
 }
 

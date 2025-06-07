@@ -10,6 +10,15 @@ enum class TerritoryView
 	NumViews
 };
 
+struct BorderEntry
+{
+	std::shared_ptr<TextBox> nameLabel;
+	int index;
+	int xmlKey;
+	std::shared_ptr<sf::RectangleShape> mapBox;
+	bool isContinent = false;
+};
+
 class TerritoryEntry : public UIEntry
 {
 public:
@@ -45,9 +54,12 @@ public:
 		Killer,
 		NumButtons
 	};
-	std::vector<std::shared_ptr<sf::Text>> territories;
-	std::vector<std::shared_ptr<sf::Text>> conditions;
-	std::vector<std::shared_ptr<sf::Text>> bombardments;
+	sf::Vector2f territoriesPos;
+	std::vector<std::shared_ptr<BorderEntry>> territories;
+	sf::Vector2f conditionsPos;
+	std::vector<std::shared_ptr<BorderEntry>> conditions;
+	sf::Vector2f bombardmentsPos;
+	std::vector<std::shared_ptr<BorderEntry>> bombardments;
 	TerritoryView selectedView;
 	std::shared_ptr<sf::RectangleShape> mapBox;
 	bool* linkedCoords;
@@ -60,13 +72,17 @@ public:
 
 	void Draw(sf::RenderWindow& window) override;
 	void MouseClick(sf::Vector2i mousePos, bool mouseOnPage, bool& select) override;
-	void Update(sf::RenderWindow& window, sf::Time timePassed,
+	void Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
 		UserInput input, bool showCursor) override;
 
 	void MoveEntry(sf::Vector2f offset) override;
 	void SwapView(TerritoryView view);
 	void Select() override;
 	void Unselect() override;
+
+	void AddBorder(XMLData& xmlData, Maps& maps, int boxIndex, int otherXMLKey);
+	void AddBombardment(XMLData& xmlData, int boxIndex, int otherXMLKey);
+	void AddCondition(XMLData& xmlData, int boxIndex, int otherXMLKey);
 };
 
 

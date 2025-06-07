@@ -30,7 +30,7 @@ public:
 
 	virtual void Draw(sf::RenderWindow& window);
 	virtual void MouseClick(sf::Vector2i mousePos, bool mouseOnPage, bool& select);
-	virtual void Update(sf::RenderWindow& window, sf::Time timePassed,
+	virtual void Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
 		UserInput input, bool showCursor);
 
 	virtual void MoveEntry(sf::Vector2f offset);

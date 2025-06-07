@@ -90,18 +90,53 @@ bool TerritoryPage::MapClick(XMLData& xmlData, Maps& maps, sf::Vector2i mousePos
 {
 	if (UIPage::MapClick(xmlData, maps, mousePos, boxIndex))
 	{
-		for (std::shared_ptr<UIEntry> entry : entries)
+		if(selectedEntry == -1)		
 		{
-			/*if one selected dependent on view type
-				border - add the clicked territory to the borders
-				bombardment - add to the bombardments
-				condition - need to select a territory then add to condition
-				extras - do nothing same if no condition territory selected*/
+			selectedEntry = boxIndex;
+			entries[boxIndex]->Select();
+			auto entryPos = entries[boxIndex]->boxes[(int)UIEntry::ShapeTypes::Border]->box.getPosition();
+			scrollBar.Scroll({ 0, -entryPos.y + 20 });
 		}
-		selectedEntry = boxIndex;
-		entries[boxIndex]->Select();
-		auto entryPos = entries[boxIndex]->boxes[(int)UIEntry::ShapeTypes::Border]->box.getPosition();
-		scrollBar.Scroll({ 0, -entryPos.y+20 });
+		else
+		{
+			switch (selectedView)
+			{
+			case TerritoryView::Borders:
+			{
+				auto border = std::dynamic_pointer_cast<TerritoryEntry>(entries[selectedEntry]);
+				int i;
+				bool removed = false;
+				for (i = 0; i < border->territories.size(); i++)
+				{
+					if (border->territories[i]->index == boxIndex)
+					{
+						maps.mapBoxes[boxIndex]->setOutlineColor(sf::Color::White);
+						border->territories.erase(border->territories.begin() + i);
+						removed = true;
+						break;
+					}
+				}
+				if (removed)
+				{
+					//move stuff;
+				}
+				else
+				{
+					maps.mapBoxes[boxIndex]->setOutlineColor(sf::Color::Blue);
+					border->AddBorder(xmlData, maps, boxIndex, entries[boxIndex]->xmlKey);
+				}
+				break;
+			}
+			case TerritoryView::Bombardments:
+				std::dynamic_pointer_cast<TerritoryEntry>(entries[selectedEntry])->AddBombardment(xmlData, boxIndex, entries[boxIndex]->xmlKey);
+				break;
+			case TerritoryView::Conditions:
+				std::dynamic_pointer_cast<TerritoryEntry>(entries[selectedEntry])->AddCondition(xmlData, boxIndex, entries[boxIndex]->xmlKey);
+				break;
+			case TerritoryView::Extras:
+				break;
+			}
+		}
 	}
 	else
 	{
@@ -274,21 +309,9 @@ void TerritoryEntry::CreateEntry(XMLData& xmlData, float entryTop)
 	killer->xmlLink = &data->killer;
 	buttons.push_back(killer);
 
-	//todo link these 3 to the correct list and right name etc.
-	std::shared_ptr<sf::Text> territory = 
-		std::make_shared<sf::Text>(UI::font, "terr");
-	territory->setPosition({ 170, entryTop + 120 });
-	territories.push_back(territory);
-
-	std::shared_ptr<sf::Text> condition =
-		std::make_shared<sf::Text>(UI::font, "con");
-	condition->setPosition({ 170, entryTop + 156 });
-	conditions.push_back(condition);
-
-	std::shared_ptr<sf::Text> bombardment = 
-		std::make_shared< sf::Text>(UI::font, "bomb");
-	bombardment->setPosition({ 250, entryTop + 120 });
-	bombardments.push_back(bombardment);
+	territoriesPos = { 170, entryTop + 120 };
+	conditionsPos = { 170, entryTop + 156 };
+	bombardmentsPos = { 250, entryTop + 120 };
 
 	SwapView(selectedView);
 	Select();
@@ -301,17 +324,17 @@ void TerritoryEntry::Draw(sf::RenderWindow& window)
 	{
 		for (int i = 0; i < bombardments.size(); i++)
 		{
-			window.draw(*bombardments[i]);
+			bombardments[i]->nameLabel->Draw(window);
 		}
 	}
 	else if (selectedView != TerritoryView::Extras)
 	{
 		for (int i = 0; i < territories.size(); i++)
 		{
-			window.draw(*territories[i]);
-			if (selectedView == TerritoryView::Conditions)
+			territories[i]->nameLabel->Draw(window);
+			if (selectedView == TerritoryView::Conditions && i < conditions.size())
 			{
-				window.draw(*conditions[i]);
+				conditions[i]->nameLabel->Draw(window);
 			}
 		}
 	}
@@ -332,43 +355,107 @@ void TerritoryEntry::MouseClick(sf::Vector2i mousePos, bool mouseOnPage, bool& s
 	std::shared_ptr<TextBox> neutralBox = boxes[(int)BoxTypes::NeutralBox];
 	if(neutralBox) neutralBox->active &= selectedView == TerritoryView::Extras;
 	std::shared_ptr<TextBox> bonusBox = boxes[(int)BoxTypes::BonusBox];
-	if(bonusBox) bonusBox->active &= selectedView == TerritoryView::Extras;		
+	if(bonusBox) bonusBox->active &= selectedView == TerritoryView::Extras;	
+
+	if (selectedView == TerritoryView::Bombardments)
+	{
+		for (int i = 0; i < bombardments.size(); i++)
+		{
+			bombardments[i]->nameLabel->active = mouseOnPage && UI::CheckMouseInBounds(mousePos, bombardments[i]->nameLabel->box);
+		}
+	}
+	else if (selectedView != TerritoryView::Extras)
+	{
+		for (int i = 0; i < territories.size(); i++)
+		{
+			territories[i]->nameLabel->active = mouseOnPage && UI::CheckMouseInBounds(mousePos, territories[i]->nameLabel->box);
+			if (selectedView == TerritoryView::Conditions && i < conditions.size())
+			{
+				conditions[i]->nameLabel->active = mouseOnPage && UI::CheckMouseInBounds(mousePos, conditions[i]->nameLabel->box);
+			}
+		}
+	}
 }
 
-void TerritoryEntry::Update(sf::RenderWindow& window, sf::Time timePassed,
+void TerritoryEntry::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
 	UserInput input, bool showCursor)
 {
-	int smallx = *boxes[(int)BoxTypes::SmallXBox]->number;
-	int largex = *boxes[(int)BoxTypes::LargeXBox]->number;
-	int smally = *boxes[(int)BoxTypes::SmallYBox]->number;
-	int largey = *boxes[(int)BoxTypes::LargeYBox]->number;
-	UIEntry::Update(window, timePassed, input, showCursor);
+	int& smallxRef = *boxes[(int)BoxTypes::SmallXBox]->number;
+	int& largexRef = *boxes[(int)BoxTypes::LargeXBox]->number;
+	int& smallyRef = *boxes[(int)BoxTypes::SmallYBox]->number;
+	int& largeyRef = *boxes[(int)BoxTypes::LargeYBox]->number;
+	int smallx = smallxRef;
+	int largex = largexRef;
+	int smally = smallyRef;
+	int largey = largeyRef;
+	if (selected)
+	{
+		if (input.right)
+			UI::isLarge ? largexRef++ : smallxRef++;
+		if (input.left)
+			UI::isLarge ? largexRef-- : smallxRef--;
+		if (input.up)
+			UI::isLarge ? largeyRef-- : smallyRef--;
+		if (input.down)
+			UI::isLarge ? largeyRef++ : smallyRef++;
+	}
+
+	UIEntry::Update(xmlData, window, timePassed, input, showCursor);
+
+	if (selectedView == TerritoryView::Bombardments)
+	{
+		for (int i = 0; i < bombardments.size(); i++)
+		{
+			bombardments[i]->nameLabel->Update(window, timePassed, input, showCursor);
+		}
+	}
+	else if (selectedView != TerritoryView::Extras)
+	{
+		for (int i = 0; i < territories.size(); i++)
+		{
+			if (xmlData.territories.find(territories[i]->xmlKey) != xmlData.territories.end())
+			{
+				territories[i]->nameLabel->Update(window, timePassed, input, showCursor);
+				if (selectedView == TerritoryView::Conditions && i < conditions.size())
+				{
+					conditions[i]->nameLabel->Update(window, timePassed, input, showCursor);
+				}
+			}
+			else
+			{
+				if(territories.size()) territories.erase(territories.begin() + i);
+				if(conditions.size()) conditions.erase(conditions.begin() + i);
+				i--;
+			}
+		}
+	}
+
 	MoveEntry({ 0, input.scroll });
 	if (*linkedCoords)
 	{
-		if (smallx != *boxes[(int)BoxTypes::SmallXBox]->number)
+		if (smallx != smallxRef)
 		{
-			smallx = *boxes[(int)BoxTypes::SmallXBox]->number;
+			smallx = smallxRef;
 			largex = Maps::ConvertLarge(smallx, true);
-			*boxes[(int)BoxTypes::LargeXBox]->number = largex;
+			largexRef = largex;
 		}
-		else if (largex != *boxes[(int)BoxTypes::LargeXBox]->number)
+		else if (largex != largexRef)
 		{
-			largex = *boxes[(int)BoxTypes::LargeXBox]->number;
+			largex = largexRef;
 			smallx = Maps::ConvertSmall(largex, true);
-			*boxes[(int)BoxTypes::SmallXBox]->number = smallx;
+			smallxRef = smallx;
 		}
-		else if (smally != *boxes[(int)BoxTypes::SmallYBox]->number)
+		else if (smally != smallyRef)
 		{
-			smally = *boxes[(int)BoxTypes::SmallYBox]->number;
+			smally = smallyRef;
 			largey = Maps::ConvertLarge(smally, false);
-			*boxes[(int)BoxTypes::LargeYBox]->number = largey;
+			largeyRef = largey;
 		}
-		else if (largey != *boxes[(int)BoxTypes::LargeYBox]->number)
+		else if (largey != largeyRef)
 		{
-			largey = *boxes[(int)BoxTypes::LargeYBox]->number;
+			largey = largeyRef;
 			smally = Maps::ConvertSmall(largey, false);
-			*boxes[(int)BoxTypes::SmallYBox]->number = smally;
+			smallyRef = smally;
 		}
 	}
 
@@ -382,17 +469,21 @@ void TerritoryEntry::MoveEntry(sf::Vector2f offset)
 {
 	UIEntry::MoveEntry(offset);
 
-	for (std::shared_ptr<sf::Text> territory : territories)
+	territoriesPos += offset;
+	conditionsPos += offset;
+	bombardmentsPos += offset;
+
+	for (std::shared_ptr<BorderEntry> territory : territories)
 	{
-		territory->move(offset);
+		territory->nameLabel->Move(offset);
 	}
-	for (std::shared_ptr<sf::Text> condition : conditions)
+	for (std::shared_ptr<BorderEntry> condition : conditions)
 	{
-		condition->move(offset);
+		condition->nameLabel->Move(offset);
 	}
-	for (std::shared_ptr<sf::Text> bomb : bombardments)
+	for (std::shared_ptr<BorderEntry> bomb : bombardments)
 	{
-		bomb->move(offset);
+		bomb->nameLabel->Move(offset);
 	}
 }
 
@@ -417,10 +508,42 @@ void TerritoryEntry::Select()
 {
 	UIEntry::Select();
 	mapBox->setOutlineColor(sf::Color::Red);
+	for (auto border : territories)
+	{
+		border->mapBox->setOutlineColor(sf::Color::Blue);
+	}
 }
 
 void TerritoryEntry::Unselect()
 {
 	UIEntry::Unselect();
 	mapBox->setOutlineColor(sf::Color::White);
+	for (auto border : territories)
+	{
+		border->mapBox->setOutlineColor(sf::Color::White);
+	}
+}
+
+void TerritoryEntry::AddBorder(XMLData& xmlData, Maps& maps, int boxIndex, int otherXMLKey)
+{
+	std::shared_ptr<BorderEntry> border = std::make_shared<BorderEntry>();
+	border->nameLabel = std::make_shared<TextBox>(territoriesPos);
+	border->index = boxIndex;
+	border->mapBox = maps.mapBoxes[boxIndex];
+	border->xmlKey = otherXMLKey;
+	border->nameLabel->text = &xmlData.territories[otherXMLKey]->name;
+	territories.push_back(border);
+	BorderData borderData;
+	borderData.territory = otherXMLKey;
+	xmlData.territories[xmlKey]->borders.push_back(borderData);
+}
+
+void TerritoryEntry::AddBombardment(XMLData& xmlData, int boxIndex, int otherXMLKey)
+{
+
+}
+
+void TerritoryEntry::AddCondition(XMLData& xmlData, int boxIndex, int otherXMLKey)
+{
+
 }

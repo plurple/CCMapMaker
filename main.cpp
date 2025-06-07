@@ -35,6 +35,13 @@ int main()
                 input.backSpace = KeyPressed->scancode == sf::Keyboard::Scancode::Backspace;
                 input.enter = KeyPressed->scancode == sf::Keyboard::Scancode::Enter;
                 input.del = KeyPressed->scancode == sf::Keyboard::Scancode::Delete;
+                input.right = KeyPressed->scancode == sf::Keyboard::Scancode::Right;
+                input.left = KeyPressed->scancode == sf::Keyboard::Scancode::Left;
+                input.up = KeyPressed->scancode == sf::Keyboard::Scancode::Up;
+                input.down = KeyPressed->scancode == sf::Keyboard::Scancode::Down;
+                input.shift = KeyPressed->shift;
+                input.tab = KeyPressed->scancode == sf::Keyboard::Scancode::Tab;
+
             }
         }
 

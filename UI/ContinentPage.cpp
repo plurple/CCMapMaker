@@ -213,15 +213,15 @@ void ContinentEntry::MouseClick(sf::Vector2i mousePos, bool mouseOnPage, bool& s
 	}
 }
 
-void ContinentEntry::Update(sf::RenderWindow& window, sf::Time timePassed,
+void ContinentEntry::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
 	UserInput input, bool showCursor)
 {
-	UIEntry::Update(window, timePassed, input, showCursor);
+	UIEntry::Update(xmlData, window, timePassed, input, showCursor);
 	MoveEntry({ 0, input.scroll });
 	//TODO make sure that you only care about numbers entered;
 	for (std::shared_ptr<UIEntry> bonus : bonuses)
 	{
-		bonus->Update(window, timePassed, input, showCursor);
+		bonus->Update(xmlData, window, timePassed, input, showCursor);
 	}
 }
 
@@ -276,10 +276,10 @@ void BonusLine::MouseClick(sf::Vector2i mousePos, bool mouseOnPage, bool& select
 	UIEntry::MouseClick(mousePos, mouseOnPage, select);
 }
 
-void BonusLine::Update(sf::RenderWindow& window, sf::Time timePassed,
+void BonusLine::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
 	UserInput input, bool showCursor)
 {
-	UIEntry::Update(window, timePassed, input, showCursor);
+	UIEntry::Update(xmlData, window, timePassed, input, showCursor);
 }
 
 void BonusLine::MoveEntry(sf::Vector2f offset)
@@ -370,10 +370,10 @@ void AdvancedTerritory::MouseClick(sf::Vector2i mousePos, bool mouseOnPage, bool
 	}
 }
 
-void AdvancedTerritory::Update(sf::RenderWindow& window, sf::Time timePassed,
+void AdvancedTerritory::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
 	UserInput input, bool showCursor)
 {
-	UIEntry::Update(window, timePassed, input, showCursor);
+	UIEntry::Update(xmlData, window, timePassed, input, showCursor);
 }
 
 void AdvancedTerritory::MoveEntry(sf::Vector2f offset)

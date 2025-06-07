@@ -25,7 +25,7 @@ public:
 
 	void Draw(sf::RenderWindow& window) override;
 	void MouseClick(sf::Vector2i mousePos, bool mouseOnPage, bool& select) override;
-	void Update(sf::RenderWindow& window, sf::Time timePassed,
+	void Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
 		UserInput input, bool showCursor) override;
 
 	void MoveEntry(sf::Vector2f offset) override;

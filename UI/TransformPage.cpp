@@ -165,15 +165,15 @@ void TransformEntry::MouseClick(sf::Vector2i mousePos, bool mouseOnPage, bool& s
 	}
 }
 
-void TransformEntry::Update(sf::RenderWindow& window, sf::Time timePassed,
+void TransformEntry::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
 	UserInput input, bool showCursor)
 {
-	UIEntry::Update(window, timePassed, input, showCursor);
+	UIEntry::Update(xmlData, window, timePassed, input, showCursor);
 	MoveEntry({ 0, input.scroll });
 
 	for (std::shared_ptr<UIEntry> entry : conditions)
 	{
-		entry->Update(window, timePassed, input, showCursor);
+		entry->Update(xmlData, window, timePassed, input, showCursor);
 	}
 }
 
@@ -247,10 +247,10 @@ void ConditionEntry::MouseClick(sf::Vector2i mousePos, bool mouseOnPage, bool& s
 	UIEntry::MouseClick(mousePos, mouseOnPage, select);
 }
 
-void ConditionEntry::Update(sf::RenderWindow& window, sf::Time timePassed,
+void ConditionEntry::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
 	UserInput input, bool showCursor)
 {
-	UIEntry::Update(window, timePassed, input, showCursor);
+	UIEntry::Update(xmlData, window, timePassed, input, showCursor);
 }
 
 void ConditionEntry::MoveEntry(sf::Vector2f offset)
@@ -326,10 +326,10 @@ void TransformOption::MouseClick(sf::Vector2i mousePos, bool mouseOnPage, bool& 
 	}
 }
 
-void TransformOption::Update(sf::RenderWindow& window, sf::Time timePassed,
+void TransformOption::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
 	UserInput input, bool showCursor)
 {
-	UIEntry::Update(window, timePassed, input, showCursor);
+	UIEntry::Update(xmlData, window, timePassed, input, showCursor);
 }
 
 void TransformOption::MoveEntry(sf::Vector2f offset)

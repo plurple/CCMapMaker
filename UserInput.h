@@ -9,15 +9,22 @@ struct UserInput
     bool del;
     std::string keyPressed;
     float scroll;
+    bool right, left, up, down;
+    bool shift, tab;
 
-    UserInput(bool backspace = false, bool ent = false, bool vert = true,
-        bool del = false, std::string key = "", float scrolled = 0.0f) :
-        backSpace{ backspace },
-        enter{ ent },
-        verticle{ vert },
-        del{del},
-        keyPressed{ key },
-        scroll{scrolled}
+    UserInput() :
+        backSpace{ false },
+        enter{ false },
+        verticle{ false },
+        del{false},
+        keyPressed{ "" },
+        scroll{0.0f},
+        right{false},
+        left{false},
+        up{false},
+        down{false},
+        shift{false},
+        tab{false}
     {};
 };
 

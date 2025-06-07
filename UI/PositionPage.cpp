@@ -101,14 +101,14 @@ void PositionEntry::MouseClick(sf::Vector2i mousePos, bool mouseOnPage, bool& se
 	}
 }
 
-void PositionEntry::Update(sf::RenderWindow& window, sf::Time timePassed,
+void PositionEntry::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
 	UserInput input, bool showCursor)
 {
-	UIEntry::Update(window, timePassed, input, showCursor);
+	UIEntry::Update(xmlData, window, timePassed, input, showCursor);
 	MoveEntry({ 0, input.scroll });
 	for (std::shared_ptr<UIEntry> entry : positionPairs)
 	{
-		entry->Update(window, timePassed, input, showCursor);
+		entry->Update(xmlData, window, timePassed, input, showCursor);
 	}
 }
 
@@ -151,10 +151,10 @@ void PositionPair::MouseClick(sf::Vector2i mousePos, bool mouseOnPage, bool& sel
 	UIEntry::MouseClick(mousePos, mouseOnPage, select);
 }
 
-void PositionPair::Update(sf::RenderWindow& window, sf::Time timePassed,
+void PositionPair::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
 	UserInput input, bool showCursor)
 {
-	UIEntry::Update(window, timePassed, input, showCursor);
+	UIEntry::Update(xmlData, window, timePassed, input, showCursor);
 }
 
 void PositionPair::MoveEntry(sf::Vector2f offset)

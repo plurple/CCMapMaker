@@ -6,7 +6,7 @@ struct BorderData
 {
 	int territory;
 	int condition;
-	bool conditionIsContintent;
+	bool conditionIsContintent = false;
 };
 
 class Territory

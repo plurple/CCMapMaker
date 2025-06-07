@@ -165,12 +165,13 @@ void UI::MouseClick(XMLData& xmlData, sf::RenderWindow& window, sf::Vector2i mou
             uiPages[(int)selectedPage]->tabButton.Toggle();
         }
     }
-    uiPages[(int)selectedPage]->MouseClick(xmlData, window, mousePos, maps);
     if (CheckMouseInBounds(mapMouse, maps.largeMap.mapSprite->getGlobalBounds()))
     {
         int index;
         uiPages[(int)selectedPage]->MapClick(xmlData, maps, mapMouse, index);
     }
+    else
+        uiPages[(int)selectedPage]->MouseClick(xmlData, window, mousePos, maps);  
 }
 
 void UI::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
