@@ -10,7 +10,7 @@ struct UserInput
     std::string keyPressed;
     float scroll;
     bool right, left, up, down;
-    bool shift, tab;
+    bool shift, tab, ctrl, alt;
 
     UserInput() :
         backSpace{ false },
@@ -24,7 +24,9 @@ struct UserInput
         up{false},
         down{false},
         shift{false},
-        tab{false}
+        tab{false},
+        ctrl{false},
+        alt{false}
     {};
 };
 

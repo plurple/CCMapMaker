@@ -1,6 +1,7 @@
 #include "TerritoryPage.h"
 #include "UI.h"
 #include "../XML/Territory.h"
+#include "../EnumOperators.hpp"
 
 TerritoryPage::TerritoryPage(XMLData& xmlData, sf::Vector2f tabPos,
 	sf::Vector2f tabSize, std::string tabLabel, sf::Vector2f buttonBoxSize):
@@ -40,7 +41,7 @@ void TerritoryPage::Draw(sf::RenderWindow& window, bool selected)
 		if(selectedView == TerritoryView::Conditions)
 			showContinents.Draw(window);
 		linkCoordinates.Draw(window);
-		for (int i = 0; i < (int)TerritoryView::NumViews; i++)
+		for (int i = 0; i < (int)TerritoryView::COUNT; i++)
 		{
 			territoryViews[i]->Draw(window);
 		}
@@ -74,7 +75,7 @@ void TerritoryPage::MouseClick(XMLData& xmlData, sf::RenderWindow& window,
 	{
 		AddTerritory(xmlData, maps.AddMapBox({ 0, 0 }));
 	}
-	for (int i = 0; i < (int)TerritoryView::NumViews; i++)
+	for (int i = 0; i < (int)TerritoryView::COUNT; i++)
 	{
 		if (UI::CheckMouseInBounds(mousePos, territoryViews[i]->rect))
 		{
@@ -187,7 +188,13 @@ void TerritoryPage::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time 
 	{
 		linkCoordinates.Toggle();
 	}
-
+	if (input.alt)
+	{
+		territoryViews[(int)selectedView]->Toggle();
+		input.shift ? selectedView-- : selectedView++;
+		territoryViews[(int)selectedView]->Toggle();
+		SwapView();	
+	}
 	UIPage::Update(xmlData, window, timePassed, input, showCursor, pageType);
 }
 
@@ -594,6 +601,11 @@ void TerritoryEntry::SwapView(TerritoryView view)
 	buttons[(int)ButtonTypes::Killer]->Hide(extra);
 	boxes[(int)BoxTypes::BonusBox]->Hide(extra);
 	boxes[(int)BoxTypes::NeutralBox]->Hide(extra);
+	if (selected)
+	{
+		Unselect();
+		Select();
+	}
 }
 
 void TerritoryEntry::Select()

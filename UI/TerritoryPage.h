@@ -7,7 +7,7 @@ enum class TerritoryView
 	Bombardments,
 	Conditions,
 	Extras,
-	NumViews
+	COUNT
 };
 
 struct BorderEntry

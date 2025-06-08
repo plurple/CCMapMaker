@@ -6,7 +6,7 @@ enum class ContinentView
 	Basic,
 	Overrides,
 	Advanced,
-	NumViews
+	COUNT
 };
 
 class AdvancedTerritory : public UIEntry

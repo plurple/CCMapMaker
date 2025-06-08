@@ -10,7 +10,7 @@ XMLData::XMLData() :
 	minReinforcements{3},
 	maxPositions{-1}
 {
-	for (int i = 0; i < (int)UIPageType::NumPageTypes; i++)
+	for (int i = 0; i < (int)UIPageType::COUNT; i++)
 	{
 		nextKey.push_back(0);
 	}

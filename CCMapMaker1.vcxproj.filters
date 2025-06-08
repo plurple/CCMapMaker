@@ -142,5 +142,8 @@
     <ClInclude Include="XML\XMLData.h">
       <Filter>XML</Filter>
     </ClInclude>
+    <ClInclude Include="EnumOperators.hpp">
+      <Filter>other</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

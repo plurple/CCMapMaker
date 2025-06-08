@@ -18,7 +18,7 @@ enum class UIPageType
 	Objective,
 	Reinforcement,
 	Transform,
-	NumPageTypes
+	COUNT
 };
 
 class XMLData

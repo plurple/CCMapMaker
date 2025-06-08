@@ -6,6 +6,7 @@
 #include "ReinforcementPage.h"
 #include "TransformPage.h"
 #include "PositionPage.h"
+#include "../EnumOperators.hpp"
 
 sf::Font UI::font;
 sf::Vector2u UI::windowSize{ 1600, 900 };
@@ -99,7 +100,7 @@ void UI::Draw(sf::RenderWindow& window)
     window.draw(uiPanel);
     window.draw(tabPanel);
     maps.Draw(window, isLarge);
-    for (int i = 0; i < (int)UIPageType::NumPageTypes; i++)
+    for (int i = 0; i < (int)UIPageType::COUNT; i++)
     {
         uiPages[i]->Draw(window, (int)selectedPage == i);
     }
@@ -156,7 +157,7 @@ void UI::MouseClick(XMLData& xmlData, sf::RenderWindow& window, sf::Vector2i mou
     }
     sf::Vector2i mapMouse = sf::Vector2i(window.mapPixelToCoords(mousePos, maps.scrollBar.scrollWindow));
     maps.scrollBar.MouseClick(mapMouse);
-    for (int i = 0; i < (int)UIPageType::NumPageTypes; i++)
+    for (int i = 0; i < (int)UIPageType::COUNT; i++)
     {
         if (CheckMouseInBounds(mousePos, uiPages[i]->tabButton.rect))
         {
@@ -178,6 +179,13 @@ void UI::MouseClick(XMLData& xmlData, sf::RenderWindow& window, sf::Vector2i mou
 void UI::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
     UserInput& input)
 {
+    if (input.ctrl)
+    {
+        uiPages[(int)selectedPage]->tabButton.Toggle();
+        input.shift ? selectedPage-- : selectedPage++;
+        uiPages[(int)selectedPage]->tabButton.Toggle();
+    }
+
     static sf::Time text_effect_time;
     text_effect_time += timePassed;
 

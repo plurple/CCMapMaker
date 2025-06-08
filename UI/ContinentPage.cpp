@@ -1,6 +1,7 @@
 #include "ContinentPage.h"
 #include "UI.h"
 #include "../XML/Continent.h"
+#include "../EnumOperators.hpp"
 
 ContinentPage::ContinentPage(XMLData& xmlData, sf::Vector2f tabPos,
 	sf::Vector2f tabSize, std::string tabLabel, sf::Vector2f buttonBoxSize) :
@@ -34,7 +35,7 @@ void ContinentPage::Draw(sf::RenderWindow& window, bool selected)
 	{
 		if(selectedView != ContinentView::Advanced)
 			showContinents.Draw(window);
-		for (int i = 0; i < (int)ContinentView::NumViews; i++)
+		for (int i = 0; i < (int)ContinentView::COUNT; i++)
 		{
 			continentViews[i]->Draw(window);
 		}
@@ -64,7 +65,7 @@ void ContinentPage::MouseClick(XMLData& xmlData, sf::RenderWindow& window,
 	{
 		AddContinent(xmlData);
 	}
-	for (int i = 0; i < (int)ContinentView::NumViews; i++)
+	for (int i = 0; i < (int)ContinentView::COUNT; i++)
 	{
 		if (UI::CheckMouseInBounds(mousePos, continentViews[i]->rect))
 		{
@@ -82,6 +83,13 @@ void ContinentPage::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time 
 	UserInput input, bool showCursor, UIPageType pageType)
 {
 	UIPage::Update(xmlData, window, timePassed, input, showCursor, pageType);
+	if (input.alt)
+	{
+		continentViews[(int)selectedView]->Toggle();
+		input.shift ? selectedView-- : selectedView++;
+		continentViews[(int)selectedView]->Toggle();
+		SwapView();
+	}
 }
 
 void ContinentPage::AddContinent(XMLData& xmlData)
