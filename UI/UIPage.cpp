@@ -61,12 +61,18 @@ void UIPage::MouseClick(XMLData& xmlData, sf::RenderWindow& window,
 		bool select = false;
 		entry->MouseClick(sf::Vector2i(window.mapPixelToCoords(mousePos, scrollBar.scrollWindow)), mouseOnPage, select);
 		if (select)
+		{
+			if (index == oldEntry)
+				oldEntry = -1;
 			selectedEntry = index;
+		}
+
 		index++;
 	}
 	if (!maps.clicked && oldEntry == selectedEntry) 
 		selectedEntry = -1;
-	SwapEntry(oldEntry, selectedEntry);
+	if(!(oldEntry == -1 && selectedEntry == -1))
+		SwapEntry(oldEntry, selectedEntry);
 }
 
 bool UIPage::MapClick(XMLData& xmlData, Maps& maps, sf::Vector2i mousePos, int& boxIndex)
@@ -147,7 +153,7 @@ void UIPage::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePas
 void UIPage::AddEntry(XMLData& xmlData, std::shared_ptr<UIEntry> entry)
 {
 	int numEntries = entries.size();
-	float topBoxY = numEntries ? entries[0]->shapes[0]->getPosition().y : 0.0f;
+	float topBoxY = numEntries ? entries[0]->shapes[0]->getPosition().y : 10.0f;
 	float boxSize = numEntries ? entries[0]->shapes[0]->getGlobalBounds().size.y : 0.0f;
 	entry->CreateEntry(xmlData, topBoxY + (boxSize + 6) * numEntries);
 	if (selectedEntry != -1) entries[selectedEntry]->Unselect();
@@ -202,9 +208,8 @@ void UIEntry::MouseClick(sf::Vector2i mousePos, bool mouseOnPage, bool& select)
 {
 	if (shapes.size())
 	{
-		std::shared_ptr<sf::Shape> borderBox = shapes[(int)ShapeTypes::Border];
-		Toggle(mouseOnPage && borderBox && UI::CheckMouseInBounds(mousePos, borderBox->getGlobalBounds()));
-		select = selected;
+		std::shared_ptr<sf::Shape> borderBox = shapes[(int)ShapeTypes::Border];		
+		select = mouseOnPage && borderBox && UI::CheckMouseInBounds(mousePos, borderBox->getGlobalBounds());
 	}
 
 	for (std::shared_ptr<TextBox> box : boxes)

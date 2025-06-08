@@ -97,16 +97,17 @@ bool TerritoryPage::MapClick(XMLData& xmlData, Maps& maps, sf::Vector2i mousePos
 		}
 		else
 		{
-			switch (selectedView)
+			if (selectedEntry == boxIndex)
 			{
-			case TerritoryView::Borders:
+				SwapEntry(selectedEntry, -1);
+				selectedEntry = -1;
+			}
+			else
 			{
-				if (selectedEntry == boxIndex)
+				switch (selectedView)
 				{
-					SwapEntry(selectedEntry, -1);
-					selectedEntry = -1;
-				}
-				else
+				case TerritoryView::Extras:
+				case TerritoryView::Borders:
 				{
 					auto border = std::dynamic_pointer_cast<TerritoryEntry>(entries[selectedEntry]);
 					int i;
@@ -117,6 +118,8 @@ bool TerritoryPage::MapClick(XMLData& xmlData, Maps& maps, sf::Vector2i mousePos
 						{
 							maps.mapBoxes[boxIndex]->setOutlineColor(sf::Color::White);
 							border->territories.erase(border->territories.begin() + i);
+							border->conditions.erase(border->conditions.begin() + i);
+							xmlData.territories.at(border->xmlKey)->borders.erase(xmlData.territories.at(border->xmlKey)->borders.begin() + i);
 							removed = true;
 							break;
 						}
@@ -130,17 +133,43 @@ bool TerritoryPage::MapClick(XMLData& xmlData, Maps& maps, sf::Vector2i mousePos
 						maps.mapBoxes[boxIndex]->setOutlineColor(sf::Color::Blue);
 						border->AddBorder(xmlData, maps, boxIndex, entries[boxIndex]->xmlKey);
 					}
+
+					break;
 				}
-				break;
-			}
-			case TerritoryView::Bombardments:
-				std::dynamic_pointer_cast<TerritoryEntry>(entries[selectedEntry])->AddBombardment(xmlData, boxIndex, entries[boxIndex]->xmlKey);
-				break;
-			case TerritoryView::Conditions:
-				std::dynamic_pointer_cast<TerritoryEntry>(entries[selectedEntry])->AddCondition(xmlData, boxIndex, entries[boxIndex]->xmlKey);
-				break;
-			case TerritoryView::Extras:
-				break;
+				case TerritoryView::Bombardments:
+				{
+					auto bomb = std::dynamic_pointer_cast<TerritoryEntry>(entries[selectedEntry]);
+					int i;
+					bool removed = false;
+					for (i = 0; i < bomb->bombardments.size(); i++)
+					{
+						if (bomb->bombardments[i]->index == boxIndex)
+						{
+							maps.mapBoxes[boxIndex]->setOutlineColor(sf::Color::White);
+							bomb->bombardments.erase(bomb->bombardments.begin() + i);
+							xmlData.territories.at(bomb->xmlKey)->bombardments.erase(xmlData.territories.at(bomb->xmlKey)->bombardments.begin() + i);
+							removed = true;
+							break;
+						}
+					}
+					if (removed)
+					{
+						//move stuff;
+					}
+					else
+					{
+						maps.mapBoxes[boxIndex]->setOutlineColor(sf::Color::Green);
+						bomb->AddBombardment(xmlData, maps, boxIndex, entries[boxIndex]->xmlKey);
+					}
+					break;
+				}
+				case TerritoryView::Conditions:
+				{
+					auto cond = std::dynamic_pointer_cast<TerritoryEntry>(entries[selectedEntry]);
+					cond->AddCondition(xmlData, maps, boxIndex, entries[boxIndex]->xmlKey);					
+					break;
+				}
+				}
 			}
 		}
 	}
@@ -316,7 +345,7 @@ void TerritoryEntry::CreateEntry(XMLData& xmlData, float entryTop)
 	buttons.push_back(killer);
 
 	territoriesPos = { 170, entryTop + 120 };
-	conditionsPos = { 170, entryTop + 156 };
+	conditionsPos = { 370, entryTop + 156 };
 	bombardmentsPos = { 250, entryTop + 120 };
 
 	SwapView(selectedView);
@@ -340,7 +369,8 @@ void TerritoryEntry::Draw(sf::RenderWindow& window)
 			territories[i]->nameLabel->Draw(window);
 			if (selectedView == TerritoryView::Conditions && i < conditions.size())
 			{
-				conditions[i]->nameLabel->Draw(window);
+				if(conditions[i]->index != -1)
+					conditions[i]->nameLabel->Draw(window);
 			}
 		}
 	}
@@ -373,7 +403,8 @@ void TerritoryEntry::MouseClick(sf::Vector2i mousePos, bool mouseOnPage, bool& s
 	else if (selectedView != TerritoryView::Extras)
 	{
 		for (int i = 0; i < territories.size(); i++)
-		{
+		{			
+			//todo figure out how to not unselect the territory on condition selection
 			territories[i]->nameLabel->active = mouseOnPage && UI::CheckMouseInBounds(mousePos, territories[i]->nameLabel->box);
 			if (selectedView == TerritoryView::Conditions && i < conditions.size())
 			{
@@ -412,7 +443,16 @@ void TerritoryEntry::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time
 	{
 		for (int i = 0; i < bombardments.size(); i++)
 		{
-			bombardments[i]->nameLabel->Update(window, timePassed, input, showCursor);
+			if (xmlData.territories.find(bombardments[i]->xmlKey) != xmlData.territories.end())
+			{
+				bombardments[i]->nameLabel->Update(window, timePassed, input, showCursor);
+			}
+			else
+			{
+				if (bombardments.size()) bombardments.erase(bombardments.begin() + i);
+				i--;
+			}
+
 		}
 	}
 	else if (selectedView != TerritoryView::Extras)
@@ -422,9 +462,16 @@ void TerritoryEntry::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time
 			if (xmlData.territories.find(territories[i]->xmlKey) != xmlData.territories.end())
 			{
 				territories[i]->nameLabel->Update(window, timePassed, input, showCursor);
-				if (selectedView == TerritoryView::Conditions && i < conditions.size())
+				if (selectedView == TerritoryView::Conditions && i < conditions.size() && conditions[i]->xmlKey != -1)
 				{
-					conditions[i]->nameLabel->Update(window, timePassed, input, showCursor);
+					if (xmlData.territories.find(conditions[i]->xmlKey) != xmlData.territories.end())
+					{
+						conditions[i]->nameLabel->Update(window, timePassed, input, showCursor);
+					}
+					else
+					{
+						RemoveCondition(xmlData, i);
+					}
 				}
 			}
 			else
@@ -514,10 +561,21 @@ void TerritoryEntry::Select()
 {
 	UIEntry::Select();
 	mapBox->setOutlineColor(sf::Color::Red);
-	for (auto border : territories)
+	if (selectedView == TerritoryView::Bombardments)
 	{
-		border->mapBox->setOutlineColor(sf::Color::Blue);
+		for (auto border : bombardments)
+		{
+			border->mapBox->setOutlineColor(sf::Color::Green);
+		}
 	}
+	else if (selectedView != TerritoryView::Extras)
+	{
+		for (auto border : territories)
+		{
+			border->mapBox->setOutlineColor(sf::Color::Blue);
+		}
+	}
+	//todo colour the map boxes properly for conditions.
 }
 
 void TerritoryEntry::Unselect()
@@ -528,28 +586,86 @@ void TerritoryEntry::Unselect()
 	{
 		border->mapBox->setOutlineColor(sf::Color::White);
 	}
+	for (auto border : bombardments)
+	{
+		border->mapBox->setOutlineColor(sf::Color::White);
+	}
 }
 
 void TerritoryEntry::AddBorder(XMLData& xmlData, Maps& maps, int boxIndex, int otherXMLKey)
 {
 	std::shared_ptr<BorderEntry> border = std::make_shared<BorderEntry>();
-	border->nameLabel = std::make_shared<TextBox>(territoriesPos);
+	border->nameLabel = std::make_shared<TextBox>(territoriesPos + sf::Vector2f{ 0, territories.size() * 25.0f }, 
+		sf::Vector2f{ 200, 20 });
+	border->nameLabel->displayText->setCharacterSize(20);
 	border->index = boxIndex;
 	border->mapBox = maps.mapBoxes[boxIndex];
 	border->xmlKey = otherXMLKey;
 	border->nameLabel->text = &xmlData.territories[otherXMLKey]->name;
-	territories.push_back(border);
+	territories.push_back(border);	
 	BorderData borderData;
 	borderData.territory = otherXMLKey;
 	xmlData.territories[xmlKey]->borders.push_back(borderData);
+	std::shared_ptr<BorderEntry> condition = std::make_shared<BorderEntry>();
+	condition->nameLabel = std::make_shared<TextBox>(conditionsPos + sf::Vector2f{ 0, conditions.size() * 25.0f },
+		sf::Vector2f{ 200, 20 });
+	condition->nameLabel->displayText->setCharacterSize(20);
+	conditions.push_back(condition);
 }
 
-void TerritoryEntry::AddBombardment(XMLData& xmlData, int boxIndex, int otherXMLKey)
+void TerritoryEntry::AddBombardment(XMLData& xmlData, Maps& maps, int boxIndex, int otherXMLKey)
 {
-
+	std::shared_ptr<BorderEntry> bomb = std::make_shared<BorderEntry>();
+	bomb->nameLabel = std::make_shared<TextBox>(bombardmentsPos + sf::Vector2f{ 0, bombardments.size() * 25.0f },
+		sf::Vector2f{ 200, 20 });
+	bomb->nameLabel->displayText->setCharacterSize(20);
+	bomb->index = boxIndex;
+	bomb->mapBox = maps.mapBoxes[boxIndex];
+	bomb->xmlKey = otherXMLKey;
+	bomb->nameLabel->text = &xmlData.territories[otherXMLKey]->name;
+	bombardments.push_back(bomb);
+	xmlData.territories[xmlKey]->bombardments.push_back(otherXMLKey);
 }
 
-void TerritoryEntry::AddCondition(XMLData& xmlData, int boxIndex, int otherXMLKey)
+void TerritoryEntry::AddCondition(XMLData& xmlData, Maps& maps, int boxIndex, 
+	int otherXMLKey)
 {
+	int borderIndex = 0;
+	for (auto border : territories)
+	{
+		if (border->nameLabel->active)
+			break;
+		borderIndex++;
+	}
+	if (borderIndex < conditions.size())
+	{
+		std::shared_ptr<BorderEntry> condition = conditions[borderIndex];
 
+		if (condition->index == boxIndex)
+		{
+			RemoveCondition(xmlData, borderIndex);
+		}
+		else
+		{
+			condition->index = boxIndex;
+			if(condition->mapBox) condition->mapBox->setOutlineColor(sf::Color::White);
+			condition->mapBox = maps.mapBoxes[boxIndex];
+			condition->mapBox->setOutlineColor(sf::Color::Magenta);
+			condition->xmlKey = otherXMLKey;
+			condition->isContinent = false;
+			condition->nameLabel->text = &xmlData.territories[otherXMLKey]->name;
+			xmlData.territories[xmlKey]->borders[borderIndex].condition = otherXMLKey;
+			xmlData.territories[xmlKey]->borders[borderIndex].conditionIsContintent = false;
+		}
+	}
+}
+
+void TerritoryEntry::RemoveCondition(XMLData& xmlData, int borderIndex)
+{
+	std::shared_ptr<BorderEntry> condition = conditions[borderIndex];
+	condition->index = -1;
+	condition->xmlKey = -1;
+	condition->mapBox->setOutlineColor(sf::Color::White);
+	xmlData.territories[xmlKey]->borders[borderIndex].condition = -1;
+	condition->mapBox = nullptr;
 }

@@ -13,8 +13,8 @@ enum class TerritoryView
 struct BorderEntry
 {
 	std::shared_ptr<TextBox> nameLabel;
-	int index;
-	int xmlKey;
+	int index = -1;
+	int xmlKey = -1;
 	std::shared_ptr<sf::RectangleShape> mapBox;
 	bool isContinent = false;
 };
@@ -81,8 +81,9 @@ public:
 	void Unselect() override;
 
 	void AddBorder(XMLData& xmlData, Maps& maps, int boxIndex, int otherXMLKey);
-	void AddBombardment(XMLData& xmlData, int boxIndex, int otherXMLKey);
-	void AddCondition(XMLData& xmlData, int boxIndex, int otherXMLKey);
+	void AddBombardment(XMLData& xmlData, Maps& maps, int boxIndex, int otherXMLKey);
+	void AddCondition(XMLData& xmlData, Maps& maps, int boxIndex, int otherXMLKey);
+	void RemoveCondition(XMLData& xmlData, int borderIndex);
 };
 
 
