@@ -92,10 +92,8 @@ bool TerritoryPage::MapClick(XMLData& xmlData, Maps& maps, sf::Vector2i mousePos
 	{
 		if(selectedEntry == -1)		
 		{
+			SwapEntry(selectedEntry, boxIndex);
 			selectedEntry = boxIndex;
-			entries[boxIndex]->Select();
-			auto entryPos = entries[boxIndex]->boxes[(int)UIEntry::ShapeTypes::Border]->box.getPosition();
-			scrollBar.Scroll({ 0, -entryPos.y + 20 });
 		}
 		else
 		{
@@ -103,27 +101,35 @@ bool TerritoryPage::MapClick(XMLData& xmlData, Maps& maps, sf::Vector2i mousePos
 			{
 			case TerritoryView::Borders:
 			{
-				auto border = std::dynamic_pointer_cast<TerritoryEntry>(entries[selectedEntry]);
-				int i;
-				bool removed = false;
-				for (i = 0; i < border->territories.size(); i++)
+				if (selectedEntry == boxIndex)
 				{
-					if (border->territories[i]->index == boxIndex)
-					{
-						maps.mapBoxes[boxIndex]->setOutlineColor(sf::Color::White);
-						border->territories.erase(border->territories.begin() + i);
-						removed = true;
-						break;
-					}
-				}
-				if (removed)
-				{
-					//move stuff;
+					SwapEntry(selectedEntry, -1);
+					selectedEntry = -1;
 				}
 				else
 				{
-					maps.mapBoxes[boxIndex]->setOutlineColor(sf::Color::Blue);
-					border->AddBorder(xmlData, maps, boxIndex, entries[boxIndex]->xmlKey);
+					auto border = std::dynamic_pointer_cast<TerritoryEntry>(entries[selectedEntry]);
+					int i;
+					bool removed = false;
+					for (i = 0; i < border->territories.size(); i++)
+					{
+						if (border->territories[i]->index == boxIndex)
+						{
+							maps.mapBoxes[boxIndex]->setOutlineColor(sf::Color::White);
+							border->territories.erase(border->territories.begin() + i);
+							removed = true;
+							break;
+						}
+					}
+					if (removed)
+					{
+						//move stuff;
+					}
+					else
+					{
+						maps.mapBoxes[boxIndex]->setOutlineColor(sf::Color::Blue);
+						border->AddBorder(xmlData, maps, boxIndex, entries[boxIndex]->xmlKey);
+					}
 				}
 				break;
 			}

@@ -21,7 +21,8 @@ Maps::Maps() :
     mapCanvas{ {UI::windowSize.x-600.0f,UI::windowSize.y-0.0f } },
     scrollBar(sf::View{ mapCanvas.getGlobalBounds() }, { mapCanvas.getSize().x - 40, 50 }/*position*/, 
         { 30, mapCanvas.getSize().y - 100 }/*size*/, { 50, mapCanvas.getSize().y - 40 }/*position*/,
-        { mapCanvas.getSize().x - 150, 30 }/*size*/, true, true)
+        { mapCanvas.getSize().x - 150, 30 }/*size*/, true, true),
+    clicked{false}
 {
     mapCanvas.setPosition({ 0, 0 });
     mapCanvas.setFillColor(sf::Color::Transparent);

@@ -23,6 +23,7 @@ public:
 	std::vector<std::shared_ptr<sf::RectangleShape>> mapBoxes;
 	static float widthRatio;
 	static float heightRatio;
+	bool clicked;
 
 	~Maps() {};
 	Maps();

@@ -63,5 +63,6 @@ public:
 		UserInput input, bool showCursor, UIPageType page);
 
 	void AddEntry(XMLData& xmlData, std::shared_ptr<UIEntry> entry);
+	void SwapEntry(int previous, int future);
 };
 

@@ -54,7 +54,7 @@ void UIPage::MouseClick(XMLData& xmlData, sf::RenderWindow& window,
 	{
 		scrollBar.MouseClick(sf::Vector2i(window.mapPixelToCoords(mousePos, scrollBar.scrollWindow)));
 	}
-	selectedEntry = -1;
+	int oldEntry = selectedEntry;
 	int index = 0;
 	for (std::shared_ptr<UIEntry> entry : entries)
 	{
@@ -64,6 +64,9 @@ void UIPage::MouseClick(XMLData& xmlData, sf::RenderWindow& window,
 			selectedEntry = index;
 		index++;
 	}
+	if (!maps.clicked && oldEntry == selectedEntry) 
+		selectedEntry = -1;
+	SwapEntry(oldEntry, selectedEntry);
 }
 
 bool UIPage::MapClick(XMLData& xmlData, Maps& maps, sf::Vector2i mousePos, int& boxIndex)
@@ -85,7 +88,7 @@ bool UIPage::MapClick(XMLData& xmlData, Maps& maps, sf::Vector2i mousePos, int& 
 void UIPage::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
 	UserInput input, bool showCursor, UIPageType pageType)
 {
-	if (input.del)
+	if (input.del && selectedEntry != -1)
 	{
 		if (entries[selectedEntry]->selected)
 		{
@@ -104,21 +107,16 @@ void UIPage::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePas
 	}
 	if (input.tab)
 	{
-		if (selectedEntry >= 0)
-		{
-			entries[selectedEntry]->Unselect();
-		}
+		int oldEntry = selectedEntry;
 		input.shift ? selectedEntry-- : selectedEntry++;
+
 		if (selectedEntry < 0)
 			selectedEntry = entries.size() - 1;
 		else if (selectedEntry >= entries.size())
 			selectedEntry = 0;
-		if(selectedEntry >= 0)
-		{
-			entries[selectedEntry]->Select();
-			auto entryPos = entries[selectedEntry]->boxes[(int)UIEntry::ShapeTypes::Border]->box.getPosition();
-			scrollBar.Scroll({ 0, -entryPos.y + 20 });
-		}
+		if (entries.size() == 0)
+			selectedEntry = -1;
+		SwapEntry(oldEntry, selectedEntry);
 	}
 
 	mouseOnPage = UI::CheckMouseInBounds(sf::Vector2i(window.mapPixelToCoords(sf::Mouse::getPosition(window), scrollBar.scrollWindow)), page);
@@ -158,6 +156,20 @@ void UIPage::AddEntry(XMLData& xmlData, std::shared_ptr<UIEntry> entry)
 	scrollBar.BarSize({ 0, (boxSize + 6) * (numEntries + 1) });
 	scrollBar.MoveBar({ 0, 10 + (boxSize + 6) * (numEntries + 1) });
 	scrollBar.Scroll({ 0, scrollBar.maxScroll.y * -1 });
+}
+
+void UIPage::SwapEntry(int previous, int future)
+{
+	if (previous >= 0)
+	{
+		entries[previous]->Unselect();
+	}
+	if (future >= 0)
+	{
+		entries[future]->Select();
+		auto entryPos = entries[future]->boxes[(int)UIEntry::ShapeTypes::Border]->box.getPosition();
+		scrollBar.Scroll({ 0, -entryPos.y + 20 });
+	}
 }
 
 //----------------------------------------------------------------
