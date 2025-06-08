@@ -224,7 +224,7 @@ void TerritoryEntry::CreateEntry(XMLData& xmlData, float entryTop)
 	selectedColor = sf::Color{ 120, 0, 255 };
 
 	std::shared_ptr<sf::RectangleShape> border = 
-		std::make_shared<sf::RectangleShape>( sf::Vector2f{ 530,200 } );/*size*/
+		std::make_shared<sf::RectangleShape>( sf::Vector2f{ 530,140 } );/*size*/
 	border->setPosition({ 10,entryTop });
 	border->setFillColor(sf::Color::Transparent);
 	border->setOutlineThickness(2.0f);
@@ -236,59 +236,89 @@ void TerritoryEntry::CreateEntry(XMLData& xmlData, float entryTop)
 	nameLabel->setPosition({ 20, entryTop + 8 });
 	labels.push_back(nameLabel);
 
+	sf::Color coordinatesColour = sf::Color::Yellow;
+	sf::Color bordersColour = sf::Color::Red;
+	sf::Color bombardmentColour = sf::Color::Green;
+	sf::Color conditionsColour = sf::Color::Magenta;
+
+	std::shared_ptr<sf::RectangleShape> coordBox =
+		std::make_shared<sf::RectangleShape>(sf::Vector2f{ 260,75 });/*size*/
+	coordBox->setPosition({ 270,entryTop + 51 });
+	coordBox->setFillColor(sf::Color::Transparent);
+	coordBox->setOutlineThickness(2.0f);
+	coordBox->setOutlineColor(coordinatesColour);
+	shapes.push_back(coordBox);
+	
 	std::shared_ptr<sf::Text> coordinateLabel =
 		std::make_shared<sf::Text>(UI::font, "Coordinates:");
-	coordinateLabel->setPosition({ 20, entryTop + 46 });
+	coordinateLabel->setPosition({ 90, entryTop + 46 });
+	coordinateLabel->setFillColor(coordinatesColour);
 	labels.push_back(coordinateLabel);
 
 	std::shared_ptr<sf::Text> smallLabel =
 		std::make_shared<sf::Text>(UI::font, "Small:");
-	smallLabel->setPosition({ 200, entryTop + 46 });
+	smallLabel->setPosition({ 270, entryTop + 53 });
+	smallLabel->setCharacterSize(25);
+	smallLabel->setFillColor(coordinatesColour);
 	labels.push_back(smallLabel);
 
 	std::shared_ptr<sf::Text> xSmallLabel =
 		std::make_shared<sf::Text>(UI::font, "x:");
-	xSmallLabel->setPosition({ 290, entryTop + 44 });
+	xSmallLabel->setPosition({ 340, entryTop + 53 });
+	xSmallLabel->setCharacterSize(25);
+	xSmallLabel->setFillColor(coordinatesColour);
 	labels.push_back(xSmallLabel);
 
 	std::shared_ptr<sf::Text> ySmallLabel = 
 		std::make_shared<sf::Text>(UI::font, "y:");
-	ySmallLabel->setPosition({ 400, entryTop + 44 });
+	ySmallLabel->setPosition({ 435, entryTop + 53 });
+	ySmallLabel->setCharacterSize(25);
+	ySmallLabel->setFillColor(coordinatesColour);
 	labels.push_back(ySmallLabel);
 
 	std::shared_ptr<sf::Text> largeLabel =
 		std::make_shared<sf::Text>(UI::font, "Large:");
-	largeLabel->setPosition({ 200, entryTop + 84 });
+	largeLabel->setPosition({ 270, entryTop + 92 });
+	largeLabel->setCharacterSize(25);
+	largeLabel->setFillColor(coordinatesColour);
 	labels.push_back(largeLabel);
 
 	std::shared_ptr<sf::Text> xLargeLabel =
 		std::make_shared<sf::Text>(UI::font, "X:");
-	xLargeLabel->setPosition({ 290, entryTop + 84 });
+	xLargeLabel->setPosition({ 340, entryTop + 94 });
+	xLargeLabel->setCharacterSize(25);
+	xLargeLabel->setFillColor(coordinatesColour);
 	labels.push_back(xLargeLabel);
 
 	std::shared_ptr<sf::Text> yLargeLabel =
 		std::make_shared<sf::Text>(UI::font, "Y:");
-	yLargeLabel->setPosition({ 400, entryTop + 84 });
+	yLargeLabel->setPosition({ 435, entryTop + 94 });
+	yLargeLabel->setCharacterSize(25);
+	yLargeLabel->setFillColor(coordinatesColour);
 	labels.push_back(yLargeLabel);
 
 	std::shared_ptr<sf::Text> connectionLabel =
-		std::make_shared<sf::Text>(UI::font, "Territories:");
-	connectionLabel->setPosition({ 20, entryTop + 120 });
+		std::make_shared<sf::Text>(UI::font, "Borders");
+	connectionLabel->setPosition({ 20, entryTop + 100 });
+	connectionLabel->setCharacterSize(25);
+	connectionLabel->setFillColor(bordersColour);
 	labels.push_back(connectionLabel);
 
 	std::shared_ptr<sf::Text> conditionLabel =
-		std::make_shared<sf::Text>(UI::font, "Condition:");
-	conditionLabel->setPosition({ 20, entryTop + 156 });
+		std::make_shared<sf::Text>(UI::font, "Conditions");
+	conditionLabel->setPosition({ 120, entryTop + 100 });
+	conditionLabel->setCharacterSize(25);
+	conditionLabel->setFillColor(conditionsColour);
 	labels.push_back(conditionLabel);
 
 	std::shared_ptr<sf::Text> neutralLabel =
 		std::make_shared<sf::Text>(UI::font, "Neutral:");
-	neutralLabel->setPosition({ 200, entryTop + 120 });
+	neutralLabel->setPosition({ 250, entryTop + 130 });
 	labels.push_back(neutralLabel);
 
 	std::shared_ptr<sf::Text> bonusLabel =
 		std::make_shared<sf::Text>(UI::font, "Bonus:");
-	bonusLabel->setPosition({ 20, entryTop + 120 });
+	bonusLabel->setPosition({ 20, entryTop + 130 });
 	labels.push_back(bonusLabel);
 
 	std::shared_ptr<Territory> data = xmlData.territories.at(xmlKey);
@@ -297,56 +327,60 @@ void TerritoryEntry::CreateEntry(XMLData& xmlData, float entryTop)
 	data->smallPos = UI::isLarge ? sf::Vector2i{ Maps::ConvertSmall(mapBoxPos.x, true), Maps::ConvertSmall(mapBoxPos.y, false)} : sf::Vector2i{ mapBoxPos };
 
 	std::shared_ptr<TextBox> nameBox =
-		std::make_shared<TextBox>(sf::Vector2f{ 120, entryTop + 12 }/*position*/, 
-			sf::Vector2f{ 400, 30 }/*size*/);
+		std::make_shared<TextBox>(sf::Vector2f{ 110, entryTop + 12 }/*position*/, 
+			sf::Vector2f{ 420, 30 }/*size*/);
 	nameBox->text = &data->name;
 	boxes.push_back(nameBox);
 
 	std::shared_ptr<TextBox> xSmallBox =
-		std::make_shared<TextBox>(sf::Vector2f{ 330, entryTop + 50 }/*position*/,
-			sf::Vector2f{ 50, 30 }/*size*/);
+		std::make_shared<TextBox>(sf::Vector2f{ 365, entryTop + 55 }/*position*/,
+			sf::Vector2f{ 65, 30 }/*size*/);
 	xSmallBox->number = &data->smallPos.x;
+	xSmallBox->baseColor = coordinatesColour;
 	boxes.push_back(xSmallBox);
 
 	std::shared_ptr<TextBox> ySmallBox =
-		std::make_shared<TextBox>(sf::Vector2f{ 440, entryTop + 50 }/*position*/,
-			sf::Vector2f{ 50, 30 }/*size*/);
+		std::make_shared<TextBox>(sf::Vector2f{ 460, entryTop + 55 }/*position*/,
+			sf::Vector2f{ 65, 30 }/*size*/);
 	ySmallBox->number = &data->smallPos.y;
+	ySmallBox->baseColor = coordinatesColour;
 	boxes.push_back(ySmallBox);
 
 	std::shared_ptr<TextBox> xLargeBox =
-		std::make_shared<TextBox>(sf::Vector2f{ 330, entryTop + 88 }/*position*/,
-			sf::Vector2f{ 50, 30 }/*size*/);
+		std::make_shared<TextBox>(sf::Vector2f{ 365, entryTop + 93 }/*position*/,
+			sf::Vector2f{ 65, 30 }/*size*/);
 	xLargeBox->number = &data->largePos.x;
+	xLargeBox->baseColor = coordinatesColour;
 	boxes.push_back(xLargeBox);
 
 	std::shared_ptr<TextBox> yLargeBox =
-		std::make_shared<TextBox>(sf::Vector2f{ 440, entryTop + 88 }/*position*/,
-			sf::Vector2f{ 50, 30 }/*size*/);
+		std::make_shared<TextBox>(sf::Vector2f{ 460, entryTop + 93 }/*position*/,
+			sf::Vector2f{ 65, 30 }/*size*/);
 	yLargeBox->number = &data->largePos.y;
+	yLargeBox->baseColor = coordinatesColour;
 	boxes.push_back(yLargeBox);
 
 	std::shared_ptr<TextBox> neutralBox =
-		std::make_shared<TextBox>(sf::Vector2f{ 330, entryTop + 124 }/*position*/,
-			sf::Vector2f{ 50, 30 }/*size*/);
+		std::make_shared<TextBox>(sf::Vector2f{ 365, entryTop + 134 }/*position*/,
+			sf::Vector2f{ 65, 30 }/*size*/);
 	neutralBox->number = &data->neutral;
 	boxes.push_back(neutralBox);
 
 	std::shared_ptr<TextBox> bonusBox =
-		std::make_shared<TextBox>(sf::Vector2f{ 120, entryTop + 124 }/*position*/,
-			sf::Vector2f{ 50, 30 }/*size*/);
+		std::make_shared<TextBox>(sf::Vector2f{ 120, entryTop + 134 }/*position*/,
+			sf::Vector2f{ 65, 30 }/*size*/);
 	bonusBox->number = &data->bonus;
 	boxes.push_back(bonusBox);
 
 	std::shared_ptr<Button> killer = 
-		std::make_shared<Button>(sf::Vector2f{ 390, entryTop + 124 }/*position*/, 
-			sf::Vector2f{ 100, 30 }/*size*/, "Killer");
+		std::make_shared<Button>(sf::Vector2f{ 450, entryTop + 134 }/*position*/, 
+			sf::Vector2f{ 80, 30 }/*size*/, "Killer");
 	killer->xmlLink = &data->killer;
 	buttons.push_back(killer);
 
-	territoriesPos = { 170, entryTop + 120 };
-	conditionsPos = { 370, entryTop + 156 };
-	bombardmentsPos = { 250, entryTop + 120 };
+	territoriesPos = { 20, entryTop + 134 };
+	conditionsPos = { 280, entryTop + 134 };
+	bombardmentsPos = { 20, entryTop + 134 };
 
 	SwapView(selectedView);
 	Select();
@@ -547,7 +581,12 @@ void TerritoryEntry::SwapView(TerritoryView view)
 	float extra = selectedView == TerritoryView::Extras;
 	float condition = selectedView == TerritoryView::Conditions;
 
-	labels[(int)LabelTypes::ConnectionLabel]->setString(bombardment ? "Bombardment:" : "Territory:");
+	float borderHeight = 140.0f;
+	borderHeight += extra ? 35.0f : bombardment ? bombardments.size() * 25.0f : territories.size() * 25.0f;
+
+	std::dynamic_pointer_cast<sf::RectangleShape>(shapes[(int)ShapeTypes::Border])->setSize({530, borderHeight});
+	labels[(int)LabelTypes::ConnectionLabel]->setString(bombardment ? "Bombardments:" : "Borders:");
+	labels[(int)LabelTypes::ConnectionLabel]->setFillColor(bombardment ? sf::Color::Green : sf::Color::Red);
 	labels[(int)LabelTypes::ConditionLabel]->setScale({ condition,condition });
 	labels[(int)LabelTypes::BonusLabel]->setScale({ extra,extra });
 	labels[(int)LabelTypes::NeutralLabel]->setScale({ extra,extra });
@@ -560,7 +599,7 @@ void TerritoryEntry::SwapView(TerritoryView view)
 void TerritoryEntry::Select()
 {
 	UIEntry::Select();
-	mapBox->setOutlineColor(sf::Color::Red);
+	mapBox->setOutlineColor(sf::Color::Blue);
 	if (selectedView == TerritoryView::Bombardments)
 	{
 		for (auto border : bombardments)
@@ -572,7 +611,7 @@ void TerritoryEntry::Select()
 	{
 		for (auto border : territories)
 		{
-			border->mapBox->setOutlineColor(sf::Color::Blue);
+			border->mapBox->setOutlineColor(sf::Color::Red);
 		}
 	}
 	//todo colour the map boxes properly for conditions.
@@ -590,14 +629,20 @@ void TerritoryEntry::Unselect()
 	{
 		border->mapBox->setOutlineColor(sf::Color::White);
 	}
+	for (auto border : conditions)
+	{
+		if(border->mapBox)
+			border->mapBox->setOutlineColor(sf::Color::White);
+	}
 }
 
 void TerritoryEntry::AddBorder(XMLData& xmlData, Maps& maps, int boxIndex, int otherXMLKey)
 {
 	std::shared_ptr<BorderEntry> border = std::make_shared<BorderEntry>();
 	border->nameLabel = std::make_shared<TextBox>(territoriesPos + sf::Vector2f{ 0, territories.size() * 25.0f }, 
-		sf::Vector2f{ 200, 20 });
+		sf::Vector2f{ 250, 20 });
 	border->nameLabel->displayText->setCharacterSize(20);
+	border->nameLabel->baseColor = sf::Color::Red;
 	border->index = boxIndex;
 	border->mapBox = maps.mapBoxes[boxIndex];
 	border->xmlKey = otherXMLKey;
@@ -608,8 +653,9 @@ void TerritoryEntry::AddBorder(XMLData& xmlData, Maps& maps, int boxIndex, int o
 	xmlData.territories[xmlKey]->borders.push_back(borderData);
 	std::shared_ptr<BorderEntry> condition = std::make_shared<BorderEntry>();
 	condition->nameLabel = std::make_shared<TextBox>(conditionsPos + sf::Vector2f{ 0, conditions.size() * 25.0f },
-		sf::Vector2f{ 200, 20 });
+		sf::Vector2f{ 250, 20 });
 	condition->nameLabel->displayText->setCharacterSize(20);
+	condition->nameLabel->baseColor = sf::Color::Magenta;
 	conditions.push_back(condition);
 }
 
@@ -617,8 +663,9 @@ void TerritoryEntry::AddBombardment(XMLData& xmlData, Maps& maps, int boxIndex, 
 {
 	std::shared_ptr<BorderEntry> bomb = std::make_shared<BorderEntry>();
 	bomb->nameLabel = std::make_shared<TextBox>(bombardmentsPos + sf::Vector2f{ 0, bombardments.size() * 25.0f },
-		sf::Vector2f{ 200, 20 });
+		sf::Vector2f{ 250, 20 });
 	bomb->nameLabel->displayText->setCharacterSize(20);
+	bomb->nameLabel->baseColor = sf::Color::Green;
 	bomb->index = boxIndex;
 	bomb->mapBox = maps.mapBoxes[boxIndex];
 	bomb->xmlKey = otherXMLKey;

@@ -41,6 +41,8 @@ void TextBox::Update(sf::RenderWindow& window, sf::Time timePassed,
         if (input.enter)
             Unselect();       
     }
+    else
+        box.setOutlineColor(baseColor);
 
     std::string currentText = "";
     if (text)
