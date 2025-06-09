@@ -10,7 +10,8 @@ UIPage::UIPage(sf::Vector2f tabPos, sf::Vector2f tabSize,
 	mouseOnPage{false},
 	showContinents(tabPos, { 240, 30 }, "Show Continents"),
 	selectedEntry{ -1 },
-	scrollBar(sf::View{ page.getGlobalBounds() }, { 555, 50 }/*position*/, { 30, page.getSize().y - 100 }/*size*/)
+	scrollBar(sf::View{ page.getGlobalBounds() }, { 555, 50 }/*position*/, { 30, page.getSize().y - 100 }/*size*/),
+	contentSize{0.0f}
 {
 	page.setPosition({ 0, 0 });
 	page.setFillColor(sf::Color::Transparent);
@@ -102,13 +103,7 @@ void UIPage::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePas
 			xmlData.RemoveData(pageType, entries[selectedEntry]->xmlKey);
 			entries.erase(entries.begin() + selectedEntry);
 		}
-		if (selectedEntry < entries.size())
-		{
-			for (int i = selectedEntry; i < entries.size(); i++)
-			{
-				entries[i]->MoveEntry({ 0,  -entries[0]->shapes[0]->getGlobalBounds().size.y - 6 });
-			}
-		}
+		PositionEntries();
 		selectedEntry = -1;		
 	}
 	if (input.tab)
@@ -138,7 +133,7 @@ void UIPage::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePas
 	scrollBar.Scroll({ 0, input.scroll });
 	int numEntries = entries.size();
 	if (numEntries)
-		scrollBar.MoveBar({ 0, 10 + (entries[0]->shapes[0]->getGlobalBounds().size.y + 6) * (numEntries) });
+		scrollBar.MoveBar({ 0, contentSize });
 
 	float topBoxY = numEntries ? entries[0]->shapes[0]->getPosition().y : scrollBar.currentScroll.y;
 	if (scrollBar.currentScroll.y != topBoxY)
@@ -154,13 +149,13 @@ void UIPage::AddEntry(XMLData& xmlData, std::shared_ptr<UIEntry> entry)
 {
 	int numEntries = entries.size();
 	float topBoxY = numEntries ? entries[0]->shapes[0]->getPosition().y : 10.0f;
-	float boxSize = numEntries ? entries[0]->shapes[0]->getGlobalBounds().size.y : 0.0f;
-	entry->CreateEntry(xmlData, topBoxY + (boxSize + 6) * numEntries);
+	entry->CreateEntry(xmlData, topBoxY + contentSize);
+	contentSize += std::dynamic_pointer_cast<sf::RectangleShape>(entry->shapes[(int)UIEntry::ShapeTypes::Border])->getSize().y + 6.0f;
 	if (selectedEntry != -1) entries[selectedEntry]->Unselect();
 	selectedEntry = entries.size();
 	entries.push_back(entry);
-	scrollBar.BarSize({ 0, (boxSize + 6) * (numEntries + 1) });
-	scrollBar.MoveBar({ 0, 10 + (boxSize + 6) * (numEntries + 1) });
+	scrollBar.BarSize({ 0, contentSize });
+	scrollBar.MoveBar({ 0, 10 + contentSize });
 	scrollBar.Scroll({ 0, scrollBar.maxScroll.y * -1 });
 }
 
@@ -175,6 +170,18 @@ void UIPage::SwapEntry(int previous, int future)
 		entries[future]->Select();
 		auto entryPos = entries[future]->boxes[(int)UIEntry::ShapeTypes::Border]->box.getPosition();
 		scrollBar.Scroll({ 0, -entryPos.y + 20 });
+	}
+}
+
+void UIPage::PositionEntries()
+{
+	contentSize = 10.0f;
+	float pageTop = entries[0]->shapes[(int)UIEntry::ShapeTypes::Border]->getPosition().y;
+	for (auto entry : entries)
+	{
+		auto borderBox = std::dynamic_pointer_cast<sf::RectangleShape>(entry->shapes[(int)UIEntry::ShapeTypes::Border]);
+		entry->MoveEntry({ 0, (pageTop + contentSize) - borderBox->getPosition().y });
+		contentSize += borderBox->getSize().y + 6;
 	}
 }
 

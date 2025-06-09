@@ -51,6 +51,7 @@ public:
 	bool mouseOnPage;
 	std::vector<std::shared_ptr<UIEntry>> entries;
 	int selectedEntry;
+	float contentSize;
 
 	~UIPage() {};
 	UIPage(sf::Vector2f tabPos, sf::Vector2f tabSize, 
@@ -64,5 +65,6 @@ public:
 
 	void AddEntry(XMLData& xmlData, std::shared_ptr<UIEntry> entry);
 	void SwapEntry(int previous, int future);
+	void PositionEntries();
 };
 

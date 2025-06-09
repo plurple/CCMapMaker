@@ -107,7 +107,6 @@ bool TerritoryPage::MapClick(XMLData& xmlData, Maps& maps, sf::Vector2i mousePos
 			{
 				switch (selectedView)
 				{
-				case TerritoryView::Extras:
 				case TerritoryView::Borders:
 				{
 					auto border = std::dynamic_pointer_cast<TerritoryEntry>(entries[selectedEntry]);
@@ -127,13 +126,18 @@ bool TerritoryPage::MapClick(XMLData& xmlData, Maps& maps, sf::Vector2i mousePos
 					}
 					if (removed)
 					{
-						//move stuff;
+						for (int j = i; j < border->territories.size(); j++)
+						{
+							border->territories[j]->nameLabel->Move({ 0, -25 });
+							border->conditions[j]->nameLabel->Move({ 0, -25 });
+						}
 					}
 					else
 					{
 						maps.mapBoxes[boxIndex]->setOutlineColor(sf::Color::Blue);
 						border->AddBorder(xmlData, maps, boxIndex, entries[boxIndex]->xmlKey);
 					}
+					std::dynamic_pointer_cast<sf::RectangleShape>(border->shapes[(int)UIEntry::ShapeTypes::Border])->setSize({ 530, 140 + border->territories.size() * 25.0f });
 
 					break;
 				}
@@ -155,13 +159,17 @@ bool TerritoryPage::MapClick(XMLData& xmlData, Maps& maps, sf::Vector2i mousePos
 					}
 					if (removed)
 					{
-						//move stuff;
+						for (int j = i; j < bomb->territories.size(); j++)
+						{
+							bomb->bombardments[j]->nameLabel->Move({ 0, -25 });
+						}
 					}
 					else
 					{
 						maps.mapBoxes[boxIndex]->setOutlineColor(sf::Color::Green);
 						bomb->AddBombardment(xmlData, maps, boxIndex, entries[boxIndex]->xmlKey);
 					}
+					std::dynamic_pointer_cast<sf::RectangleShape>(bomb->shapes[(int)UIEntry::ShapeTypes::Border])->setSize({ 530, 140 + bomb->bombardments.size() * 25.0f });
 					break;
 				}
 				case TerritoryView::Conditions:
@@ -172,6 +180,7 @@ bool TerritoryPage::MapClick(XMLData& xmlData, Maps& maps, sf::Vector2i mousePos
 				}
 				}
 			}
+			PositionEntries();
 		}
 	}
 	else
@@ -210,12 +219,11 @@ void TerritoryPage::AddTerritory(XMLData& xmlData, std::shared_ptr<sf::Rectangle
 
 void TerritoryPage::SwapView()
 {
-	/*TODO change the colour of the labels to make them visible or not
-	also move the positions and size of the box and such*/
 	for (std::shared_ptr<UIEntry> entry : entries)
 	{
 		std::dynamic_pointer_cast<TerritoryEntry>(entry)->SwapView(selectedView);
 	}
+	PositionEntries();
 }
 
 //-----------------------------------------------------------
