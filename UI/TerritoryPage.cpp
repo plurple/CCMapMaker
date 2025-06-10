@@ -87,9 +87,9 @@ void TerritoryPage::MouseClick(XMLData& xmlData, sf::RenderWindow& window,
 	}	
 }
 
-bool TerritoryPage::MapClick(XMLData& xmlData, Maps& maps, sf::Vector2i mousePos, int& boxIndex)
+bool TerritoryPage::MapClick(UI& ui, XMLData& xmlData, Maps& maps, sf::Vector2i mousePos, int& boxIndex)
 {
-	if (UIPage::MapClick(xmlData, maps, mousePos, boxIndex))
+	if (UIPage::MapClick(ui, xmlData, maps, mousePos, boxIndex))
 	{
 		if(selectedEntry == -1)		
 		{
@@ -666,7 +666,7 @@ void TerritoryEntry::AddBorder(XMLData& xmlData, Maps& maps, int boxIndex, int o
 	border->index = boxIndex;
 	border->mapBox = maps.mapBoxes[boxIndex];
 	border->xmlKey = otherXMLKey;
-	border->nameLabel->text = &xmlData.territories[otherXMLKey]->name;
+	border->nameLabel->text = &xmlData.territories.at(otherXMLKey)->name;
 	territories.push_back(border);	
 	BorderData borderData;
 	borderData.territory = otherXMLKey;
@@ -720,7 +720,7 @@ void TerritoryEntry::AddCondition(XMLData& xmlData, Maps& maps, int boxIndex,
 			condition->mapBox->setOutlineColor(sf::Color::Magenta);
 			condition->xmlKey = otherXMLKey;
 			condition->isContinent = false;
-			condition->nameLabel->text = &xmlData.territories[otherXMLKey]->name;
+			condition->nameLabel->text = &xmlData.territories.at(otherXMLKey)->name;
 			xmlData.territories[xmlKey]->borders[borderIndex].condition = otherXMLKey;
 			xmlData.territories[xmlKey]->borders[borderIndex].conditionIsContintent = false;
 		}

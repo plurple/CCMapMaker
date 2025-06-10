@@ -76,7 +76,7 @@ void UIPage::MouseClick(XMLData& xmlData, sf::RenderWindow& window,
 		SwapEntry(oldEntry, selectedEntry);
 }
 
-bool UIPage::MapClick(XMLData& xmlData, Maps& maps, sf::Vector2i mousePos, int& boxIndex)
+bool UIPage::MapClick(UI& ui, XMLData& xmlData, Maps& maps, sf::Vector2i mousePos, int& boxIndex)
 {
 	int index = 0;
 	for (std::shared_ptr<sf::RectangleShape> box : maps.mapBoxes)
@@ -168,7 +168,7 @@ void UIPage::SwapEntry(int previous, int future)
 	if (future >= 0)
 	{
 		entries[future]->Select();
-		auto entryPos = entries[future]->boxes[(int)UIEntry::ShapeTypes::Border]->box.getPosition();
+		auto entryPos = entries[future]->shapes[(int)UIEntry::ShapeTypes::Border]->getPosition();
 		scrollBar.Scroll({ 0, -entryPos.y + 20 });
 	}
 }
@@ -176,7 +176,7 @@ void UIPage::SwapEntry(int previous, int future)
 void UIPage::PositionEntries()
 {
 	contentSize = 10.0f;
-	float pageTop = entries[0]->shapes[(int)UIEntry::ShapeTypes::Border]->getPosition().y;
+	float pageTop = entries.size() ? entries[0]->shapes[(int)UIEntry::ShapeTypes::Border]->getPosition().y : 0.0f;
 	for (auto entry : entries)
 	{
 		auto borderBox = std::dynamic_pointer_cast<sf::RectangleShape>(entry->shapes[(int)UIEntry::ShapeTypes::Border]);

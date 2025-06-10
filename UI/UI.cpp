@@ -13,7 +13,7 @@ sf::Vector2u UI::windowSize{ 1600, 900 };
 bool UI::isLarge{ true };
 
 UI::UI(XMLData& xmlData) :
-    selectedPage{UIPageType::Territory}, 
+    selectedPage{UIPageType::Territory},
     uiPanel{ {600,1000} },
     mapPanel{ {370,45} },
     tabPanel{ {592,142} },
@@ -170,7 +170,7 @@ void UI::MouseClick(XMLData& xmlData, sf::RenderWindow& window, sf::Vector2i mou
     {
         int index;
         maps.clicked = true;
-        uiPages[(int)selectedPage]->MapClick(xmlData, maps, mapMouse, index);
+        uiPages[(int)selectedPage]->MapClick(*this, xmlData, maps, mapMouse, index);
     }
     uiPages[(int)selectedPage]->MouseClick(xmlData, window, mousePos, maps);  
     maps.clicked = false;

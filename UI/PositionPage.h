@@ -6,19 +6,21 @@ class PositionPair : public UIEntry
 public:
 	enum class LabelTypes
 	{
-		TerritoryName,
 		StartLabel,
 		NumLabels
 	};
 	enum class BoxTypes
 	{
+		TerritoryName,
 		StartBox,
 		NumBoxes
 	};
-	int pairNum;
+	int uiIndex;
+	int otherXMLKey;
+	std::shared_ptr<sf::RectangleShape> mapBox;
 
-	PositionPair(int insertedKey, int pair) :
-		UIEntry{ insertedKey }, pairNum{ pair } {};
+	PositionPair(int insertedKey) :
+		UIEntry{ insertedKey }{};
 	void CreateEntry(XMLData& xmlData, float entryTop) override;
 
 	void Draw(sf::RenderWindow& window) override;
@@ -32,12 +34,8 @@ public:
 class PositionEntry : public UIEntry
 {
 public:
-	enum class ButtonTypes
-	{
-		AddPosition,
-		NumBoxes
-	};
 	std::vector<std::shared_ptr<UIEntry>> positionPairs;
+	float pairsPos;
 
 	~PositionEntry() {};
 	PositionEntry(int insertedKey) : UIEntry{ insertedKey } {};
@@ -49,6 +47,7 @@ public:
 		UserInput input, bool showCursor) override;
 
 	void MoveEntry(sf::Vector2f offset) override;
+	void AddPositionPair(XMLData& xmlData, Maps& maps, int boxIndex, int otherXMLKey);
 };
 
 class PositionPage : public UIPage
@@ -65,6 +64,8 @@ public:
 	void Draw(sf::RenderWindow& window, bool selected) override;
 	void MouseClick(XMLData& xmlData, sf::RenderWindow& window, 
 		sf::Vector2i mousePos, Maps& maps) override;
+	bool MapClick(UI& ui, XMLData& xmlData, Maps& maps, sf::Vector2i mousePos, 
+		int& boxIndex) override;
 	void Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
 		UserInput input, bool showCursor, UIPageType pageType) override;
 

@@ -1,19 +1,10 @@
 #pragma once
-#include <vector>
-
-struct PositionData
-{
-public:
-	int territory;
-	int startSize;
-
-	PositionData() : territory{ -1 }, startSize{ 3 } {};
-};
+#include <unordered_map>
 
 class Position
 {
 public:
-	std::vector<PositionData> positions;
+	std::unordered_map<int, int> positions;
 
 	Position();
 };

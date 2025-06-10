@@ -59,7 +59,7 @@ public:
 	virtual void Draw(sf::RenderWindow& window, bool selected);
 	virtual void MouseClick(XMLData& xmlData, sf::RenderWindow& window, 
 		sf::Vector2i mousePos, Maps& maps);
-	virtual bool MapClick(XMLData& xmlData, Maps& maps, sf::Vector2i mousePos, int& boxIndex);
+	virtual bool MapClick(UI& ui, XMLData& xmlData, Maps& maps, sf::Vector2i mousePos, int& boxIndex);
 	virtual void Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
 		UserInput input, bool showCursor, UIPageType page);
 
