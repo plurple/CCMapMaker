@@ -203,10 +203,31 @@ void PositionEntry::AddPositionPair(XMLData& xmlData, Maps& maps, int boxIndex, 
 	positionPairs.push_back(pair);
 }
 
+void PositionEntry::Select()
+{
+	UIEntry::Select();
+	for (auto position : positionPairs)
+	{
+		position->selected = selected;
+	}
+}
+
+void PositionEntry::Unselect()
+{
+	UIEntry::Unselect();
+	for (auto position : positionPairs)
+	{
+		position->selected = selected;
+	}
+}
+
 //-------------------------------------------------------------------------
 
 void PositionPair::CreateEntry(XMLData& xmlData, float entryTop)
 {
+	baseColor = sf::Color::Green;
+	selectedColor = sf::Color{ 26, 176, 26 };
+
 	std::shared_ptr<TextBox> nameLabel = std::make_shared<TextBox>(sf::Vector2f{ 30, entryTop + 12 },
 		sf::Vector2f{ 250, 30 });
 	nameLabel->baseColor = sf::Color::Green;
@@ -239,6 +260,7 @@ void PositionPair::MouseClick(sf::Vector2i mousePos, bool mouseOnPage, bool& sel
 void PositionPair::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
 	UserInput input, bool showCursor)
 {
+	mapBox->setOutlineColor(selected ? selectedColor : baseColor);
 	UIEntry::Update(xmlData, window, timePassed, input, showCursor);
 }
 

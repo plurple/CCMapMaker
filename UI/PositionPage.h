@@ -48,6 +48,8 @@ public:
 
 	void MoveEntry(sf::Vector2f offset) override;
 	void AddPositionPair(XMLData& xmlData, Maps& maps, int boxIndex, int otherXMLKey);
+	void Select() override;
+	void Unselect() override;
 };
 
 class PositionPage : public UIPage
