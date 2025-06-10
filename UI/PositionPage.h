@@ -19,6 +19,7 @@ public:
 	int otherXMLKey;
 	std::shared_ptr<sf::RectangleShape> mapBox;
 
+	~PositionPair();
 	PositionPair(int insertedKey) :
 		UIEntry{ insertedKey }{};
 	void CreateEntry(XMLData& xmlData, float entryTop) override;
@@ -72,5 +73,7 @@ public:
 		UserInput input, bool showCursor, UIPageType pageType) override;
 
 	void AddPosition(XMLData& xmlData);
+	void SelectPage() override;
+	void UnselectPage() override;
 };
 

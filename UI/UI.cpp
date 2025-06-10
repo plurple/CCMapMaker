@@ -161,9 +161,7 @@ void UI::MouseClick(XMLData& xmlData, sf::RenderWindow& window, sf::Vector2i mou
     {
         if (CheckMouseInBounds(mousePos, uiPages[i]->tabButton.rect))
         {
-            uiPages[(int)selectedPage]->tabButton.Toggle();
-            selectedPage = (UIPageType)i;
-            uiPages[(int)selectedPage]->tabButton.Toggle();
+            SwapPage((UIPageType)i);
         }
     }
     if (CheckMouseInBounds(mapMouse, maps.largeMap.mapSprite->getGlobalBounds()))
@@ -181,9 +179,9 @@ void UI::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
 {
     if (input.ctrl)
     {
-        uiPages[(int)selectedPage]->tabButton.Toggle();
-        input.shift ? selectedPage-- : selectedPage++;
-        uiPages[(int)selectedPage]->tabButton.Toggle();
+        UIPageType newPage = selectedPage;
+        input.shift ? newPage-- : newPage++;
+        SwapPage(newPage);
     }
 
     static sf::Time text_effect_time;
@@ -197,4 +195,13 @@ void UI::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
 
     maps.Update(window, timePassed, input);
     uiPages[(int)selectedPage]->Update(xmlData, window, timePassed, input, showCursor, selectedPage);
+}
+
+void UI::SwapPage(UIPageType newPage)
+{
+    uiPages[(int)selectedPage]->tabButton.Toggle();
+    uiPages[(int)selectedPage]->UnselectPage();
+    selectedPage = newPage;
+    uiPages[(int)selectedPage]->tabButton.Toggle();
+    uiPages[(int)selectedPage]->SelectPage();
 }

@@ -123,6 +123,30 @@ void PositionPage::AddPosition(XMLData& xmlData)
 	UIPage::AddEntry(xmlData, entry);
 }
 
+void PositionPage::SelectPage()
+{
+	UIPage::SelectPage();
+	for (auto entry : entries)
+	{
+		for (auto pair : std::dynamic_pointer_cast<PositionEntry>(entry)->positionPairs)
+		{
+			std::dynamic_pointer_cast<PositionPair>(pair)->mapBox->setOutlineColor(pair->baseColor);
+		}
+	}
+}
+
+void PositionPage::UnselectPage()
+{
+	UIPage::UnselectPage();
+	for (auto entry : entries)
+	{
+		for (auto pair : std::dynamic_pointer_cast<PositionEntry>(entry)->positionPairs)
+		{
+			std::dynamic_pointer_cast<PositionPair>(pair)->mapBox->setOutlineColor(sf::Color::White);
+		}
+	}
+}
+
 //-----------------------------------------------------------
 
 void PositionEntry::CreateEntry(XMLData& xmlData, float entryTop)
@@ -175,6 +199,7 @@ void PositionEntry::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time 
 		}
 		else
 		{
+			Unselect();
 			if (positionPairs.size()) positionPairs.erase(positionPairs.begin() + i);
 			i--;
 		}
@@ -222,6 +247,11 @@ void PositionEntry::Unselect()
 }
 
 //-------------------------------------------------------------------------
+
+PositionPair::~PositionPair()
+{
+	mapBox->setOutlineColor(sf::Color::White);
+}
 
 void PositionPair::CreateEntry(XMLData& xmlData, float entryTop)
 {

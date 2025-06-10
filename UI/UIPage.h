@@ -66,5 +66,7 @@ public:
 	void AddEntry(XMLData& xmlData, std::shared_ptr<UIEntry> entry);
 	void SwapEntry(int previous, int future);
 	void PositionEntries();
+	virtual void SelectPage();
+	virtual void UnselectPage();
 };
 

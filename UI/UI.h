@@ -38,5 +38,7 @@ public:
 	void MouseClick(XMLData& xmlData, sf::RenderWindow& window, sf::Vector2i mousePos);
 	void Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
 		UserInput& input);
+
+	void SwapPage(UIPageType newPage);
 };
 

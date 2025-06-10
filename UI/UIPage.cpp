@@ -100,6 +100,7 @@ void UIPage::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePas
 		if (entries[selectedEntry]->selected)
 		{
 			//todo remove entry and all that entails.
+			entries[selectedEntry]->Unselect();
 			xmlData.RemoveData(pageType, entries[selectedEntry]->xmlKey);
 			entries.erase(entries.begin() + selectedEntry);
 		}
@@ -182,6 +183,20 @@ void UIPage::PositionEntries()
 		auto borderBox = std::dynamic_pointer_cast<sf::RectangleShape>(entry->shapes[(int)UIEntry::ShapeTypes::Border]);
 		entry->MoveEntry({ 0, (pageTop + contentSize) - borderBox->getPosition().y });
 		contentSize += borderBox->getSize().y + 6;
+	}
+}
+
+void UIPage::SelectPage()
+{
+
+}
+
+void UIPage::UnselectPage()
+{
+	selectedEntry = -1;
+	for (auto entry : entries)
+	{
+		entry->Unselect();
 	}
 }
 
