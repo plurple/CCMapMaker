@@ -364,11 +364,19 @@ void ContinentEntry::SwapView(ContinentView view)
 void ContinentEntry::Select()
 {
 	UIEntry::Select();
+	for (auto entry : entries)
+	{
+		entry->Select();
+	}
 }
 
 void ContinentEntry::Unselect()
 {
 	UIEntry::Unselect();
+	for (auto entry : entries)
+	{
+		entry->Unselect();
+	}
 }
 
 void ContinentEntry::AddTerritory(XMLData& xmlData, Maps& maps, int boxIndex, int otherXMLKey)
@@ -381,6 +389,7 @@ void ContinentEntry::AddTerritory(XMLData& xmlData, Maps& maps, int boxIndex, in
 	territory->mapBox = maps.mapBoxes[boxIndex];
 	territory->xmlKey = xmlKey;
 	territory->otherXMLKey = otherXMLKey;
+	territory->selectedColor = selectedColor;
 	territory->CreateEntry(xmlData, territoryPos.y + entries.size() * 35.0f);
 	entries.push_back(territory);
 }
@@ -621,4 +630,14 @@ void AdvancedTerritory::SwapView(ContinentView view)
 	buttons[(int)ButtonTypes::Multiplier]->Hide(advancedView);
 	boxes[(int)BoxTypes::TerritoryName]->Hide(!overrideView);
 	boxes[(int)BoxTypes::FactorBox]->Hide(advancedView);
+}
+
+void AdvancedTerritory::Select()
+{
+	mapBox->setOutlineColor(selectedColor);
+}
+
+void AdvancedTerritory::Unselect()
+{
+	mapBox->setOutlineColor(sf::Color::White);
 }

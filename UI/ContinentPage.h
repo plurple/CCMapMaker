@@ -41,6 +41,8 @@ public:
 
 	void MoveEntry(sf::Vector2f offset) override;
 	void SwapView(ContinentView view);
+	void Select() override;
+	void Unselect() override;
 };
 
 class BonusLine : public UIEntry
