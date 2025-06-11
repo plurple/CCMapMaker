@@ -79,6 +79,74 @@ void ContinentPage::MouseClick(XMLData& xmlData, sf::RenderWindow& window,
 	}	
 }
 
+bool ContinentPage::MapClick(UI& ui, XMLData& xmlData, Maps& maps, sf::Vector2i mousePos, int& boxIndex)
+{
+	if (UIPage::MapClick(ui, xmlData, maps, mousePos, boxIndex))
+	{
+		if (selectedEntry == -1)
+		{
+			for (int i = 0; i < entries.size(); i++)
+			{
+				auto entry = std::dynamic_pointer_cast<ContinentEntry>(entries[i]);
+				for (int j = 0; j < entry->entries.size(); j++)
+				{
+					auto territory = std::dynamic_pointer_cast<AdvancedTerritory>(entry->entries[j]);
+					if (territory->uiIndex == boxIndex)
+					{
+						SwapEntry(selectedEntry, i);
+						selectedEntry = i;
+					}
+				}
+			}
+			if (selectedEntry == -1)
+			{
+				AddContinent(xmlData);
+				auto entry = std::dynamic_pointer_cast<ContinentEntry>(entries[selectedEntry]);
+				entry->AddTerritory(xmlData, maps, boxIndex, ui.uiPages[(int)UIPageType::Territory]->entries[boxIndex]->xmlKey);
+				entry->BorderBoxSize();
+			}
+		}
+		else
+		{
+			auto entry = std::dynamic_pointer_cast<ContinentEntry>(entries[selectedEntry]);
+			int i;
+			bool removed = false;
+			for (i = 0; i < entry->entries.size(); i++)
+			{
+				auto pair = std::dynamic_pointer_cast<AdvancedTerritory>(entry->entries[i]);
+				if (pair->uiIndex == boxIndex)
+				{
+					maps.mapBoxes[boxIndex]->setOutlineColor(sf::Color::White);
+					xmlData.continents.at(entry->xmlKey)->territories.erase(std::dynamic_pointer_cast<AdvancedTerritory>(entry->entries[i])->otherXMLKey);
+					entry->entries.erase(entry->entries.begin() + i);
+					removed = true;
+					break;
+				}
+			}
+			if (removed)
+			{
+				for (int j = i; j < entry->entries.size(); j++)
+				{
+					entry->entries[j]->MoveEntry({ 0, -40 });
+				}
+			}
+			else
+			{
+				maps.mapBoxes[boxIndex]->setOutlineColor(sf::Color::Blue);
+				entry->AddTerritory(xmlData, maps, boxIndex, ui.uiPages[(int)UIPageType::Territory]->entries[boxIndex]->xmlKey);
+			}
+			entry->BorderBoxSize();
+		}
+		SwapView();
+	}
+	else
+	{
+		SwapEntry(selectedEntry, -1);
+		selectedEntry = -1;
+	}
+	return true;
+}
+
 void ContinentPage::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
 	UserInput input, bool showCursor, UIPageType pageType)
 {
@@ -106,8 +174,9 @@ void ContinentPage::SwapView()
 	//need to hide factor on the advanced view when not multiplied.
 	for (std::shared_ptr<UIEntry> entry : entries)
 	{
-		std::dynamic_pointer_cast<ContinentEntry>(entry)->selectedView = selectedView;
+		std::dynamic_pointer_cast<ContinentEntry>(entry)->SwapView(selectedView);
 	}
+	PositionEntries();
 } 
 //-----------------------------------------------------------
 
@@ -115,6 +184,9 @@ void ContinentEntry::CreateEntry(XMLData& xmlData, float entryTop)
 {
 	baseColor = sf::Color{ 255, 170, 0 };
 	selectedColor = sf::Color{ 230, 150, 0 };
+
+	territoryPos = { 20, entryTop + 84 };
+	continentPos = { 300, entryTop + 84 };
 
 	std::shared_ptr<sf::RectangleShape> border = 
 		std::make_shared<sf::RectangleShape>( sf::Vector2f{580,202 } );/*size*/
@@ -136,46 +208,44 @@ void ContinentEntry::CreateEntry(XMLData& xmlData, float entryTop)
 	
 	std::shared_ptr<sf::Text> territoryLabel = 
 		std::make_shared<sf::Text>(UI::font, "Territories:");
-	territoryLabel->setPosition({ 20, entryTop + 84 });
-	labels.push_back(territoryLabel);
+	territoryLabel->setPosition(territoryPos);
+	labels.push_back(territoryLabel);	
 	
 	std::shared_ptr<sf::Text> continentLabel = 
 		std::make_shared<sf::Text>(UI::font, "Continents:");
-	continentLabel->setPosition({ 20, entryTop + 120 });
+	continentLabel->setPosition(continentPos);
 	labels.push_back(continentLabel);
 
+	std::shared_ptr<sf::Text> factorLabel =
+		std::make_shared<sf::Text>(UI::font, "Factor:");
+	factorLabel->setPosition({ 370, entryTop + 84 });
+	labels.push_back(factorLabel);
+
 	std::shared_ptr<Button> addBonus = 
-		std::make_shared<Button>(sf::Vector2f{ 510, entryTop + 50 }/*position*/, 
+		std::make_shared<Button>(sf::Vector2f{ 460, entryTop + 50 }/*position*/, 
 			sf::Vector2f{ 30, 30 }/*size*/, "+");
 	buttons.push_back(addBonus);
 
 	std::shared_ptr<Button> removeBonus = 
-		std::make_shared<Button>(sf::Vector2f{ 550, entryTop + 50 }/*position*/, 
+		std::make_shared<Button>(sf::Vector2f{ 500, entryTop + 50 }/*position*/, 
 			sf::Vector2f{ 30, 30 }/*size*/, "-");
 	buttons.push_back(removeBonus);
 
 	std::shared_ptr<Continent> data = xmlData.continents.at(xmlKey);
 	std::shared_ptr<TextBox> nameBox = 
 		std::make_shared<TextBox>(sf::Vector2f{ 120, entryTop + 12 }/*position*/,
-			sf::Vector2f{ 450, 30 }/*size*/);
+			sf::Vector2f{ 410, 30 }/*size*/);
 	nameBox->text = &data->name;
 	boxes.push_back(nameBox);
 
-	std::shared_ptr<AdvancedTerritory> advance = 
-		std::make_shared<AdvancedTerritory>(xmlKey);
-	advance->CreateEntry(xmlData, entryTop);
-	entries.push_back(advance);
-
-	std::shared_ptr<sf::Text> continent = 
-		std::make_shared<sf::Text>(UI::font, "Continent");
-	continent->setPosition({ 180, entryTop + 120 });
-	continents.push_back(continent);
 
 	std::shared_ptr<BonusLine> bonus = 
 		std::make_shared<BonusLine>(xmlKey, bonuses.size());
 	bonus->CreateEntry(xmlData, entryTop);
 	bonuses.push_back(bonus);
 
+	BorderBoxSize();
+	SwapView(selectedView);
 	Select();
 }
 
@@ -190,13 +260,16 @@ void ContinentEntry::Draw(sf::RenderWindow& window)
 
 	if (selectedView == ContinentView::Basic)
 	{
-		//todo draw the territory name of advanced Data
-	}
-	if (selectedView != ContinentView::Advanced)
-	{
-		for (std::shared_ptr<sf::Text> continent : continents)
+		for (std::shared_ptr<TextBox> continent : continents)
 		{
-			window.draw(*continent);
+			continent->Draw(window);
+		}
+	}
+	if (selectedView == ContinentView::Overrides)
+	{
+		for (std::shared_ptr<TextBox> continent : overrides)
+		{
+			continent->Draw(window);
 		}
 	}
 }
@@ -236,14 +309,84 @@ void ContinentEntry::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time
 void ContinentEntry::MoveEntry(sf::Vector2f offset)
 {
 	UIEntry::MoveEntry(offset);	
-	for (std::shared_ptr<sf::Text> continent : continents)
+
+	territoryPos += offset;
+	continentPos += offset;
+
+	for (std::shared_ptr<TextBox> continent : continents)
 	{
-		continent->move(offset);
+		continent->Move(offset);
 	}
 	for (std::shared_ptr<UIEntry> bonus : bonuses)
 	{
 		bonus->MoveEntry(offset);
 	}
+}
+
+void ContinentEntry::SwapView(ContinentView view)
+{
+	selectedView = view;
+	float basicView = selectedView == ContinentView::Basic;
+	float overrideView = selectedView == ContinentView::Overrides;
+	float advancedView = selectedView == ContinentView::Advanced;
+
+	BorderBoxSize();
+
+	labels[(int)LabelTypes::ContinentsLabel]->setPosition(overrideView ? territoryPos : continentPos);
+	labels[(int)LabelTypes::ContinentsLabel]->setString(overrideView ? "Overides:" : "Continents:");
+	labels[(int)LabelTypes::ContinentsLabel]->setScale({ (float)!advancedView,(float)!advancedView });
+	labels[(int)LabelTypes::TerritoryLabel]->setScale({ (float)!overrideView,(float)!overrideView });
+	labels[(int)LabelTypes::FactorLabel]->setScale({ advancedView,advancedView });
+
+	for (auto advance : entries)
+	{
+		std::dynamic_pointer_cast<AdvancedTerritory>(advance)->SwapView(view);
+	}
+	if (selected)
+	{
+		Unselect();
+		Select();
+	}
+}
+
+void ContinentEntry::Select()
+{
+	UIEntry::Select();
+}
+
+void ContinentEntry::Unselect()
+{
+	UIEntry::Unselect();
+}
+
+void ContinentEntry::AddTerritory(XMLData& xmlData, Maps& maps, int boxIndex, int otherXMLKey)
+{
+	std::shared_ptr<AdvancedTerritory> territory =
+		std::make_shared<AdvancedTerritory>(xmlKey);
+	AdvancedData data;
+	xmlData.continents[xmlKey]->territories.insert({otherXMLKey, data});
+	territory->uiIndex = boxIndex;
+	territory->mapBox = maps.mapBoxes[boxIndex];
+	territory->xmlKey = xmlKey;
+	territory->otherXMLKey = otherXMLKey;
+	territory->CreateEntry(xmlData, territoryPos.y + entries.size() * 35.0f);
+	entries.push_back(territory);
+}
+
+void ContinentEntry::BorderBoxSize()
+{
+	float borderHeight = 36.0f + 80.0f + (bonuses.size() - 1) * 40.0f;
+	if (selectedView == ContinentView::Overrides)
+	{
+		int numOverrides = overrides.size();
+		borderHeight += numOverrides ? numOverrides * 35.0f : 10.0f;
+	}
+	else
+	{
+		int numTerritories = entries.size() > continents.size() ? entries.size() : continents.size();
+		borderHeight += numTerritories ? numTerritories * 35.0f : 10.0f;
+	}
+	std::dynamic_pointer_cast<sf::RectangleShape>(shapes[(int)UIEntry::ShapeTypes::Border])->setSize({ 530, borderHeight});
 }
 
 //-----------------------------------------------------------
@@ -252,23 +395,25 @@ void BonusLine::CreateEntry(XMLData& xmlData, float entryTop)
 {
 	std::shared_ptr<sf::Text> bonusLabel = 
 		std::make_shared<sf::Text>(UI::font, "Bonus:");
-	bonusLabel->setPosition({ 150, entryTop + 46 });
+	bonusLabel->setCharacterSize(23);
+	bonusLabel->setPosition({ 150, entryTop + 50 });
 	labels.push_back(bonusLabel);
 
 	std::shared_ptr<sf::Text> requiredLabel = 
 		std::make_shared<sf::Text>(UI::font, "Required:");
-	requiredLabel->setPosition({ 310, entryTop + 46 });
+	requiredLabel->setCharacterSize(23);
+	requiredLabel->setPosition({ 290, entryTop + 50 });
 	labels.push_back(requiredLabel);
 
 	std::shared_ptr<Continent> data = xmlData.continents.at(xmlKey);
 	std::shared_ptr<TextBox> bonusBox = 
-		std::make_shared<TextBox>(sf::Vector2f{ 250, entryTop + 50 }, 
+		std::make_shared<TextBox>(sf::Vector2f{ 230, entryTop + 50 }, 
 			sf::Vector2f{ 50, 30 });
 	bonusBox->number = &data->bonuses[bonusNum].bonusAmount;
 	boxes.push_back(bonusBox);
 
 	std::shared_ptr<TextBox> requiredBox = 
-		std::make_shared<TextBox>(sf::Vector2f{ 450, entryTop + 50 }, 
+		std::make_shared<TextBox>(sf::Vector2f{ 400, entryTop + 50 }, 
 			sf::Vector2f{ 50, 30 });
 	requiredBox->number = &data->bonuses[bonusNum].numRequired;
 	boxes.push_back(requiredBox);
@@ -300,41 +445,41 @@ void BonusLine::MoveEntry(sf::Vector2f offset)
 void AdvancedTerritory::CreateEntry(XMLData& xmlData, float entryTop)
 {
 	std::shared_ptr<sf::RectangleShape> border = 
-		std::make_shared<sf::RectangleShape>( sf::Vector2f{576,78 } );/*size*/
-	border->setPosition({ 12,entryTop + 84 });
+		std::make_shared<sf::RectangleShape>( sf::Vector2f{526,30 } );/*size*/
+	border->setPosition({ 12,entryTop + 35 });
 	border->setFillColor(sf::Color::Transparent);
 	border->setOutlineThickness(2.0f);
 	border->setOutlineColor(sf::Color::Cyan);
 	shapes.push_back(border);
 
-	std::shared_ptr<sf::Text> territory = 
-		std::make_shared<sf::Text>(UI::font, "TerritoryName");
-	territory->setPosition({ 20, entryTop + 84 });
-	labels.push_back(territory);
-
-	std::shared_ptr<sf::Text> factorLabel = 
-		std::make_shared<sf::Text>(UI::font, "Factor:");
-	factorLabel->setPosition({ 410, entryTop + 84 });
-	labels.push_back(factorLabel);
-
 	std::shared_ptr<Button> mandatory  = 
-		std::make_shared<Button>(sf::Vector2f{ 30, entryTop + 120 }/*position*/,
-			sf::Vector2f{ 150, 30 }/*size*/, "Mandatory");
+		std::make_shared<Button>(sf::Vector2f{ 230, entryTop + 40 }/*position*/,
+			sf::Vector2f{ 105, 20 }/*size*/, "Mandatory");
+	mandatory->label->setCharacterSize(20);
 	buttons.push_back(mandatory);
 
 	std::shared_ptr<Button> blocker = 
-		std::make_shared<Button>(sf::Vector2f{ 200, entryTop + 120 }/*position*/, 
-			sf::Vector2f{ 100, 30 }/*size*/, "Blocker");
+		std::make_shared<Button>(sf::Vector2f{ 340, entryTop + 40 }/*position*/, 
+			sf::Vector2f{ 75, 20 }/*size*/, "Blocker");
+	blocker->label->setCharacterSize(20);
 	buttons.push_back(blocker);
 
 	std::shared_ptr<Button> multiplier = 
-		std::make_shared<Button>(sf::Vector2f{ 350, entryTop + 120 }/*position*/,
-			sf::Vector2f{ 150, 30 }/*size*/, "Multiplier");
+		std::make_shared<Button>(sf::Vector2f{ 420, entryTop + 40 }/*position*/,
+			sf::Vector2f{ 90, 20 }/*size*/, "Multiplier");
+	multiplier->label->setCharacterSize(20);
 	buttons.push_back(multiplier);
 
+	std::shared_ptr<TextBox> territoryBox =
+		std::make_shared<TextBox>(sf::Vector2f{ 20, entryTop+40 }, 
+			sf::Vector2f{ 200, 20 });
+	territoryBox->displayText->setCharacterSize(20);
+	boxes.push_back(territoryBox);
+
 	std::shared_ptr<TextBox> factor = 
-		std::make_shared<TextBox>(sf::Vector2f{ 530, entryTop + 88 }/*position*/,
-			sf::Vector2f{ 50, 30 }/*size*/, new std::string("1.0"));
+		std::make_shared<TextBox>(sf::Vector2f{ 480, entryTop + 40 }/*position*/,
+			sf::Vector2f{ 60, 20 }/*size*/, new std::string("1.0"));
+	factor->displayText->setCharacterSize(20);
 	boxes.push_back(factor);
 }
 
@@ -348,8 +493,14 @@ void AdvancedTerritory::MouseClick(sf::Vector2i mousePos, bool mouseOnPage, bool
 	std::shared_ptr<Button> mandatory = buttons[(int)ButtonTypes::Mandatory];
 	std::shared_ptr<Button> multiplier = buttons[(int)ButtonTypes::Multiplier];
 	std::shared_ptr<Button> blocker = buttons[(int)ButtonTypes::Blocker];
-			
-	if (mouseOnPage && mandatory && multiplier && blocker)
+	
+	std::shared_ptr<TextBox> factor = boxes[(int)BoxTypes::FactorBox];
+	if (factor)
+	{
+		factor->Toggle(multiplier && multiplier->selected &&
+			mouseOnPage && UI::CheckMouseInBounds(mousePos, factor->box));
+	}
+	if (!factor->active && mouseOnPage && mandatory && multiplier && blocker)
 	{
 		if (UI::CheckMouseInBounds(mousePos, mandatory->rect))
 		{
@@ -370,21 +521,36 @@ void AdvancedTerritory::MouseClick(sf::Vector2i mousePos, bool mouseOnPage, bool
 			blocker->Unselect();
 		}
 	}
-	std::shared_ptr<TextBox> factor = boxes[(int)BoxTypes::FactorBox];
-	if (factor)
+	
+	std::shared_ptr<TextBox> name = boxes[(int)BoxTypes::TerritoryName];
+	if (name)
 	{
-		factor->Toggle(multiplier && multiplier->selected &&
-			mouseOnPage && UI::CheckMouseInBounds(mousePos, factor->box));
+		name->Toggle(mouseOnPage && UI::CheckMouseInBounds(mousePos, name->box));
 	}
 }
 
 void AdvancedTerritory::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
 	UserInput input, bool showCursor)
 {
+	float mult = buttons[(int)ButtonTypes::Multiplier]->selected && shapes[0]->getScale().y;
+	boxes[(int)BoxTypes::FactorBox]->Hide(mult);
 	UIEntry::Update(xmlData, window, timePassed, input, showCursor);
 }
 
 void AdvancedTerritory::MoveEntry(sf::Vector2f offset)
-{
+{	
 	UIEntry::MoveEntry(offset);
+}
+
+void AdvancedTerritory::SwapView(ContinentView view)
+{
+	float overrideView = view == ContinentView::Overrides;
+	float advancedView = view == ContinentView::Advanced;
+
+	shapes[(int)ShapeTypes::Border]->setScale({ advancedView, advancedView });
+	buttons[(int)ButtonTypes::Mandatory]->Hide(advancedView);
+	buttons[(int)ButtonTypes::Blocker]->Hide(advancedView);
+	buttons[(int)ButtonTypes::Multiplier]->Hide(advancedView);
+	boxes[(int)BoxTypes::TerritoryName]->Hide(!overrideView);
+	boxes[(int)BoxTypes::FactorBox]->Hide(advancedView);
 }

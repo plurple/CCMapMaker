@@ -11,13 +11,7 @@ enum class ContinentView
 
 class AdvancedTerritory : public UIEntry
 {
-public:
-	enum class LabelTypes
-	{
-		TerritoryName,
-		FactorLabel,
-		NumLabels
-	};	
+public:	
 	enum class ButtonTypes
 	{
 		Mandatory,
@@ -27,9 +21,14 @@ public:
 	};
 	enum class BoxTypes
 	{
+		TerritoryName,
 		FactorBox, //can be negative and a float the bastard
 		NumBoxes
 	};
+	int uiIndex;
+	int otherXMLKey;
+	std::shared_ptr<sf::RectangleShape> mapBox;
+
 	~AdvancedTerritory() {};
 	AdvancedTerritory(int insertedKey) : UIEntry{ insertedKey } {};
 	void CreateEntry(XMLData& xmlData, float entryTop) override;
@@ -40,6 +39,7 @@ public:
 		UserInput input, bool showCursor) override;
 
 	void MoveEntry(sf::Vector2f offset) override;
+	void SwapView(ContinentView view);
 };
 
 class BonusLine : public UIEntry
@@ -79,7 +79,9 @@ public:
 	{
 		NameLabel,
 		BonusesLabel,
+		TerritoryLabel,
 		ContinentsLabel,
+		FactorLabel,
 		NumLabels
 	};	
 	enum class ButtonTypes
@@ -96,11 +98,14 @@ public:
 	enum class EntryTypes
 	{
 		Advanced,
-		NumButtons
+		NumEntries
 	};
-	std::vector<std::shared_ptr<sf::Text>> continents;
+	std::vector<std::shared_ptr<TextBox>> continents;
+	std::vector<std::shared_ptr<TextBox>> overrides;
 	std::vector<std::shared_ptr<UIEntry>> bonuses;
 	ContinentView selectedView;
+	sf::Vector2f territoryPos;
+	sf::Vector2f continentPos;
 
 	~ContinentEntry() {};
 	ContinentEntry(ContinentView view, int insertedKey) : 
@@ -113,6 +118,11 @@ public:
 		UserInput input, bool showCursor) override;
 
 	void MoveEntry(sf::Vector2f offset) override;
+	void SwapView(ContinentView view);
+	void Select() override;
+	void Unselect() override;
+	void AddTerritory(XMLData& xmlData, Maps& maps, int boxIndex, int otherXMLKey);
+	void BorderBoxSize() override;
 };
 
 class ContinentPage : public UIPage
@@ -128,6 +138,8 @@ public:
 	void Draw(sf::RenderWindow& window, bool selected) override;
 	void MouseClick(XMLData& xmlData, sf::RenderWindow& window, 
 		sf::Vector2i mousePos, Maps& maps) override;
+	bool MapClick(UI& ui, XMLData& xmlData, Maps& maps, 
+		sf::Vector2i mousePos, int& boxIndex) override;
 	void Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
 		UserInput input, bool showCursor, UIPageType pageType) override;
 

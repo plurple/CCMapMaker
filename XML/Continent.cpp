@@ -1,8 +1,9 @@
 #include "Continent.h"
 
 Continent::Continent() :
-	name{""}
+	name{""},
+	bonusKey{0}
 {
 	BonusData bonus{};
-	bonuses.push_back(bonus);
+	bonuses.insert({ bonusKey++, bonus });
 }

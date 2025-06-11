@@ -37,6 +37,7 @@ public:
 	virtual void Select();
 	virtual void Unselect();
 	void Toggle(bool toggle);
+	virtual void BorderBoxSize() {};
 };
 
 class UIPage

@@ -204,14 +204,14 @@ void UIPage::UnselectPage()
 
 void UIEntry::Draw(sf::RenderWindow& window)
 {
-	for (std::shared_ptr<sf::Text> text : labels)
-	{
-		window.draw(*text);
-	}
 	for (std::shared_ptr<Button> butt : buttons)
 	{
 		butt->Draw(window);
 	}
+	for (std::shared_ptr<sf::Text> text : labels)
+	{
+		window.draw(*text);
+	}	
 	for (std::shared_ptr<TextBox> box : boxes)
 	{
 		box->Draw(window);
