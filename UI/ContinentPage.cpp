@@ -2,6 +2,7 @@
 #include "UI.h"
 #include "../XML/Continent.h"
 #include "../EnumOperators.hpp"
+#include "../XML/Territory.h"
 
 ContinentPage::ContinentPage(XMLData& xmlData, sf::Vector2f tabPos,
 	sf::Vector2f tabSize, std::string tabLabel, sf::Vector2f buttonBoxSize) :
@@ -238,7 +239,6 @@ void ContinentEntry::CreateEntry(XMLData& xmlData, float entryTop)
 	nameBox->text = &data->name;
 	boxes.push_back(nameBox);
 
-
 	std::shared_ptr<BonusLine> bonus = 
 		std::make_shared<BonusLine>(xmlKey, bonuses.size());
 	bonus->CreateEntry(xmlData, entryTop);
@@ -297,6 +297,14 @@ void ContinentEntry::MouseClick(sf::Vector2i mousePos, bool mouseOnPage, bool& s
 void ContinentEntry::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
 	UserInput input, bool showCursor)
 {
+	for (int i = 0; i < entries.size(); i++)
+	{
+		if (xmlData.territories.find(std::dynamic_pointer_cast<AdvancedTerritory>(entries[i])->otherXMLKey) == xmlData.territories.end())
+		{
+			if (entries.size()) entries.erase(entries.begin() + i);
+			i--;
+		}
+	}
 	UIEntry::Update(xmlData, window, timePassed, input, showCursor);
 	MoveEntry({ 0, input.scroll });
 	//TODO make sure that you only care about numbers entered;
@@ -452,34 +460,40 @@ void AdvancedTerritory::CreateEntry(XMLData& xmlData, float entryTop)
 	border->setOutlineColor(sf::Color::Cyan);
 	shapes.push_back(border);
 
+	std::shared_ptr<Continent> data = xmlData.continents.at(xmlKey);
 	std::shared_ptr<Button> mandatory  = 
 		std::make_shared<Button>(sf::Vector2f{ 230, entryTop + 40 }/*position*/,
 			sf::Vector2f{ 105, 20 }/*size*/, "Mandatory");
 	mandatory->label->setCharacterSize(20);
+	mandatory->xmlLink = &data->territories.at(otherXMLKey).mandatory;
 	buttons.push_back(mandatory);
 
 	std::shared_ptr<Button> blocker = 
 		std::make_shared<Button>(sf::Vector2f{ 340, entryTop + 40 }/*position*/, 
 			sf::Vector2f{ 75, 20 }/*size*/, "Blocker");
 	blocker->label->setCharacterSize(20);
+	blocker->xmlLink = &data->territories.at(otherXMLKey).blocker;
 	buttons.push_back(blocker);
 
 	std::shared_ptr<Button> multiplier = 
 		std::make_shared<Button>(sf::Vector2f{ 420, entryTop + 40 }/*position*/,
 			sf::Vector2f{ 90, 20 }/*size*/, "Multiplier");
 	multiplier->label->setCharacterSize(20);
+	multiplier->xmlLink = &data->territories.at(otherXMLKey).multiplier;
 	buttons.push_back(multiplier);
 
 	std::shared_ptr<TextBox> territoryBox =
 		std::make_shared<TextBox>(sf::Vector2f{ 20, entryTop+40 }, 
 			sf::Vector2f{ 200, 20 });
 	territoryBox->displayText->setCharacterSize(20);
+	territoryBox->text = &xmlData.territories.at(otherXMLKey)->name;
 	boxes.push_back(territoryBox);
 
 	std::shared_ptr<TextBox> factor = 
 		std::make_shared<TextBox>(sf::Vector2f{ 480, entryTop + 40 }/*position*/,
 			sf::Vector2f{ 60, 20 }/*size*/, new std::string("1.0"));
 	factor->displayText->setCharacterSize(20);
+	//factor->number = &data->territories.at(otherXMLKey).factor;
 	boxes.push_back(factor);
 }
 
