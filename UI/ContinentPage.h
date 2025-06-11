@@ -28,13 +28,14 @@ public:
 	int uiIndex;
 	int otherXMLKey;
 	std::shared_ptr<sf::RectangleShape> mapBox;
+	ContinentView selectedView;
 
 	~AdvancedTerritory() {};
 	AdvancedTerritory(int insertedKey) : UIEntry{ insertedKey } {};
 	void CreateEntry(XMLData& xmlData, float entryTop) override;
 
 	void Draw(sf::RenderWindow& window) override;
-	void MouseClick(sf::Vector2i mousePos, bool mouseOnPage, bool& select) override;
+	void MouseClick(XMLData& xmlData, sf::Vector2i mousePos, bool mouseOnPage, bool& select) override;
 	void Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
 		UserInput input, bool showCursor) override;
 
@@ -65,7 +66,7 @@ public:
 	void CreateEntry(XMLData& xmlData, float entryTop) override;
 
 	void Draw(sf::RenderWindow& window) override;
-	void MouseClick(sf::Vector2i mousePos, bool mouseOnPage, bool& select) override;
+	void MouseClick(XMLData& xmlData, sf::Vector2i mousePos, bool mouseOnPage, bool& select) override;
 	void Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
 		UserInput input, bool showCursor) override;
 
@@ -106,6 +107,7 @@ public:
 	ContinentView selectedView;
 	sf::Vector2f territoryPos;
 	sf::Vector2f continentPos;
+	sf::Vector2f bonusPos;
 
 	~ContinentEntry() {};
 	ContinentEntry(ContinentView view, int insertedKey) : 
@@ -113,7 +115,7 @@ public:
 	void CreateEntry(XMLData& xmlData, float entryTop) override;
 
 	void Draw(sf::RenderWindow& window) override;
-	void MouseClick(sf::Vector2i mousePos, bool mouseOnPage, bool& select) override;
+	void MouseClick(XMLData& xmlData, sf::Vector2i mousePos, bool mouseOnPage, bool& select) override;
 	void Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
 		UserInput input, bool showCursor) override;
 
@@ -122,6 +124,9 @@ public:
 	void Select() override;
 	void Unselect() override;
 	void AddTerritory(XMLData& xmlData, Maps& maps, int boxIndex, int otherXMLKey);
+	void AddBonus(XMLData& xmlData);
+	void RemoveBonus(XMLData& xmlData);
+	void BonusMove(sf::Vector2f offset);
 	void BorderBoxSize() override;
 };
 

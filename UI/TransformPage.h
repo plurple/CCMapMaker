@@ -29,7 +29,7 @@ public:
 		float optionCoord, float rightCoord, std::string label);
 
 	void Draw(sf::RenderWindow& window) override;
-	void MouseClick(sf::Vector2i mousePos, bool mouseOnPage, bool& select) override;
+	void MouseClick(XMLData& xmlData, sf::Vector2i mousePos, bool mouseOnPage, bool& select) override;
 	void Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
 		UserInput input, bool showCursor) override;
 
@@ -66,7 +66,7 @@ public:
 	void CreateEntry(XMLData& xmlData, float entryTop) override;
 
 	void Draw(sf::RenderWindow& window) override;
-	void MouseClick(sf::Vector2i mousePos, bool mouseOnPage, bool& select) override;
+	void MouseClick(XMLData& xmlData, sf::Vector2i mousePos, bool mouseOnPage, bool& select) override;
 	void Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
 		UserInput input, bool showCursor) override;
 
@@ -111,7 +111,7 @@ public:
 	void CreateEntry(XMLData& xmlData, float entryTop) override;
 
 	void Draw(sf::RenderWindow& window) override;
-	void MouseClick(sf::Vector2i mousePos, bool mouseOnPage, bool& select) override;
+	void MouseClick(XMLData& xmlData, sf::Vector2i mousePos, bool mouseOnPage, bool& select) override;
 	void Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
 		UserInput input, bool showCursor) override;
 

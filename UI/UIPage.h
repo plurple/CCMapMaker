@@ -29,7 +29,7 @@ public:
 	virtual void CreateEntry(XMLData& xmlData, float entryTop) = 0;
 
 	virtual void Draw(sf::RenderWindow& window);
-	virtual void MouseClick(sf::Vector2i mousePos, bool mouseOnPage, bool& select);
+	virtual void MouseClick(XMLData& xmlData, sf::Vector2i mousePos, bool mouseOnPage, bool& select);
 	virtual void Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
 		UserInput input, bool showCursor);
 

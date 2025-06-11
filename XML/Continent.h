@@ -36,5 +36,6 @@ public:
 	std::vector<int> overrides;
 
 	Continent();
+	int AddBonus();
 };
 

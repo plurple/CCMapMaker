@@ -3,7 +3,11 @@
 Continent::Continent() :
 	name{""},
 	bonusKey{0}
+{}
+
+int Continent::AddBonus()
 {
 	BonusData bonus{};
-	bonuses.insert({ bonusKey++, bonus });
+	bonuses.insert({ bonusKey, bonus });
+	return bonusKey++;
 }

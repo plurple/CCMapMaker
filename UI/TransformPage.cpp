@@ -145,9 +145,9 @@ void TransformEntry::Draw(sf::RenderWindow& window)
 	}
 }
 
-void TransformEntry::MouseClick(sf::Vector2i mousePos, bool mouseOnPage, bool& select)
+void TransformEntry::MouseClick(XMLData& xmlData, sf::Vector2i mousePos, bool mouseOnPage, bool& select)
 {
-	UIEntry::MouseClick(mousePos, mouseOnPage, select);
+	UIEntry::MouseClick(xmlData, mousePos, mouseOnPage, select);
 
 	std::shared_ptr<Button> percentage = buttons[(int)ButtonTypes::Percentage];
 	if (mouseOnPage && percentage && UI::CheckMouseInBounds(mousePos, percentage->rect))
@@ -161,7 +161,7 @@ void TransformEntry::MouseClick(sf::Vector2i mousePos, bool mouseOnPage, bool& s
 	}
 	for (std::shared_ptr<UIEntry> entry : conditions)
 	{
-		entry->MouseClick(mousePos, mouseOnPage, select);
+		entry->MouseClick(xmlData, mousePos, mouseOnPage, select);
 	}
 }
 
@@ -242,9 +242,9 @@ void ConditionEntry::Draw(sf::RenderWindow& window)
 	UIEntry::Draw(window);
 }
 
-void ConditionEntry::MouseClick(sf::Vector2i mousePos, bool mouseOnPage, bool& select)
+void ConditionEntry::MouseClick(XMLData& xmlData, sf::Vector2i mousePos, bool mouseOnPage, bool& select)
 {
-	UIEntry::MouseClick(mousePos, mouseOnPage, select);
+	UIEntry::MouseClick(xmlData, mousePos, mouseOnPage, select);
 }
 
 void ConditionEntry::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
@@ -310,9 +310,9 @@ void TransformOption::Draw(sf::RenderWindow& window)
 	UIEntry::Draw(window);
 }
 
-void TransformOption::MouseClick(sf::Vector2i mousePos, bool mouseOnPage, bool& select)
+void TransformOption::MouseClick(XMLData& xmlData, sf::Vector2i mousePos, bool mouseOnPage, bool& select)
 {
-	UIEntry::MouseClick(mousePos, mouseOnPage, select);
+	UIEntry::MouseClick(xmlData, mousePos, mouseOnPage, select);
 
 	std::shared_ptr<Button> leftButton = buttons[(int)ButtonTypes::LeftButton];
 	if (UI::CheckMouseInBounds(mousePos, leftButton->rect))
