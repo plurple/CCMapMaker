@@ -19,8 +19,9 @@ std::string string_format(const std::string& format, Args ... args)
 
 
 ReinforcementPage::ReinforcementPage(XMLData& xmlData, sf::Vector2f tabPos,
-	sf::Vector2f tabSize, std::string tabLabel, sf::Vector2f buttonBoxSize) :
-	UIPage(tabPos, tabSize, tabLabel, buttonBoxSize),
+	sf::Vector2f tabSize, std::string tabLabel, sf::Vector2f buttonBoxSize,
+	bool& continentPanel) :
+	UIPage(tabPos, tabSize, tabLabel, buttonBoxSize, continentPanel),
 	minReinforcements({ 1530, 170 }, { 50, 30 })
 {
 	minLabel = std::make_shared<sf::Text>(UI::font, "Minium Troops:");

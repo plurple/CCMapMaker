@@ -43,7 +43,7 @@ public:
 	~ObjectivePage() {};
 	ObjectivePage(XMLData& xmlData, sf::Vector2f tabPos, 
 		sf::Vector2f tabSize, std::string tabLabel, 
-		sf::Vector2f buttonBoxSize);
+		sf::Vector2f buttonBoxSize, bool& continentPanel);
 
 	void Draw(sf::RenderWindow& window, bool selected) override;
 	void MouseClick(XMLData& xmlData, sf::RenderWindow& window,

@@ -4,8 +4,9 @@
 #include "../EnumOperators.hpp"
 
 TerritoryPage::TerritoryPage(XMLData& xmlData, sf::Vector2f tabPos,
-	sf::Vector2f tabSize, std::string tabLabel, sf::Vector2f buttonBoxSize):
-	UIPage(tabPos, tabSize, tabLabel, buttonBoxSize),
+	sf::Vector2f tabSize, std::string tabLabel, sf::Vector2f buttonBoxSize,
+	bool& continentPanel):
+	UIPage(tabPos, tabSize, tabLabel, buttonBoxSize, continentPanel),
 	selectedView{ TerritoryView::Borders },
 	linkCoordinates({ 1296, 260 }, { 240, 30 }, "Link Coordinates", true)
 {

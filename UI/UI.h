@@ -5,6 +5,7 @@
 #include "../UserInput.h"
 #include "../XML/XMLData.h"
 #include <memory>
+#include "ContinentPanel.h"
 
 class UIPage;
 
@@ -28,6 +29,7 @@ public:
 	sf::Vector2f largeArrowPos;
 	sf::Vector2f smallArrowPos;
 	bool showCursor;
+	ContinentPanel continentPanel;
 
 	~UI() {};
 	UI(XMLData& xmlData);

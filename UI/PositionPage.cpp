@@ -4,8 +4,9 @@
 #include "../XML/Territory.h"
 
 PositionPage::PositionPage(XMLData& xmlData, sf::Vector2f tabPos,
-	sf::Vector2f tabSize, std::string tabLabel, sf::Vector2f buttonBoxSize) :
-	UIPage(tabPos, tabSize, tabLabel, buttonBoxSize),
+	sf::Vector2f tabSize, std::string tabLabel, sf::Vector2f buttonBoxSize, 
+	bool& continentPanel) :
+	UIPage(tabPos, tabSize, tabLabel, buttonBoxSize, continentPanel),
     maxBox({ 1470, 170 }, { 50, 30 })
 {
     maxLabel = std::make_shared<sf::Text>(UI::font, "Max Positions:");

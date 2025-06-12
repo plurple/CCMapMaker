@@ -5,8 +5,9 @@
 #include "../XML/Territory.h"
 
 ContinentPage::ContinentPage(XMLData& xmlData, sf::Vector2f tabPos,
-	sf::Vector2f tabSize, std::string tabLabel, sf::Vector2f buttonBoxSize) :
-	UIPage(tabPos, tabSize, tabLabel, buttonBoxSize),
+	sf::Vector2f tabSize, std::string tabLabel, sf::Vector2f buttonBoxSize,
+	bool& continentPanel) :
+	UIPage(tabPos, tabSize, tabLabel, buttonBoxSize, continentPanel),
 	selectedView{ ContinentView::Basic }
 {
 	std::shared_ptr<Button> Basic = 

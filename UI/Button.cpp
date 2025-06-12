@@ -22,6 +22,11 @@ void Button::Draw(sf::RenderWindow& window)
 	window.draw(*label);
 }
 
+void Button::Update()
+{
+	*xmlLink ? Select() : Unselect();
+}
+
 void Button::Select()
 {
 	selected = true;

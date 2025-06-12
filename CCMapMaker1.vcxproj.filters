@@ -80,6 +80,9 @@
     <ClCompile Include="XML\XMLData.cpp">
       <Filter>XML</Filter>
     </ClCompile>
+    <ClCompile Include="UI\ContinentPanel.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="UI\Maps.h">
@@ -144,6 +147,9 @@
     </ClInclude>
     <ClInclude Include="EnumOperators.hpp">
       <Filter>other</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\ContinentPanel.h">
+      <Filter>UI</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

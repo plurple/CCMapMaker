@@ -2,7 +2,7 @@
 #include "UI.h"
 
 UIPage::UIPage(sf::Vector2f tabPos, sf::Vector2f tabSize, 
-	std::string tabLabel, sf::Vector2f buttonBoxSize) :
+	std::string tabLabel, sf::Vector2f buttonBoxSize, bool& continentPanel) :
 	tabButton(tabPos, tabSize, tabLabel),
 	addEntry(tabPos, tabSize, tabLabel),
 	page{{592,UI::windowSize.y-158-8-buttonBoxSize.y}},
@@ -28,6 +28,8 @@ UIPage::UIPage(sf::Vector2f tabPos, sf::Vector2f tabSize,
 	buttonBox.setFillColor(sf::Color::Transparent);
 	buttonBox.setOutlineThickness(4.0f);
 	buttonBox.setOutlineColor(sf::Color::Cyan);
+
+	showContinents.xmlLink = &continentPanel;
 }
 
 void UIPage::Draw(sf::RenderWindow& window, bool selected)
@@ -139,6 +141,8 @@ void UIPage::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePas
 	float topBoxY = numEntries ? entries[0]->shapes[0]->getPosition().y : scrollBar.currentScroll.y;
 	if (scrollBar.currentScroll.y != topBoxY)
 		input.scroll = scrollBar.currentScroll.y - topBoxY;
+
+	showContinents.Update();
 
 	for (std::shared_ptr<UIEntry> entry : entries)
 	{

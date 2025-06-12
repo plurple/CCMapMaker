@@ -3,8 +3,9 @@
 #include "../XML/Transform.h"
 
 TransformPage::TransformPage(XMLData& xmlData, sf::Vector2f tabPos,
-	sf::Vector2f tabSize, std::string tabLabel, sf::Vector2f buttonBoxSize) :
-	UIPage(tabPos, tabSize, tabLabel, buttonBoxSize),
+	sf::Vector2f tabSize, std::string tabLabel, sf::Vector2f buttonBoxSize,
+	bool& continentPanel) :
+	UIPage(tabPos, tabSize, tabLabel, buttonBoxSize, continentPanel),
 	testTransforms({ 1321, 170 }, { 230, 30 }, "Test Transforms")
 {
 	addEntry.SetPosition({ 1051, 170 });

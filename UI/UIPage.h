@@ -56,7 +56,7 @@ public:
 
 	~UIPage() {};
 	UIPage(sf::Vector2f tabPos, sf::Vector2f tabSize, 
-		std::string tabLabel, sf::Vector2f buttonBoxSize);
+		std::string tabLabel, sf::Vector2f buttonBoxSize, bool& continentPanel);
 	virtual void Draw(sf::RenderWindow& window, bool selected);
 	virtual void MouseClick(XMLData& xmlData, sf::RenderWindow& window, 
 		sf::Vector2i mousePos, Maps& maps);
