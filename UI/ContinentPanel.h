@@ -5,6 +5,7 @@
 #include <SFML/Graphics.hpp>
 #include "../XML/XMLData.h"
 #include "../UserInput.h"
+#include "ScrollBar.h"
 
 struct ContinentBox
 {
@@ -12,7 +13,7 @@ struct ContinentBox
 	std::string* name;
 	int xmlKey;
 
-	ContinentBox() : box{ { 0,0 } } {};
+	ContinentBox() : box{ { 0,0 } }, name{ nullptr }, xmlKey{ -1 } {};
 };
 
 class ContinentPanel
@@ -22,6 +23,8 @@ public:
 	std::vector<std::shared_ptr<ContinentBox>> continents;
 	Button closeButton;
 	bool showPanel;
+	ScrollBar scrollBar;
+	float contentSize;
 
 	ContinentPanel();
 	void Draw(sf::RenderWindow& window);
@@ -29,5 +32,6 @@ public:
 		UserInput& input);
 
 	void AddContinent(int xmlKey, std::shared_ptr<Continent> continent, int num);
+	void Move(sf::Vector2f offset);
 };
 
