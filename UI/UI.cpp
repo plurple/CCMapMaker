@@ -182,6 +182,15 @@ void UI::MouseClick(XMLData& xmlData, sf::RenderWindow& window, sf::Vector2i mou
 void UI::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
     UserInput& input)
 {
+    if (input.up && input.shift)
+    {
+        continentPanel.showPanel = !continentPanel.showPanel;
+    }
+    if (input.down && input.shift)
+    {
+        SwapMaps();
+
+    }
     if (input.ctrl)
     {
         UIPageType newPage = selectedPage;

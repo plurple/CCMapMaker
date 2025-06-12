@@ -81,9 +81,9 @@ void UIPage::MouseClick(XMLData& xmlData, sf::RenderWindow& window,
 bool UIPage::MapClick(UI& ui, XMLData& xmlData, Maps& maps, sf::Vector2i mousePos, int& boxIndex)
 {
 	int index = 0;
-	for (std::shared_ptr<sf::RectangleShape> box : maps.mapBoxes)
+	for (std::shared_ptr<MapBox> box : maps.mapBoxes)
 	{
-		if (UI::CheckMouseInBounds(mousePos, *box))
+		if (UI::CheckMouseInBounds(mousePos, box->border))
 		{
 			boxIndex = index;
 			return true;

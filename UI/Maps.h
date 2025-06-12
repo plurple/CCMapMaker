@@ -13,6 +13,13 @@ struct MapData
 	MapData(std::string fileName);
 };
 
+struct MapBox
+{
+	sf::RectangleShape border;
+	sf::Vector2f smallPos;
+	sf::Vector2f largePos;
+};
+
 class Maps
 {
 public:
@@ -20,7 +27,7 @@ public:
 	MapData smallMap;
 	sf::RectangleShape mapCanvas;
 	ScrollBar scrollBar;
-	std::vector<std::shared_ptr<sf::RectangleShape>> mapBoxes;
+	std::vector<std::shared_ptr<MapBox>> mapBoxes;
 	static float widthRatio;
 	static float heightRatio;
 	bool clicked;
@@ -32,7 +39,7 @@ public:
 		UserInput input);
 
 	void MoveMap(sf::Vector2f offset);
-	std::shared_ptr<sf::RectangleShape> AddMapBox(sf::Vector2i position);
+	std::shared_ptr<MapBox> AddMapBox(sf::Vector2i position);
 	static int ConvertLarge(int small, bool width);
 	static int ConvertSmall(int large, bool width);
 };

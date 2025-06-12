@@ -43,9 +43,9 @@ void Maps::Draw(sf::RenderWindow& window, bool isLarge)
     window.draw(mapCanvas);
     window.draw(isLarge ? *largeMap.mapSprite : *smallMap.mapSprite);
     scrollBar.Draw(window);
-    for (std::shared_ptr<sf::RectangleShape> box : mapBoxes)
+    for (std::shared_ptr<MapBox> box : mapBoxes)
     {
-        window.draw(*box);
+        window.draw(box->border);
     }
     window.setView(window.getDefaultView());
 }
@@ -53,9 +53,10 @@ void Maps::Draw(sf::RenderWindow& window, bool isLarge)
 void Maps::Update(sf::RenderWindow& window, sf::Time timePassed,
     UserInput input)
 {
-    for (int i = mapBoxes.size()-1; i >= 0;)
+    for (int i = mapBoxes.size() - 1; i >= 0;)
     {
-        if (i < mapBoxes.size() && mapBoxes[i]->getScale().lengthSquared() == 0.0f)
+        mapBoxes[i]->border.setPosition(UI::isLarge ? mapBoxes[i]->largePos : mapBoxes[i]->smallPos);
+        if (i < mapBoxes.size() && mapBoxes[i]->border.getScale().lengthSquared() == 0.0f)
         {
             mapBoxes.erase(mapBoxes.begin() + i);
         }
@@ -88,20 +89,20 @@ void Maps::MoveMap(sf::Vector2f offset)
 {
     largeMap.mapSprite->move(offset);
     smallMap.mapSprite->move(offset);
-    for (std::shared_ptr<sf::RectangleShape> box : mapBoxes)
+    for (std::shared_ptr<MapBox> box : mapBoxes)
     {
-        box->move(offset);
+        box->border.move(offset);
     }
 }
 
-std::shared_ptr<sf::RectangleShape> Maps::AddMapBox(sf::Vector2i position)
+std::shared_ptr<MapBox> Maps::AddMapBox(sf::Vector2i position)
 {
-    std::shared_ptr<sf::RectangleShape> mapBox = 
-        std::make_shared<sf::RectangleShape>( sf::Vector2f{20, 20} );
-    mapBox->setPosition(sf::Vector2f{ position + sf::Vector2i{ 3, 24 } });
-    mapBox->setFillColor(sf::Color::Transparent);
-    mapBox->setOutlineThickness(3.0f);
-    mapBox->setOutlineColor(sf::Color::Red);
+    std::shared_ptr<MapBox> mapBox = std::make_shared<MapBox>();
+    mapBox->border.setSize( sf::Vector2f{20, 20} );
+    mapBox->border.setPosition(sf::Vector2f{ position + sf::Vector2i{ 3, 24 } });
+    mapBox->border.setFillColor(sf::Color::Transparent);
+    mapBox->border.setOutlineThickness(3.0f);
+    mapBox->border.setOutlineColor(sf::Color::Red);
     mapBoxes.push_back(mapBox);
     return mapBox;
 }

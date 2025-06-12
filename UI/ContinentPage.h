@@ -27,7 +27,7 @@ public:
 	};
 	int uiIndex;
 	int otherXMLKey;
-	std::shared_ptr<sf::RectangleShape> mapBox;
+	std::shared_ptr<MapBox> mapBox;
 	ContinentView selectedView;
 
 	~AdvancedTerritory() {};

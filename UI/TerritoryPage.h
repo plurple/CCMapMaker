@@ -15,7 +15,7 @@ struct BorderEntry
 	std::shared_ptr<TextBox> nameLabel;
 	int index = -1;
 	int xmlKey = -1;
-	std::shared_ptr<sf::RectangleShape> mapBox;
+	std::shared_ptr<MapBox> mapBox;
 	bool isContinent = false;
 };
 
@@ -61,12 +61,12 @@ public:
 	sf::Vector2f bombardmentsPos;
 	std::vector<std::shared_ptr<BorderEntry>> bombardments;
 	TerritoryView selectedView;
-	std::shared_ptr<sf::RectangleShape> mapBox;
+	std::shared_ptr<MapBox> mapBox;
 	bool* linkedCoords;
 
 	~TerritoryEntry();
 	TerritoryEntry(TerritoryView view, int insertedKey, 
-		std::shared_ptr<sf::RectangleShape> mapbox) :
+		std::shared_ptr<MapBox> mapbox) :
 		selectedView(view), UIEntry{ insertedKey }, mapBox{ mapbox }, linkedCoords{ nullptr } {};
 	void CreateEntry(XMLData& xmlData, float entryTop) override;
 
@@ -106,7 +106,7 @@ public:
 	void Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
 		UserInput input, bool showCursor, UIPageType pageType) override;
 
-	void AddTerritory(XMLData& xmlData, std::shared_ptr<sf::RectangleShape> mapBox);
+	void AddTerritory(XMLData& xmlData, std::shared_ptr<MapBox> mapBox);
 	void SwapView();
 };
 
