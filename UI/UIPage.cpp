@@ -192,7 +192,7 @@ void UIPage::PositionEntries()
 
 void UIPage::SelectPage()
 {
-
+	PositionEntries();
 }
 
 void UIPage::UnselectPage()

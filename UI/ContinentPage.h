@@ -103,8 +103,8 @@ public:
 		Advanced,
 		NumEntries
 	};
-	std::vector<std::shared_ptr<TextBox>> continents;
-	std::vector<std::shared_ptr<TextBox>> overrides;
+	std::vector<std::shared_ptr<LinkedData>> continents;
+	std::vector<std::shared_ptr<LinkedData>> overrides;
 	std::vector<std::shared_ptr<UIEntry>> bonuses;
 	ContinentView selectedView;
 	sf::Vector2f territoryPos;

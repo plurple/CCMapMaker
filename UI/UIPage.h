@@ -6,6 +6,15 @@
 #include "../XML/XMLData.h"
 #include "UI.h"
 
+struct LinkedData
+{
+	std::shared_ptr<TextBox> nameLabel;
+	int uiIndex = -1;
+	int xmlKey = -1;
+	std::shared_ptr<MapBox> mapBox;
+	bool isContinent = false;
+};
+
 class UIEntry
 {
 public:

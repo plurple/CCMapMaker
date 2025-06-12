@@ -141,6 +141,7 @@ bool ContinentPage::MapClick(UI& ui, XMLData& xmlData, Maps& maps, sf::Vector2i 
 			entry->BorderBoxSize();
 		}
 		SwapView();
+		PositionEntries();
 	}
 	else
 	{
@@ -260,16 +261,16 @@ void ContinentEntry::Draw(sf::RenderWindow& window)
 
 	if (selectedView == ContinentView::Basic)
 	{
-		for (std::shared_ptr<TextBox> continent : continents)
+		for (std::shared_ptr<LinkedData> continent : continents)
 		{
-			continent->Draw(window);
+			continent->nameLabel->Draw(window);
 		}
 	}
 	if (selectedView == ContinentView::Overrides)
 	{
-		for (std::shared_ptr<TextBox> continent : overrides)
+		for (std::shared_ptr<LinkedData> continent : overrides)
 		{
-			continent->Draw(window);
+			continent->nameLabel->Draw(window);
 		}
 	}
 }
@@ -326,9 +327,9 @@ void ContinentEntry::MoveEntry(sf::Vector2f offset)
 	continentPos += offset;
 	bonusPos += offset;
 
-	for (std::shared_ptr<TextBox> continent : continents)
+	for (std::shared_ptr<LinkedData> continent : continents)
 	{
-		continent->Move(offset);
+		continent->nameLabel->Move(offset);
 	}
 	for (std::shared_ptr<UIEntry> bonus : bonuses)
 	{
@@ -428,11 +429,11 @@ void ContinentEntry::BonusMove(sf::Vector2f offset)
 
 	for (auto continent : continents)
 	{
-		continent->Move(offset);
+		continent->nameLabel->Move(offset);
 	}
 	for (auto over : overrides)
 	{
-		over->Move(offset);
+		over->nameLabel->Move(offset);
 	}
 	for (auto entry : entries)
 	{

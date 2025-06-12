@@ -157,7 +157,7 @@ void PositionEntry::CreateEntry(XMLData& xmlData, float entryTop)
 	pairsPos = entryTop;
 
 	std::shared_ptr<sf::RectangleShape> border = 
-		std::make_shared<sf::RectangleShape>( sf::Vector2f{580, 20} );
+		std::make_shared<sf::RectangleShape>( sf::Vector2f{530, 20} );
 	border->setPosition({ 10,entryTop });
 	border->setFillColor(sf::Color::Transparent);
 	border->setOutlineThickness(2.0f);

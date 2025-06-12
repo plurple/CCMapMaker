@@ -10,15 +10,6 @@ enum class TerritoryView
 	COUNT
 };
 
-struct BorderEntry
-{
-	std::shared_ptr<TextBox> nameLabel;
-	int index = -1;
-	int xmlKey = -1;
-	std::shared_ptr<MapBox> mapBox;
-	bool isContinent = false;
-};
-
 class TerritoryEntry : public UIEntry
 {
 public:
@@ -55,11 +46,11 @@ public:
 		NumButtons
 	};
 	sf::Vector2f territoriesPos;
-	std::vector<std::shared_ptr<BorderEntry>> territories;
+	std::vector<std::shared_ptr<LinkedData>> territories;
 	sf::Vector2f conditionsPos;
-	std::vector<std::shared_ptr<BorderEntry>> conditions;
+	std::vector<std::shared_ptr<LinkedData>> conditions;
 	sf::Vector2f bombardmentsPos;
-	std::vector<std::shared_ptr<BorderEntry>> bombardments;
+	std::vector<std::shared_ptr<LinkedData>> bombardments;
 	TerritoryView selectedView;
 	std::shared_ptr<MapBox> mapBox;
 	bool* linkedCoords;

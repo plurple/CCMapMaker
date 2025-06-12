@@ -59,11 +59,8 @@ void Maps::Update(sf::RenderWindow& window, sf::Time timePassed,
         if (i < mapBoxes.size() && mapBoxes[i]->border.getScale().lengthSquared() == 0.0f)
         {
             mapBoxes.erase(mapBoxes.begin() + i);
-        }
-        else
-        {
-            i--;
-        }
+        }     
+        i--;
     }
     bool mouseOnPage = UI::CheckMouseInBounds(sf::Vector2i(window.mapPixelToCoords(sf::Mouse::getPosition(window), scrollBar.scrollWindow)), mapCanvas);
 

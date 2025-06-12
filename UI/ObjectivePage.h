@@ -7,11 +7,10 @@ public:
 	enum class LabelTypes
 	{
 		Name,
+		Required,
 		Territories,
-		TerritoryList,
 		Continents,
 		ContinentList,
-		Required,
 		NumLabels
 	};
 	enum class BoxTypes
@@ -21,6 +20,10 @@ public:
 		NumBoxes
 	};
 	bool isObjective;
+	sf::Vector2f territoryPos;
+	std::vector<std::shared_ptr<LinkedData>> territories;
+	sf::Vector2f continentPos;
+	std::vector<std::shared_ptr<LinkedData>> continents;
 
 	~ObjectiveEntry() {};
 	ObjectiveEntry(bool isObjective, int insertedKey) :
@@ -33,6 +36,10 @@ public:
 		UserInput input, bool showCursor) override;
 
 	void MoveEntry(sf::Vector2f offset);
+	//void Select() override;
+	//void Unselect() override;
+	void AddTerritory(XMLData& xmlData, Maps& maps, int boxIndex, int otherXMLKey);
+	void BorderBoxSize() override;
 };
 
 class ObjectivePage : public UIPage
@@ -48,6 +55,8 @@ public:
 	void Draw(sf::RenderWindow& window, bool selected) override;
 	void MouseClick(XMLData& xmlData, sf::RenderWindow& window,
 		sf::Vector2i mousePos, Maps& maps) override;
+	bool MapClick(UI& ui, XMLData& xmlData, Maps& maps,
+		sf::Vector2i mousePos, int& boxIndex) override;
 	void Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
 		UserInput input, bool showCursor, UIPageType pageType) override;
 
