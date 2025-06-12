@@ -209,6 +209,7 @@ void UI::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
 
     maps.Update(window, timePassed, input);
     uiPages[(int)selectedPage]->Update(xmlData, window, timePassed, input, showCursor, selectedPage);
+    continentPanel.Update(xmlData, window, timePassed, input);
 }
 
 void UI::SwapPage(UIPageType newPage)
