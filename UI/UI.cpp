@@ -156,7 +156,7 @@ void UI::MouseClick(XMLData& xmlData, sf::RenderWindow& window, sf::Vector2i mou
     {
         SwapMaps();
     }
-    if (CheckMouseInBounds(mousePos, continentPanel.closeButton.rect))
+    if (CheckMouseInBounds(sf::Vector2i(window.mapPixelToCoords(mousePos, continentPanel.scrollBar.scrollWindow)), continentPanel.closeButton.rect))
     {
         continentPanel.showPanel = false;
     }

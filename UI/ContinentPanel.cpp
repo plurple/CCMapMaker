@@ -6,8 +6,8 @@ ContinentPanel::ContinentPanel() :
 	panel{ {592, 200} },
     closeButton{ {panel.getSize().x - 38.0f, 8.0f}, {30, 30}, "X"},
     showPanel{false},
-    scrollBar(sf::View{ panel.getGlobalBounds() }, { panel.getSize().x - 40, 50 }/*position*/,
-        { 30, panel.getSize().y - 100 }/*size*/)
+    scrollBar(sf::View{ panel.getGlobalBounds() }, { panel.getSize().x - 38, 80 }/*position*/,
+        { 30, panel.getSize().y - 130 }/*size*/)
 {
     panel.setPosition({ 0, 0 });
     panel.setFillColor({ 192, 192, 192});
