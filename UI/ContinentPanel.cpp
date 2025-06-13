@@ -77,7 +77,7 @@ void ContinentPanel::Update(XMLData& xmlData, sf::RenderWindow& window,
         scrollBar.MoveBar(sf::Vector2f{ 0, contentSize });
         sf::Vector2f scroll = sf::Vector2f{ 0, input.scroll };
         scrollBar.Scroll(scroll);
-        scroll.y = scrollBar.currentScroll.y - continents[0]->box.rect.getPosition().y;
+        scroll.y = scrollBar.currentScroll.y - continents[0]->box.rect->getPosition().y;
         Move(scroll);
     }
 }
@@ -88,7 +88,7 @@ void ContinentPanel::AddContinent(int xmlKey, std::shared_ptr<Continent> contine
     box->xmlKey = xmlKey;
     sf::Vector2f gridPos =  sf::Vector2f{(num % 5) * 105.0f, (num / 5) * 25.0f};
     box->box.SetPosition(sf::Vector2f{ 20.0f, 10.0f } + gridPos);
-    box->box.rect.setSize({ 100, 20 });
+    box->box.rect->setSize({ 100, 20 });
     box->box.label->setCharacterSize(20);
     box->name = &continent->name;
     continents.push_back(box);

@@ -28,7 +28,7 @@ ReinforcementPage::ReinforcementPage(XMLData& xmlData, sf::Vector2f tabPos,
 	minLabel->setPosition({ 1310, 165 });
 
 	addEntry.SetPosition({ 1020, 170 });
-	addEntry.rect.setSize({ 270, 30 });
+	addEntry.rect->setSize({ 270, 30 });
 	addEntry.label->setString("Add Reinforcement");
 
 	minReinforcements.number = &xmlData.minReinforcements;
@@ -48,7 +48,7 @@ void ReinforcementPage::MouseClick(XMLData& xmlData, sf::RenderWindow& window,
 	sf::Vector2i mousePos, Maps& maps)
 {
 	UIPage::MouseClick(xmlData, window, mousePos, maps);
-    if (!showContinents.selected && UI::CheckMouseInBounds(mousePos, addEntry.rect))
+    if (!showContinents.selected && UI::CheckMouseInBounds(mousePos, *addEntry.rect))
     {
 		AddReinforcement(xmlData);
     }

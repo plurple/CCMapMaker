@@ -73,7 +73,8 @@ public:
 
 	void AddBorder(XMLData& xmlData, Maps& maps, int boxIndex, int otherXMLKey);
 	void AddBombardment(XMLData& xmlData, Maps& maps, int boxIndex, int otherXMLKey);
-	void AddCondition(XMLData& xmlData, Maps& maps, int boxIndex, int otherXMLKey);
+	void AddCondition(XMLData& xmlData, std::shared_ptr<sf::RectangleShape> border, 
+		int boxIndex, int otherXMLKey, bool isContinent);
 	void RemoveCondition(XMLData& xmlData, int borderIndex);
 };
 
@@ -94,6 +95,7 @@ public:
 	void MouseClick(XMLData& xmlData, sf::RenderWindow& window, 
 		sf::Vector2i mousePos, Maps& maps) override;
 	bool MapClick(UI& ui, XMLData& xmlData, Maps& maps, sf::Vector2i mousePos, int& boxIndex) override;
+	bool ContinentClick(UI& ui, XMLData& xmlData, ContinentPanel& panel, sf::Vector2i mousePos, int& continentIndex) override;
 	void Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
 		UserInput input, bool showCursor, UIPageType pageType) override;
 

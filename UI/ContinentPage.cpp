@@ -24,7 +24,7 @@ ContinentPage::ContinentPage(XMLData& xmlData, sf::Vector2f tabPos,
 	continentViews.push_back(advanced);
 
 	addEntry.SetPosition({ 1076, 215 });
-	addEntry.rect.setSize({ 200, 30 });
+	addEntry.rect->setSize({ 200, 30 });
 	addEntry.label->setString("Add Continent");
 
 	showContinents.SetPosition({ 1286, 215 });
@@ -51,7 +51,7 @@ void ContinentPage::MouseClick(XMLData& xmlData, sf::RenderWindow& window,
 	PositionEntries();
 	if (showContinents.selected || selectedView != ContinentView::Advanced)
 	{
-		if (UI::CheckMouseInBounds(mousePos, showContinents.rect))
+		if (UI::CheckMouseInBounds(mousePos, *showContinents.rect))
 		{
 			showContinents.Toggle();
 		}
@@ -61,13 +61,13 @@ void ContinentPage::MouseClick(XMLData& xmlData, sf::RenderWindow& window,
 		showContinents.Unselect();
 	}
 
-	if (UI::CheckMouseInBounds(mousePos, addEntry.rect))
+	if (UI::CheckMouseInBounds(mousePos, *addEntry.rect))
 	{
 		AddContinent(xmlData);
 	}
 	for (int i = 0; i < (int)ContinentView::COUNT; i++)
 	{
-		if (!showContinents.selected && UI::CheckMouseInBounds(mousePos, continentViews[i]->rect))
+		if (!showContinents.selected && UI::CheckMouseInBounds(mousePos, *continentViews[i]->rect))
 		{
 			continentViews[(int)selectedView]->Toggle();
 			selectedView = (ContinentView)i;
@@ -176,7 +176,7 @@ bool ContinentPage::ContinentClick(UI& ui, XMLData& xmlData,
 						auto continent = std::dynamic_pointer_cast<LinkedData>(entry->continents[i]);
 						if (continent->uiIndex == continentIndex)
 						{
-							panel.continents[continentIndex]->box.rect.setOutlineColor(sf::Color::White);
+							panel.continents[continentIndex]->box.rect->setOutlineColor(sf::Color::White);
 							xmlData.continents.at(entry->xmlKey)->continents.erase(xmlData.continents.at(entry->xmlKey)->continents.begin() + i);
 							entry->continents.erase(entry->continents.begin() + i);
 							removed = true;
@@ -192,7 +192,7 @@ bool ContinentPage::ContinentClick(UI& ui, XMLData& xmlData,
 					}
 					else
 					{
-						panel.continents[continentIndex]->box.rect.setOutlineColor(sf::Color::Blue);
+						panel.continents[continentIndex]->box.rect->setOutlineColor(sf::Color::Blue);
 						entry->AddContinent(xmlData, panel, continentIndex, ui.uiPages[(int)UIPageType::Continent]->entries[continentIndex]->xmlKey, false);
 					}
 					entry->BorderBoxSize();
@@ -208,7 +208,7 @@ bool ContinentPage::ContinentClick(UI& ui, XMLData& xmlData,
 						auto over = std::dynamic_pointer_cast<LinkedData>(entry->overrides[i]);
 						if (over->uiIndex == continentIndex)
 						{
-							panel.continents[continentIndex]->box.rect.setOutlineColor(sf::Color::White);
+							panel.continents[continentIndex]->box.rect->setOutlineColor(sf::Color::White);
 							xmlData.continents.at(entry->xmlKey)->overrides.erase(xmlData.continents.at(entry->xmlKey)->overrides.begin() + i);
 							entry->overrides.erase(entry->overrides.begin() + i);
 							removed = true;
@@ -224,7 +224,7 @@ bool ContinentPage::ContinentClick(UI& ui, XMLData& xmlData,
 					}
 					else
 					{
-						panel.continents[continentIndex]->box.rect.setOutlineColor(sf::Color::Blue);
+						panel.continents[continentIndex]->box.rect->setOutlineColor(sf::Color::Blue);
 						entry->AddContinent(xmlData, panel, continentIndex, ui.uiPages[(int)UIPageType::Continent]->entries[continentIndex]->xmlKey, true);
 					}
 					entry->BorderBoxSize();
@@ -364,13 +364,13 @@ void ContinentEntry::MouseClick(XMLData& xmlData, sf::Vector2i mousePos, bool mo
 	UIEntry::MouseClick(xmlData, mousePos, mouseOnPage, select);
 
 	std::shared_ptr<Button> addBonus = buttons[(int)ButtonTypes::AddBonus];
-	if (mouseOnPage && addBonus && UI::CheckMouseInBounds(mousePos, addBonus->rect))
+	if (mouseOnPage && addBonus && UI::CheckMouseInBounds(mousePos, *addBonus->rect))
 	{
 		AddBonus(xmlData);
 		BorderBoxSize();
 	}
 	std::shared_ptr<Button> removeBonus = buttons[(int)ButtonTypes::RemoveBonus];
-	if (mouseOnPage && removeBonus && UI::CheckMouseInBounds(mousePos, removeBonus->rect))
+	if (mouseOnPage && removeBonus && UI::CheckMouseInBounds(mousePos, *removeBonus->rect))
 	{
 		RemoveBonus(xmlData);
 		BorderBoxSize();
@@ -527,8 +527,7 @@ void ContinentEntry::AddContinent(XMLData& xmlData, ContinentPanel& panel, int c
 	continent->nameLabel->baseColor = selectedColor;
 	continent->uiIndex = continentIndex;
 	continent->mapBox = std::make_shared<MapBox>();
-	continent->mapBox->border =
-		std::make_shared<sf::RectangleShape>(panel.continents[continentIndex]->box.rect);
+	continent->mapBox->border = panel.continents[continentIndex]->box.rect;
 	continent->xmlKey = otherXMLKey;
 	continent->nameLabel->text = &xmlData.continents[otherXMLKey]->name;
 	if (over)
@@ -727,19 +726,19 @@ void AdvancedTerritory::MouseClick(XMLData& xmlData, sf::Vector2i mousePos, bool
 		}
 		if (!factor->active && mouseOnPage && mandatory && multiplier && blocker)
 		{
-			if (UI::CheckMouseInBounds(mousePos, mandatory->rect))
+			if (UI::CheckMouseInBounds(mousePos, *mandatory->rect))
 			{
 				mandatory->Toggle();
 				blocker->Unselect();
 				multiplier->Unselect();
 			}
-			else if (UI::CheckMouseInBounds(mousePos, blocker->rect))
+			else if (UI::CheckMouseInBounds(mousePos, *blocker->rect))
 			{
 				blocker->Toggle();
 				mandatory->Unselect();
 				multiplier->Unselect();
 			}
-			else if (UI::CheckMouseInBounds(mousePos, multiplier->rect))
+			else if (UI::CheckMouseInBounds(mousePos, *multiplier->rect))
 			{
 				multiplier->Toggle();
 				mandatory->Unselect();

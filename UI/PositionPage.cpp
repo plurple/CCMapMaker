@@ -13,7 +13,7 @@ PositionPage::PositionPage(XMLData& xmlData, sf::Vector2f tabPos,
     maxLabel->setPosition({ 1270, 165 });
 
 	addEntry.SetPosition({ 1070, 170 });
-	addEntry.rect.setSize({ 185, 30 });
+	addEntry.rect->setSize({ 185, 30 });
 	addEntry.label->setString("Add Position");
 
 	maxBox.number = &xmlData.maxPositions;
@@ -34,7 +34,7 @@ void PositionPage::MouseClick(XMLData& xmlData, sf::RenderWindow& window,
 	sf::Vector2i mousePos, Maps& maps)
 {
 	UIPage::MouseClick(xmlData, window, mousePos, maps);
-	if (!showContinents.selected && UI::CheckMouseInBounds(mousePos, addEntry.rect))
+	if (!showContinents.selected && UI::CheckMouseInBounds(mousePos, *addEntry.rect))
 	{
 		AddPosition(xmlData);
 	}

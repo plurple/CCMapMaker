@@ -5,7 +5,7 @@
 class Button
 {
 public:
-	sf::RectangleShape rect;
+	std::shared_ptr<sf::RectangleShape> rect;
 	std::shared_ptr<sf::Text> label;
 	bool selected;
 	bool* xmlLink;

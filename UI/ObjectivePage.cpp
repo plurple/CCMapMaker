@@ -12,7 +12,7 @@ ObjectivePage::ObjectivePage(XMLData& xmlData, sf::Vector2f tabPos,
 {
     isObjective = tabLabel != "Requirements";
 	addEntry.SetPosition({ 1051, 170 });
-	addEntry.rect.setSize(isObjective ? sf::Vector2f{ 200, 30 } : sf::Vector2f{245, 30});
+	addEntry.rect->setSize(isObjective ? sf::Vector2f{ 200, 30 } : sf::Vector2f{245, 30});
 	addEntry.label->setString(isObjective ? "Add Objective" : "Add Requirement");
 
 	showContinents.SetPosition({ 1311, 170 });    
@@ -31,11 +31,11 @@ void ObjectivePage::MouseClick(XMLData& xmlData, sf::RenderWindow& window,
 	sf::Vector2i mousePos, Maps& maps)
 {
 	UIPage::MouseClick(xmlData, window, mousePos, maps);
-    if (!showContinents.selected && UI::CheckMouseInBounds(mousePos, showContinents.rect))
+    if (!showContinents.selected && UI::CheckMouseInBounds(mousePos, *showContinents.rect))
     {
         showContinents.Toggle();
     }
-    if (!showContinents.selected && UI::CheckMouseInBounds(mousePos, addEntry.rect))
+    if (!showContinents.selected && UI::CheckMouseInBounds(mousePos, *addEntry.rect))
     {
 		AddObjective(xmlData);
     }
@@ -150,7 +150,7 @@ bool ObjectivePage::ContinentClick(UI& ui, XMLData& xmlData, ContinentPanel& pan
 				auto continent = entry->continents[i];
 				if (continent->uiIndex == continentIndex)
 				{
-					panel.continents[continentIndex]->box.rect.setOutlineColor(sf::Color::White);
+					panel.continents[continentIndex]->box.rect->setOutlineColor(sf::Color::White);
 					if (isObjective)
 						xmlData.objectives.at(entry->xmlKey)->continents.erase(xmlData.objectives.at(entry->xmlKey)->continents.begin() + i);
 					else
@@ -170,7 +170,7 @@ bool ObjectivePage::ContinentClick(UI& ui, XMLData& xmlData, ContinentPanel& pan
 			}
 			else
 			{
-				panel.continents[continentIndex]->box.rect.setOutlineColor(sf::Color::Blue);
+				panel.continents[continentIndex]->box.rect->setOutlineColor(sf::Color::Blue);
 				entry->AddContinent(xmlData, panel, continentIndex, ui.uiPages[(int)UIPageType::Continent]->entries[continentIndex]->xmlKey);
 			}
 			entry->BorderBoxSize();
@@ -366,8 +366,7 @@ void ObjectiveEntry::AddContinent(XMLData& xmlData, ContinentPanel& panel, int c
 	continent->nameLabel->baseColor = selectedColor;
 	continent->uiIndex = continentIndex;
 	continent->mapBox = std::make_shared<MapBox>();
-	continent->mapBox->border = 
-		std::make_shared<sf::RectangleShape>(panel.continents[continentIndex]->box.rect);
+	continent->mapBox->border = panel.continents[continentIndex]->box.rect;
 	continent->xmlKey = otherXMLKey;
 	continent->nameLabel->text = &xmlData.continents[otherXMLKey]->name;
 	continents.push_back(continent);

@@ -86,22 +86,22 @@ void ScrollBar::MouseClick(sf::Vector2i mousePos)
 {
 	if (verticle)
 	{
-		if (UI::CheckMouseInBounds(mousePos, upButton.rect))
+		if (UI::CheckMouseInBounds(mousePos, *upButton.rect))
 		{
 			Scroll({ 0, -50 });
 		}
-		if (UI::CheckMouseInBounds(mousePos, downButton.rect))
+		if (UI::CheckMouseInBounds(mousePos, *downButton.rect))
 		{
 			Scroll({ 0, 50 });
 		}
 	}
 	if (horizontal)
 	{
-		if (UI::CheckMouseInBounds(mousePos, leftButton.rect))
+		if (UI::CheckMouseInBounds(mousePos, *leftButton.rect))
 		{
 			Scroll({ -50, 0 });
 		}
-		if (UI::CheckMouseInBounds(mousePos, rightButton.rect))
+		if (UI::CheckMouseInBounds(mousePos, *rightButton.rect))
 		{
 			Scroll({ 50, 0 });
 		}

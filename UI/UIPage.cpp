@@ -99,7 +99,7 @@ bool UIPage::ContinentClick(UI& ui, XMLData& xmlData, ContinentPanel& panel, sf:
 	int index = 0;
 	for (auto continent : panel.continents)
 	{
-		if (UI::CheckMouseInBounds(mousePos, continent->box.rect))
+		if (UI::CheckMouseInBounds(mousePos, *continent->box.rect))
 		{
 			continentIndex = index;
 			return true;

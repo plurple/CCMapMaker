@@ -152,11 +152,11 @@ void UI::SwapMaps()
 
 void UI::MouseClick(XMLData& xmlData, sf::RenderWindow& window, sf::Vector2i mousePos)
 {
-    if (!continentPanel.showPanel && CheckMouseInBounds(mousePos, mapCheckBox.rect))
+    if (!continentPanel.showPanel && CheckMouseInBounds(mousePos, *mapCheckBox.rect))
     {
         SwapMaps();
     }
-    if (CheckMouseInBounds(sf::Vector2i(window.mapPixelToCoords(mousePos, continentPanel.scrollBar.scrollWindow)), continentPanel.closeButton.rect))
+    if (CheckMouseInBounds(sf::Vector2i(window.mapPixelToCoords(mousePos, continentPanel.scrollBar.scrollWindow)), *continentPanel.closeButton.rect))
     {
         continentPanel.showPanel = false;
     }
@@ -164,7 +164,7 @@ void UI::MouseClick(XMLData& xmlData, sf::RenderWindow& window, sf::Vector2i mou
     maps.scrollBar.MouseClick(mapMouse);
     for (int i = 0; i < (int)UIPageType::COUNT; i++)
     {
-        if (!continentPanel.showPanel && CheckMouseInBounds(mousePos, uiPages[i]->tabButton.rect))
+        if (!continentPanel.showPanel && CheckMouseInBounds(mousePos, *uiPages[i]->tabButton.rect))
         {
             SwapPage((UIPageType)i);
         }

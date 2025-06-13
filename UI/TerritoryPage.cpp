@@ -1,6 +1,7 @@
 #include "TerritoryPage.h"
 #include "UI.h"
 #include "../XML/Territory.h"
+#include "../XML/Continent.h"
 #include "../EnumOperators.hpp"
 
 TerritoryPage::TerritoryPage(XMLData& xmlData, sf::Vector2f tabPos,
@@ -28,7 +29,7 @@ TerritoryPage::TerritoryPage(XMLData& xmlData, sf::Vector2f tabPos,
 	territoryViews.push_back(extras);
 
 	addEntry.SetPosition({ 1066, 260 });
-	addEntry.rect.setSize({ 190, 30 });
+	addEntry.rect->setSize({ 190, 30 });
 	addEntry.label->setString("Add Territory");
 
 	showContinents.SetPosition({ 1296, 215 });
@@ -53,13 +54,13 @@ void TerritoryPage::MouseClick(XMLData& xmlData, sf::RenderWindow& window,
 	sf::Vector2i mousePos, Maps& maps)
 {
 	UIPage::MouseClick(xmlData, window, mousePos, maps);
-	if (UI::CheckMouseInBounds(mousePos, linkCoordinates.rect))
+	if (UI::CheckMouseInBounds(mousePos, *linkCoordinates.rect))
 	{
 		linkCoordinates.Toggle();
 	}
 	if (showContinents.selected || selectedView == TerritoryView::Conditions)
 	{
-		if (UI::CheckMouseInBounds(mousePos, showContinents.rect))
+		if (UI::CheckMouseInBounds(mousePos, *showContinents.rect))
 		{
 			showContinents.Toggle();
 		}
@@ -69,13 +70,13 @@ void TerritoryPage::MouseClick(XMLData& xmlData, sf::RenderWindow& window,
 		showContinents.Unselect();
 	}
 		
-	if (UI::CheckMouseInBounds(mousePos, addEntry.rect))
+	if (UI::CheckMouseInBounds(mousePos, *addEntry.rect))
 	{
 		AddTerritory(xmlData, maps.AddMapBox({ 0, 0 }));
 	}
 	for (int i = 0; i < (int)TerritoryView::COUNT; i++)
 	{
-		if (!showContinents.selected && UI::CheckMouseInBounds(mousePos, territoryViews[i]->rect))
+		if (!showContinents.selected && UI::CheckMouseInBounds(mousePos, *territoryViews[i]->rect))
 		{
 			territoryViews[(int)selectedView]->Toggle();
 			selectedView = (TerritoryView)i;
@@ -173,7 +174,7 @@ bool TerritoryPage::MapClick(UI& ui, XMLData& xmlData, Maps& maps, sf::Vector2i 
 				case TerritoryView::Conditions:
 				{
 					auto cond = std::dynamic_pointer_cast<TerritoryEntry>(entries[selectedEntry]);
-					cond->AddCondition(xmlData, maps, boxIndex, entries[boxIndex]->xmlKey);					
+					cond->AddCondition(xmlData, maps.mapBoxes[boxIndex]->border, boxIndex, entries[boxIndex]->xmlKey, false);					
 					break;
 				}
 				}
@@ -184,6 +185,30 @@ bool TerritoryPage::MapClick(UI& ui, XMLData& xmlData, Maps& maps, sf::Vector2i 
 	else
 	{
 		AddTerritory(xmlData, maps.AddMapBox(mousePos));
+	}
+	return true;
+}
+
+bool TerritoryPage::ContinentClick(UI& ui, XMLData& xmlData, ContinentPanel& panel, sf::Vector2i mousePos, int& continentIndex)
+{
+	if (UIPage::ContinentClick(ui, xmlData, panel, mousePos, continentIndex))
+	{
+		if (selectedEntry != -1)
+		{
+			auto cond = std::dynamic_pointer_cast<TerritoryEntry>(entries[selectedEntry]);
+
+			panel.continents[continentIndex]->box.rect->setOutlineColor(sf::Color::Blue);
+			cond->AddCondition(xmlData, panel.continents[continentIndex]->box.rect,
+				continentIndex, ui.uiPages[(int)UIPageType::Continent]->entries[continentIndex]->xmlKey, true);
+
+			cond->BorderBoxSize();
+		}
+		PositionEntries();
+	}
+	else
+	{
+		SwapEntry(selectedEntry, -1);
+		selectedEntry = -1;
 	}
 	return true;
 }
@@ -429,7 +454,7 @@ void TerritoryEntry::MouseClick(XMLData& xmlData, sf::Vector2i mousePos, bool mo
 
 	std::shared_ptr<Button> killer = buttons[(int)ButtonTypes::Killer];
 	if (killer && mouseOnPage && selectedView == TerritoryView::Extras && 
-		UI::CheckMouseInBounds(mousePos, killer->rect))
+		UI::CheckMouseInBounds(mousePos, *killer->rect))
 	{
 		killer->Toggle();
 	}
@@ -649,7 +674,7 @@ void TerritoryEntry::Unselect()
 	}
 	for (auto border : conditions)
 	{
-		if(border->mapBox)
+		if(border->mapBox && border->mapBox->border)
 			border->mapBox->border->setOutlineColor(sf::Color::White);
 	}
 }
@@ -670,6 +695,7 @@ void TerritoryEntry::AddBorder(XMLData& xmlData, Maps& maps, int boxIndex, int o
 	borderData.territory = otherXMLKey;
 	xmlData.territories[xmlKey]->borders.push_back(borderData);
 	std::shared_ptr<LinkedData> condition = std::make_shared<LinkedData>();
+	condition->mapBox = std::make_shared<MapBox>();
 	condition->nameLabel = std::make_shared<TextBox>(conditionsPos + sf::Vector2f{ 0, conditions.size() * 25.0f },
 		sf::Vector2f{ 250, 20 });
 	condition->nameLabel->displayText->setCharacterSize(20);
@@ -692,8 +718,8 @@ void TerritoryEntry::AddBombardment(XMLData& xmlData, Maps& maps, int boxIndex, 
 	xmlData.territories[xmlKey]->bombardments.push_back(otherXMLKey);
 }
 
-void TerritoryEntry::AddCondition(XMLData& xmlData, Maps& maps, int boxIndex, 
-	int otherXMLKey)
+void TerritoryEntry::AddCondition(XMLData& xmlData, std::shared_ptr<sf::RectangleShape> border, 
+	int boxIndex, int otherXMLKey, bool isContinent)
 {
 	int borderIndex = 0;
 	for (auto border : territories)
@@ -713,14 +739,15 @@ void TerritoryEntry::AddCondition(XMLData& xmlData, Maps& maps, int boxIndex,
 		else
 		{
 			condition->uiIndex = boxIndex;
-			if(condition->mapBox) condition->mapBox->border->setOutlineColor(sf::Color::White);
-			condition->mapBox = maps.mapBoxes[boxIndex];
+			condition->mapBox->border = border;
 			condition->mapBox->border->setOutlineColor(sf::Color::Magenta);
 			condition->xmlKey = otherXMLKey;
-			condition->isContinent = false;
-			condition->nameLabel->text = &xmlData.territories.at(otherXMLKey)->name;
+			condition->isContinent = isContinent;
+			condition->nameLabel->text = isContinent ? 
+				&xmlData.continents.at(otherXMLKey)->name :
+				&xmlData.territories.at(otherXMLKey)->name;
 			xmlData.territories[xmlKey]->borders[borderIndex].condition = otherXMLKey;
-			xmlData.territories[xmlKey]->borders[borderIndex].conditionIsContintent = false;
+			xmlData.territories[xmlKey]->borders[borderIndex].conditionIsContintent = isContinent;
 		}
 	}
 }
@@ -732,5 +759,5 @@ void TerritoryEntry::RemoveCondition(XMLData& xmlData, int borderIndex)
 	condition->xmlKey = -1;
 	condition->mapBox->border->setOutlineColor(sf::Color::White);
 	xmlData.territories[xmlKey]->borders[borderIndex].condition = -1;
-	condition->mapBox = nullptr;
+	condition->mapBox->border = nullptr;
 }

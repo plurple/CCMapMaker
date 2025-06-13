@@ -9,7 +9,7 @@ TransformPage::TransformPage(XMLData& xmlData, sf::Vector2f tabPos,
 	testTransforms({ 1321, 170 }, { 230, 30 }, "Test Transforms")
 {
 	addEntry.SetPosition({ 1051, 170 });
-	addEntry.rect.setSize({ 210, 30 });
+	addEntry.rect->setSize({ 210, 30 });
 	addEntry.label->setString("Add Transform");
 }
 
@@ -26,11 +26,11 @@ void TransformPage::MouseClick(XMLData& xmlData, sf::RenderWindow& window,
 	sf::Vector2i mousePos, Maps& maps)
 {
 	UIPage::MouseClick(xmlData, window, mousePos, maps);
-    if (!showContinents.selected && UI::CheckMouseInBounds(mousePos, addEntry.rect))
+    if (!showContinents.selected && UI::CheckMouseInBounds(mousePos, *addEntry.rect))
     {
 		AddTransform(xmlData);
     }
-	if (!showContinents.selected && UI::CheckMouseInBounds(mousePos, testTransforms.rect))
+	if (!showContinents.selected && UI::CheckMouseInBounds(mousePos, *testTransforms.rect))
 	{
 		//TODO add a transform test function
 	}	
@@ -151,12 +151,12 @@ void TransformEntry::MouseClick(XMLData& xmlData, sf::Vector2i mousePos, bool mo
 	UIEntry::MouseClick(xmlData, mousePos, mouseOnPage, select);
 
 	std::shared_ptr<Button> percentage = buttons[(int)ButtonTypes::Percentage];
-	if (mouseOnPage && percentage && UI::CheckMouseInBounds(mousePos, percentage->rect))
+	if (mouseOnPage && percentage && UI::CheckMouseInBounds(mousePos, *percentage->rect))
 	{
 		percentage->Toggle();
 	}
 	std::shared_ptr<Button> addCondition = buttons[(int)ButtonTypes::AddCondition];
-	if (mouseOnPage && addCondition && UI::CheckMouseInBounds(mousePos, addCondition->rect))
+	if (mouseOnPage && addCondition && UI::CheckMouseInBounds(mousePos, *addCondition->rect))
 	{
 		//todo add a conditions stuff
 	}
@@ -316,12 +316,12 @@ void TransformOption::MouseClick(XMLData& xmlData, sf::Vector2i mousePos, bool m
 	UIEntry::MouseClick(xmlData, mousePos, mouseOnPage, select);
 
 	std::shared_ptr<Button> leftButton = buttons[(int)ButtonTypes::LeftButton];
-	if (UI::CheckMouseInBounds(mousePos, leftButton->rect))
+	if (UI::CheckMouseInBounds(mousePos, *leftButton->rect))
 	{
 		//todo swap the opttion left
 	}
 	std::shared_ptr<Button> rightButton = buttons[(int)ButtonTypes::RightButton];
-	if (UI::CheckMouseInBounds(mousePos, rightButton->rect))
+	if (UI::CheckMouseInBounds(mousePos, *rightButton->rect))
 	{
 		//todo swap the opttion right
 	}
