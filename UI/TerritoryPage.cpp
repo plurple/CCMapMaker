@@ -660,7 +660,7 @@ void TerritoryEntry::Select()
 	//todo colour the map boxes properly for conditions.
 }
 
-void TerritoryEntry::Unselect()
+void TerritoryEntry::Unselect(bool white)
 {
 	UIEntry::Unselect();
 	mapBox->border->setOutlineColor(sf::Color::White);

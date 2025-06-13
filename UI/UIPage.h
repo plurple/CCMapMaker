@@ -44,7 +44,7 @@ public:
 
 	virtual void MoveEntry(sf::Vector2f offset);
 	virtual void Select();
-	virtual void Unselect();
+	virtual void Unselect(bool white = false);
 	void Toggle(bool toggle);
 	virtual void BorderBoxSize() {};
 };

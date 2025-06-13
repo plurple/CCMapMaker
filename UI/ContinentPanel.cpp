@@ -54,6 +54,8 @@ void ContinentPanel::Update(XMLData& xmlData, sf::RenderWindow& window,
         if (xmlData.continents.find(continents[i]->xmlKey) != xmlData.continents.end())
         {
             continents[i]->box.label->setString(*continents[i]->name);
+            if(continents[i]->box.rect->getOutlineColor() == sf::Color{ 200, 120, 0 })
+                continents[i]->box.rect->setOutlineColor(sf::Color::White);
         }
         else
         {

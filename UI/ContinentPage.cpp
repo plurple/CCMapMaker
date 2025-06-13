@@ -271,7 +271,7 @@ void ContinentPage::SwapView()
 void ContinentEntry::CreateEntry(XMLData& xmlData, float entryTop)
 {
 	baseColor = sf::Color{ 255, 170, 0 };
-	selectedColor = sf::Color{ 230, 150, 0 };
+	selectedColor = sf::Color{ 200, 120, 0 };
 
 	territoryPos = { 20, entryTop + 84 };
 	continentPos = { 280, entryTop + 84 };
@@ -298,11 +298,13 @@ void ContinentEntry::CreateEntry(XMLData& xmlData, float entryTop)
 	std::shared_ptr<sf::Text> territoryLabel = 
 		std::make_shared<sf::Text>(UI::font, "Territories:");
 	territoryLabel->setPosition(territoryPos);
+	territoryLabel->setFillColor(sf::Color::Blue);
 	labels.push_back(territoryLabel);	
 	
 	std::shared_ptr<sf::Text> continentLabel = 
 		std::make_shared<sf::Text>(UI::font, "Continents:");
 	continentLabel->setPosition(continentPos);
+	continentLabel->setFillColor(sf::Color::Red);
 	labels.push_back(continentLabel);
 
 	std::shared_ptr<sf::Text> factorLabel =
@@ -467,6 +469,7 @@ void ContinentEntry::SwapView(ContinentView view)
 
 	labels[(int)LabelTypes::ContinentsLabel]->setPosition(overrideView ? territoryPos : continentPos);
 	labels[(int)LabelTypes::ContinentsLabel]->setString(overrideView ? "Overides:" : "Continents:");
+	labels[(int)LabelTypes::ContinentsLabel]->setFillColor(overrideView ? sf::Color::Green : sf::Color::Red);
 	labels[(int)LabelTypes::ContinentsLabel]->setScale({ (float)!advancedView,(float)!advancedView });
 	labels[(int)LabelTypes::TerritoryLabel]->setScale({ (float)!overrideView,(float)!overrideView });
 	labels[(int)LabelTypes::FactorLabel]->setScale({ advancedView,advancedView });
@@ -489,15 +492,37 @@ void ContinentEntry::Select()
 	{
 		entry->Select();
 	}
+	if (selectedView != ContinentView::Overrides)
+	{
+		for (auto continent : continents)
+		{
+			continent->mapBox->border->setOutlineColor(sf::Color::Red);
+		}
+	}
+	else
+	{
+		for (auto continent : overrides)
+		{
+			continent->mapBox->border->setOutlineColor(sf::Color::Green);
+		}
+	}
 }
 
-void ContinentEntry::Unselect()
+void ContinentEntry::Unselect(bool white)
 {
 	UIEntry::Unselect();
 	for (auto entry : entries)
 	{
-		entry->Unselect();
+		entry->Unselect(white);
+	}	
+	for (auto continent : continents)
+	{
+		continent->mapBox->border->setOutlineColor(sf::Color::White);
 	}
+	for (auto continent : overrides)
+	{
+		continent->mapBox->border->setOutlineColor(sf::Color::White);
+	}	
 }
 
 void ContinentEntry::AddTerritory(XMLData& xmlData, Maps& maps, int boxIndex, int otherXMLKey)
@@ -511,6 +536,7 @@ void ContinentEntry::AddTerritory(XMLData& xmlData, Maps& maps, int boxIndex, in
 	territory->xmlKey = xmlKey;
 	territory->otherXMLKey = otherXMLKey;
 	territory->selectedColor = selectedColor;
+	territory->baseColor = baseColor;
 	territory->CreateEntry(xmlData, territoryPos.y + entries.size() * 35.0f);
 	entries.push_back(territory);
 }
@@ -524,7 +550,7 @@ void ContinentEntry::AddContinent(XMLData& xmlData, ContinentPanel& panel, int c
 	continent->nameLabel = std::make_shared<TextBox>(pos,
 		sf::Vector2f{ 250, 20 });
 	continent->nameLabel->displayText->setCharacterSize(20);
-	continent->nameLabel->baseColor = selectedColor;
+	continent->nameLabel->baseColor = over ? sf::Color::Green : sf::Color::Red;
 	continent->uiIndex = continentIndex;
 	continent->mapBox = std::make_shared<MapBox>();
 	continent->mapBox->border = panel.continents[continentIndex]->box.rect;
@@ -785,7 +811,7 @@ void AdvancedTerritory::Select()
 	mapBox->border->setOutlineColor(selectedColor);
 }
 
-void AdvancedTerritory::Unselect()
+void AdvancedTerritory::Unselect(bool white)
 {
-	mapBox->border->setOutlineColor(sf::Color::White);
+	mapBox->border->setOutlineColor(white ? sf::Color::White : baseColor);
 }

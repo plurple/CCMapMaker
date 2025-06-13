@@ -117,7 +117,7 @@ void UIPage::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePas
 	{
 		if (entries[selectedEntry]->selected)
 		{
-			entries[selectedEntry]->Unselect();
+			entries[selectedEntry]->Unselect(true);
 			xmlData.RemoveData(pageType, entries[selectedEntry]->xmlKey);
 			entries.erase(entries.begin() + selectedEntry);
 		}
@@ -215,7 +215,7 @@ void UIPage::UnselectPage()
 	selectedEntry = -1;
 	for (auto entry : entries)
 	{
-		entry->Unselect();
+		entry->Unselect(true);
 	}
 }
 
@@ -307,11 +307,11 @@ void UIEntry::Select()
 	shapes[0]->setOutlineColor(selectedColor);
 }
 
-void UIEntry::Unselect()
+void UIEntry::Unselect(bool white)
 {
 	selected = false;
 	shapes[0]->setOutlineThickness(2.0f);
-	shapes[0]->setOutlineColor(baseColor);
+	shapes[0]->setOutlineColor(white ? sf::Color::White : baseColor);
 }
 
 void UIEntry::Toggle(bool toggle)

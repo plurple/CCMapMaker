@@ -197,7 +197,6 @@ void UI::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
     if (input.down && input.shift)
     {
         SwapMaps();
-
     }
     if (input.ctrl)
     {
@@ -218,6 +217,12 @@ void UI::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
     maps.Update(window, timePassed, input);
     uiPages[(int)selectedPage]->Update(xmlData, window, timePassed, input, showCursor, selectedPage);
     continentPanel.Update(xmlData, window, timePassed, input);
+    if (selectedPage == UIPageType::Continent && continentPanel.continents.size())
+    {
+        int selectedContinent = uiPages[(int)selectedPage]->selectedEntry;
+        if(selectedContinent != -1 && selectedContinent < continentPanel.continents.size())
+            continentPanel.continents[selectedContinent]->box.rect->setOutlineColor(sf::Color{ 200, 120, 0 });
+    }
 }
 
 void UI::SwapPage(UIPageType newPage)

@@ -238,7 +238,7 @@ void PositionEntry::Select()
 	}
 }
 
-void PositionEntry::Unselect()
+void PositionEntry::Unselect(bool white)
 {
 	UIEntry::Unselect();
 	for (auto position : positionPairs)

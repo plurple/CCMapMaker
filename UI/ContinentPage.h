@@ -42,7 +42,7 @@ public:
 	void MoveEntry(sf::Vector2f offset) override;
 	void SwapView(ContinentView view);
 	void Select() override;
-	void Unselect() override;
+	void Unselect(bool white = false) override;
 };
 
 class BonusLine : public UIEntry
@@ -124,7 +124,7 @@ public:
 	void MoveEntry(sf::Vector2f offset) override;
 	void SwapView(ContinentView view);
 	void Select() override;
-	void Unselect() override;
+	void Unselect(bool white = false) override;
 	void AddTerritory(XMLData& xmlData, Maps& maps, int boxIndex, int otherXMLKey);
 	void AddContinent(XMLData& xmlData, ContinentPanel& panel, int continentIndex, int otherXMLKey, bool over);
 	void AddBonus(XMLData& xmlData);

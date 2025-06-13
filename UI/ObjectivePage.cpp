@@ -203,8 +203,8 @@ void ObjectivePage::AddObjective(XMLData& xmlData)
 
 void ObjectiveEntry::CreateEntry(XMLData& xmlData, float entryTop)
 {
-	baseColor = isObjective ? sf::Color(230, 100, 110) : sf::Color::Magenta;
-	selectedColor = isObjective ? sf::Color{ 250, 170, 180 } : sf::Color{ 175, 0, 175 };
+	baseColor = isObjective ? sf::Color{ 250, 170, 180 } : sf::Color::Magenta;
+	selectedColor = isObjective ? sf::Color(230, 100, 110) : sf::Color{ 175, 0, 175 };
 
 	territoryPos = { 20, entryTop + 120 };
 	continentPos = { 280, entryTop + 120 };
@@ -230,11 +230,13 @@ void ObjectiveEntry::CreateEntry(XMLData& xmlData, float entryTop)
 	std::shared_ptr<sf::Text> territoryLabel = 
 		std::make_shared<sf::Text>(UI::font, "Territories:");
 	territoryLabel->setPosition({ 20, entryTop + 84 });
+	territoryLabel->setFillColor(sf::Color::Blue);
 	labels.push_back(territoryLabel);
 	
 	std::shared_ptr<sf::Text> continentLabel = 
 		std::make_shared<sf::Text>(UI::font, "Continents:");
 	continentLabel->setPosition({ 280, entryTop + 84 });
+	continentLabel->setFillColor(sf::Color{ 230, 150, 0 });
 	labels.push_back(continentLabel);	
 
 	std::shared_ptr<Objective> data = isObjective ? xmlData.objectives.at(xmlKey) :
@@ -334,13 +336,39 @@ void ObjectiveEntry::MoveEntry(sf::Vector2f offset)
 	}
 }
 
+void ObjectiveEntry::Select()
+{
+	UIEntry::Select();
+	for (auto territory : territories)
+	{
+		territory->mapBox->border->setOutlineColor(selectedColor);
+	}
+	for (auto continent : continents)
+	{
+		continent->mapBox->border->setOutlineColor(selectedColor);
+	}
+}
+
+void ObjectiveEntry::Unselect(bool white)
+{
+	UIEntry::Unselect();
+	for (auto territory : territories)
+	{
+		territory->mapBox->border->setOutlineColor(white ? sf::Color::White : baseColor);
+	}
+	for (auto continent : continents)
+	{
+		continent->mapBox->border->setOutlineColor(white ? sf::Color::White : baseColor);
+	}
+}
+
 void ObjectiveEntry::AddTerritory(XMLData& xmlData, Maps& maps, int boxIndex, int otherXMLKey)
 {
 	std::shared_ptr<LinkedData> territory = std::make_shared<LinkedData>();
 	territory->nameLabel = std::make_shared<TextBox>(territoryPos + sf::Vector2f{ 0, territories.size() * 25.0f },
 		sf::Vector2f{ 250, 20 });
 	territory->nameLabel->displayText->setCharacterSize(20);
-	territory->nameLabel->baseColor = selectedColor;
+	territory->nameLabel->baseColor = sf::Color::Blue;
 	territory->uiIndex = boxIndex;
 	territory->mapBox = maps.mapBoxes[boxIndex];
 	territory->xmlKey = otherXMLKey;
@@ -363,7 +391,7 @@ void ObjectiveEntry::AddContinent(XMLData& xmlData, ContinentPanel& panel, int c
 	continent->nameLabel = std::make_shared<TextBox>(continentPos + sf::Vector2f{ 0, continents.size() * 25.0f },
 		sf::Vector2f{ 250, 20 });
 	continent->nameLabel->displayText->setCharacterSize(20);
-	continent->nameLabel->baseColor = selectedColor;
+	continent->nameLabel->baseColor = sf::Color{ 230, 150, 0 };
 	continent->uiIndex = continentIndex;
 	continent->mapBox = std::make_shared<MapBox>();
 	continent->mapBox->border = panel.continents[continentIndex]->box.rect;

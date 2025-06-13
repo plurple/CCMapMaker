@@ -69,7 +69,7 @@ public:
 	void MoveEntry(sf::Vector2f offset) override;
 	void SwapView(TerritoryView view);
 	void Select() override;
-	void Unselect() override;
+	void Unselect(bool white = false) override;
 
 	void AddBorder(XMLData& xmlData, Maps& maps, int boxIndex, int otherXMLKey);
 	void AddBombardment(XMLData& xmlData, Maps& maps, int boxIndex, int otherXMLKey);
