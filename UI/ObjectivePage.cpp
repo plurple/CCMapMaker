@@ -273,11 +273,11 @@ void ObjectiveEntry::MouseClick(XMLData& xmlData, sf::Vector2i mousePos, bool mo
 	UIEntry::MouseClick(xmlData, mousePos, mouseOnPage, select);
 	for (auto territory : territories)
 	{
-		territory->nameLabel->active = mouseOnPage && UI::CheckMouseInBounds(mousePos, territory->nameLabel->box);;
+		territory->nameLabel->Toggle(mouseOnPage && UI::CheckMouseInBounds(mousePos, territory->nameLabel->box));
 	}
 	for (auto continent : continents)
 	{
-		continent->nameLabel->active = mouseOnPage && UI::CheckMouseInBounds(mousePos, continent->nameLabel->box);;
+		continent->nameLabel->Toggle(mouseOnPage && UI::CheckMouseInBounds(mousePos, continent->nameLabel->box));
 	}
 }
 

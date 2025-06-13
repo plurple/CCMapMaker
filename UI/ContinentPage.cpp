@@ -96,7 +96,7 @@ bool ContinentPage::MapClick(UI& ui, XMLData& xmlData, Maps& maps, sf::Vector2i 
 					}
 				}
 			}
-			if (selectedEntry == -1)
+			if (selectedView != ContinentView::Overrides && selectedEntry == -1)
 			{
 				AddContinent(xmlData);
 				auto entry = std::dynamic_pointer_cast<ContinentEntry>(entries[selectedEntry]);
@@ -104,7 +104,7 @@ bool ContinentPage::MapClick(UI& ui, XMLData& xmlData, Maps& maps, sf::Vector2i 
 				entry->BorderBoxSize();
 			}
 		}
-		else
+		else if(selectedView != ContinentView::Overrides)
 		{
 			auto entry = std::dynamic_pointer_cast<ContinentEntry>(entries[selectedEntry]);
 			int i;
@@ -136,12 +136,104 @@ bool ContinentPage::MapClick(UI& ui, XMLData& xmlData, Maps& maps, sf::Vector2i 
 			entry->BorderBoxSize();
 		}
 		SwapView();
-		PositionEntries();
 	}
 	else
 	{
 		SwapEntry(selectedEntry, -1);
 		selectedEntry = -1;
+	}
+	return true;
+}
+
+bool ContinentPage::ContinentClick(UI& ui, XMLData& xmlData,
+	ContinentPanel& panel, sf::Vector2i mousePos, int& continentIndex)
+{
+	if (UIPage::ContinentClick(ui, xmlData, panel, mousePos, continentIndex))
+	{
+		if (selectedEntry == -1)
+		{
+			SwapEntry(selectedEntry, continentIndex);
+			selectedEntry = continentIndex;
+		}
+		else
+		{
+			if (selectedEntry == continentIndex)
+			{
+				SwapEntry(selectedEntry, -1);
+				selectedEntry = -1;
+			}
+			else
+			{
+				switch (selectedView)
+				{
+				case ContinentView::Basic:
+				{
+					auto entry = std::dynamic_pointer_cast<ContinentEntry>(entries[selectedEntry]);
+					int i;
+					bool removed = false;
+					for (i = 0; i < entry->continents.size(); i++)
+					{
+						auto continent = std::dynamic_pointer_cast<LinkedData>(entry->continents[i]);
+						if (continent->uiIndex == continentIndex)
+						{
+							panel.continents[continentIndex]->box.rect.setOutlineColor(sf::Color::White);
+							xmlData.continents.at(entry->xmlKey)->continents.erase(xmlData.continents.at(entry->xmlKey)->continents.begin() + i);
+							entry->continents.erase(entry->continents.begin() + i);
+							removed = true;
+							break;
+						}
+					}
+					if (removed)
+					{
+						for (int j = i; j < entry->continents.size(); j++)
+						{
+							entry->continents[j]->nameLabel->Move({ 0, -40 });
+						}
+					}
+					else
+					{
+						panel.continents[continentIndex]->box.rect.setOutlineColor(sf::Color::Blue);
+						entry->AddContinent(xmlData, panel, continentIndex, ui.uiPages[(int)UIPageType::Continent]->entries[continentIndex]->xmlKey, false);
+					}
+					entry->BorderBoxSize();
+					break;
+				}
+				case ContinentView::Overrides:
+				{
+					auto entry = std::dynamic_pointer_cast<ContinentEntry>(entries[selectedEntry]);
+					int i;
+					bool removed = false;
+					for (i = 0; i < entry->overrides.size(); i++)
+					{
+						auto over = std::dynamic_pointer_cast<LinkedData>(entry->overrides[i]);
+						if (over->uiIndex == continentIndex)
+						{
+							panel.continents[continentIndex]->box.rect.setOutlineColor(sf::Color::White);
+							xmlData.continents.at(entry->xmlKey)->overrides.erase(xmlData.continents.at(entry->xmlKey)->overrides.begin() + i);
+							entry->overrides.erase(entry->overrides.begin() + i);
+							removed = true;
+							break;
+						}
+					}
+					if (removed)
+					{
+						for (int j = i; j < entry->overrides.size(); j++)
+						{
+							entry->overrides[j]->nameLabel->Move({ 0, -40 });
+						}
+					}
+					else
+					{
+						panel.continents[continentIndex]->box.rect.setOutlineColor(sf::Color::Blue);
+						entry->AddContinent(xmlData, panel, continentIndex, ui.uiPages[(int)UIPageType::Continent]->entries[continentIndex]->xmlKey, true);
+					}
+					entry->BorderBoxSize();
+					break;
+				}
+				}
+			}
+		}		
+		SwapView();
 	}
 	return true;
 }
@@ -182,7 +274,7 @@ void ContinentEntry::CreateEntry(XMLData& xmlData, float entryTop)
 	selectedColor = sf::Color{ 230, 150, 0 };
 
 	territoryPos = { 20, entryTop + 84 };
-	continentPos = { 300, entryTop + 84 };
+	continentPos = { 280, entryTop + 84 };
 	bonusPos = { 20, entryTop + 46 };
 
 	std::shared_ptr<sf::RectangleShape> border = 
@@ -287,6 +379,20 @@ void ContinentEntry::MouseClick(XMLData& xmlData, sf::Vector2i mousePos, bool mo
 	{
 		bonus->MouseClick(xmlData, mousePos, mouseOnPage, select);
 	}
+	if (selectedView == ContinentView::Basic)
+	{
+		for (std::shared_ptr<LinkedData> continent : continents)
+		{
+			continent->nameLabel->Toggle(mouseOnPage && UI::CheckMouseInBounds(mousePos, continent->nameLabel->box));
+		}
+	}
+	if (selectedView == ContinentView::Overrides)
+	{
+		for (std::shared_ptr<LinkedData> continent : overrides)
+		{
+			continent->nameLabel->Toggle(mouseOnPage && UI::CheckMouseInBounds(mousePos, continent->nameLabel->box));
+		}
+	}
 }
 
 void ContinentEntry::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
@@ -297,6 +403,30 @@ void ContinentEntry::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time
 		if (xmlData.territories.find(std::dynamic_pointer_cast<AdvancedTerritory>(entries[i])->otherXMLKey) == xmlData.territories.end())
 		{
 			if (entries.size()) entries.erase(entries.begin() + i);
+			i--;
+		}
+	}
+	for (int i = 0; i < continents.size(); i++)
+	{
+		if (xmlData.continents.find(continents[i]->xmlKey) != xmlData.continents.end())
+		{
+			continents[i]->nameLabel->Update(window, timePassed, input, showCursor);
+		}
+		else
+		{
+			if (continents.size()) continents.erase(continents.begin() + i);
+			i--;
+		}
+	}
+	for (int i = 0; i < overrides.size(); i++)
+	{
+		if (xmlData.continents.find(overrides[i]->xmlKey) != xmlData.continents.end())
+		{
+			overrides[i]->nameLabel->Update(window, timePassed, input, showCursor);
+		}
+		else
+		{
+			if (overrides.size()) overrides.erase(overrides.begin() + i);
 			i--;
 		}
 	}
@@ -383,6 +513,34 @@ void ContinentEntry::AddTerritory(XMLData& xmlData, Maps& maps, int boxIndex, in
 	territory->selectedColor = selectedColor;
 	territory->CreateEntry(xmlData, territoryPos.y + entries.size() * 35.0f);
 	entries.push_back(territory);
+}
+
+void ContinentEntry::AddContinent(XMLData& xmlData, ContinentPanel& panel, int continentIndex, int otherXMLKey, bool over)
+{
+	std::shared_ptr<LinkedData> continent =	std::make_shared<LinkedData>();
+	sf::Vector2f pos = over ? 
+		territoryPos + sf::Vector2f{ 0, 40 + overrides.size() * 35.0f } : 
+		continentPos + sf::Vector2f{ 0, 40 + continents.size() * 35.0f };
+	continent->nameLabel = std::make_shared<TextBox>(pos,
+		sf::Vector2f{ 250, 20 });
+	continent->nameLabel->displayText->setCharacterSize(20);
+	continent->nameLabel->baseColor = selectedColor;
+	continent->uiIndex = continentIndex;
+	continent->mapBox = std::make_shared<MapBox>();
+	continent->mapBox->border =
+		std::make_shared<sf::RectangleShape>(panel.continents[continentIndex]->box.rect);
+	continent->xmlKey = otherXMLKey;
+	continent->nameLabel->text = &xmlData.continents[otherXMLKey]->name;
+	if (over)
+	{
+		overrides.push_back(continent);
+		xmlData.continents[xmlKey]->overrides.push_back(otherXMLKey);
+	}
+	else
+	{
+		continents.push_back(continent);
+		xmlData.continents[xmlKey]->continents.push_back(otherXMLKey);
+	}
 }
 
 void ContinentEntry::AddBonus(XMLData& xmlData)
