@@ -94,6 +94,22 @@ bool UIPage::MapClick(UI& ui, XMLData& xmlData, Maps& maps, sf::Vector2i mousePo
 	return false;
 }
 
+bool UIPage::ContinentClick(UI& ui, XMLData& xmlData, ContinentPanel& panel, sf::Vector2i mousePos, int& continentIndex)
+{
+	int index = 0;
+	for (auto continent : panel.continents)
+	{
+		if (UI::CheckMouseInBounds(mousePos, continent->box.rect))
+		{
+			continentIndex = index;
+			return true;
+		}
+		index++;
+	}
+
+	return false;
+}
+
 void UIPage::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
 	UserInput input, bool showCursor, UIPageType pageType)
 {
@@ -101,7 +117,6 @@ void UIPage::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePas
 	{
 		if (entries[selectedEntry]->selected)
 		{
-			//todo remove entry and all that entails.
 			entries[selectedEntry]->Unselect();
 			xmlData.RemoveData(pageType, entries[selectedEntry]->xmlKey);
 			entries.erase(entries.begin() + selectedEntry);

@@ -70,6 +70,7 @@ public:
 	virtual void MouseClick(XMLData& xmlData, sf::RenderWindow& window, 
 		sf::Vector2i mousePos, Maps& maps);
 	virtual bool MapClick(UI& ui, XMLData& xmlData, Maps& maps, sf::Vector2i mousePos, int& boxIndex);
+	virtual bool ContinentClick(UI& ui, XMLData& xmlData, ContinentPanel& panel, sf::Vector2i mousePos, int& continentIndex);
 	virtual void Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
 		UserInput input, bool showCursor, UIPageType page);
 

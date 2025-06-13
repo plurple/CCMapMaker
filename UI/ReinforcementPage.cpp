@@ -48,11 +48,11 @@ void ReinforcementPage::MouseClick(XMLData& xmlData, sf::RenderWindow& window,
 	sf::Vector2i mousePos, Maps& maps)
 {
 	UIPage::MouseClick(xmlData, window, mousePos, maps);
-    if (UI::CheckMouseInBounds(mousePos, addEntry.rect))
+    if (!showContinents.selected && UI::CheckMouseInBounds(mousePos, addEntry.rect))
     {
 		AddReinforcement(xmlData);
     }
-	minReinforcements.Toggle(UI::CheckMouseInBounds(mousePos, minReinforcements.box));
+	minReinforcements.Toggle(!showContinents.selected && UI::CheckMouseInBounds(mousePos, minReinforcements.box));
 }
 
 void ReinforcementPage::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,

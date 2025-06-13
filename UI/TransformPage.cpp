@@ -26,11 +26,11 @@ void TransformPage::MouseClick(XMLData& xmlData, sf::RenderWindow& window,
 	sf::Vector2i mousePos, Maps& maps)
 {
 	UIPage::MouseClick(xmlData, window, mousePos, maps);
-    if (UI::CheckMouseInBounds(mousePos, addEntry.rect))
+    if (!showContinents.selected && UI::CheckMouseInBounds(mousePos, addEntry.rect))
     {
 		AddTransform(xmlData);
     }
-	if (UI::CheckMouseInBounds(mousePos, testTransforms.rect))
+	if (!showContinents.selected && UI::CheckMouseInBounds(mousePos, testTransforms.rect))
 	{
 		//TODO add a transform test function
 	}	

@@ -49,19 +49,16 @@ void ContinentPage::MouseClick(XMLData& xmlData, sf::RenderWindow& window,
 {
 	UIPage::MouseClick(xmlData, window, mousePos, maps);
 	PositionEntries();
-	if (selectedView != ContinentView::Advanced)
+	if (showContinents.selected || selectedView != ContinentView::Advanced)
 	{
 		if (UI::CheckMouseInBounds(mousePos, showContinents.rect))
 		{
 			showContinents.Toggle();
-			//open continents page
-			//TODO unselect show continent on tab change
 		}
 	}
 	else
 	{
 		showContinents.Unselect();
-		//close continents page
 	}
 
 	if (UI::CheckMouseInBounds(mousePos, addEntry.rect))
@@ -70,13 +67,11 @@ void ContinentPage::MouseClick(XMLData& xmlData, sf::RenderWindow& window,
 	}
 	for (int i = 0; i < (int)ContinentView::COUNT; i++)
 	{
-		if (UI::CheckMouseInBounds(mousePos, continentViews[i]->rect))
+		if (!showContinents.selected && UI::CheckMouseInBounds(mousePos, continentViews[i]->rect))
 		{
 			continentViews[(int)selectedView]->Toggle();
 			selectedView = (ContinentView)i;
 			continentViews[(int)selectedView]->Toggle();
-
-			//todo overides view swap continet list.
 			SwapView();
 		}
 	}	
@@ -173,9 +168,6 @@ void ContinentPage::AddContinent(XMLData& xmlData)
 
 void ContinentPage::SwapView()
 {
-	/*TODO change the colour of the labels to make them visible or not
-	also move the positions and size of the box and such*/
-	//need to hide factor on the advanced view when not multiplied.
 	for (std::shared_ptr<UIEntry> entry : entries)
 	{
 		std::dynamic_pointer_cast<ContinentEntry>(entry)->SwapView(selectedView);
@@ -282,14 +274,12 @@ void ContinentEntry::MouseClick(XMLData& xmlData, sf::Vector2i mousePos, bool mo
 	std::shared_ptr<Button> addBonus = buttons[(int)ButtonTypes::AddBonus];
 	if (mouseOnPage && addBonus && UI::CheckMouseInBounds(mousePos, addBonus->rect))
 	{
-		//todo add a bonus line.
 		AddBonus(xmlData);
 		BorderBoxSize();
 	}
 	std::shared_ptr<Button> removeBonus = buttons[(int)ButtonTypes::RemoveBonus];
 	if (mouseOnPage && removeBonus && UI::CheckMouseInBounds(mousePos, removeBonus->rect))
 	{
-		//todo remove a bonus line.
 		RemoveBonus(xmlData);
 		BorderBoxSize();
 	}
@@ -312,7 +302,6 @@ void ContinentEntry::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time
 	}
 	UIEntry::Update(xmlData, window, timePassed, input, showCursor);
 	MoveEntry({ 0, input.scroll });
-	//TODO make sure that you only care about numbers entered;
 	for (std::shared_ptr<UIEntry> bonus : bonuses)
 	{
 		bonus->Update(xmlData, window, timePassed, input, showCursor);

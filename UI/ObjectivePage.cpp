@@ -30,13 +30,11 @@ void ObjectivePage::MouseClick(XMLData& xmlData, sf::RenderWindow& window,
 	sf::Vector2i mousePos, Maps& maps)
 {
 	UIPage::MouseClick(xmlData, window, mousePos, maps);
-    if (UI::CheckMouseInBounds(mousePos, showContinents.rect))
+    if (!showContinents.selected && UI::CheckMouseInBounds(mousePos, showContinents.rect))
     {
         showContinents.Toggle();
-        //TODO show continents stuff
-        //TODO unselect show continent on tab change
     }
-    if (UI::CheckMouseInBounds(mousePos, addEntry.rect))
+    if (!showContinents.selected && UI::CheckMouseInBounds(mousePos, addEntry.rect))
     {
 		AddObjective(xmlData);
     }

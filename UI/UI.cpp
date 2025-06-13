@@ -164,7 +164,7 @@ void UI::MouseClick(XMLData& xmlData, sf::RenderWindow& window, sf::Vector2i mou
     maps.scrollBar.MouseClick(mapMouse);
     for (int i = 0; i < (int)UIPageType::COUNT; i++)
     {
-        if (CheckMouseInBounds(mousePos, uiPages[i]->tabButton.rect))
+        if (!continentPanel.showPanel && CheckMouseInBounds(mousePos, uiPages[i]->tabButton.rect))
         {
             SwapPage((UIPageType)i);
         }
@@ -174,6 +174,13 @@ void UI::MouseClick(XMLData& xmlData, sf::RenderWindow& window, sf::Vector2i mou
         int index;
         maps.clicked = true;
         uiPages[(int)selectedPage]->MapClick(*this, xmlData, maps, mapMouse, index);
+    }
+    sf::Vector2i continentMouse = sf::Vector2i(window.mapPixelToCoords(mousePos, continentPanel.scrollBar.scrollWindow));
+    continentPanel.scrollBar.MouseClick(continentMouse);
+    if (CheckMouseInBounds(continentMouse, continentPanel.panel))
+    {
+        int index;
+        uiPages[(int)selectedPage]->ContinentClick(*this, xmlData, continentPanel, continentMouse, index);
     }
     uiPages[(int)selectedPage]->MouseClick(xmlData, window, mousePos, maps);  
     maps.clicked = false;

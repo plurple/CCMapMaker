@@ -22,7 +22,5 @@ public:
 	bool killer;
 
 	Territory(sf::Vector2f small = { 0,0 }, sf::Vector2f large = { 0,0 });
-	/*todo move the positions and such both together and seperatly
-	convert large coord to small and vice versa*/
 };
 

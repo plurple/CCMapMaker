@@ -34,11 +34,11 @@ void PositionPage::MouseClick(XMLData& xmlData, sf::RenderWindow& window,
 	sf::Vector2i mousePos, Maps& maps)
 {
 	UIPage::MouseClick(xmlData, window, mousePos, maps);
-	if (UI::CheckMouseInBounds(mousePos, addEntry.rect))
+	if (!showContinents.selected && UI::CheckMouseInBounds(mousePos, addEntry.rect))
 	{
 		AddPosition(xmlData);
 	}
-	maxBox.Toggle(UI::CheckMouseInBounds(mousePos, maxBox.box));	
+	maxBox.Toggle(!showContinents.selected && UI::CheckMouseInBounds(mousePos, maxBox.box));
 }
 
 bool PositionPage::MapClick(UI& ui, XMLData& xmlData, Maps& maps, sf::Vector2i mousePos, int& boxIndex)

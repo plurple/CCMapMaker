@@ -57,19 +57,16 @@ void TerritoryPage::MouseClick(XMLData& xmlData, sf::RenderWindow& window,
 	{
 		linkCoordinates.Toggle();
 	}
-	if (selectedView == TerritoryView::Conditions)
+	if (showContinents.selected || selectedView == TerritoryView::Conditions)
 	{
 		if (UI::CheckMouseInBounds(mousePos, showContinents.rect))
 		{
 			showContinents.Toggle();
-			//TODO open continents page
-			//TODO unselect show continent on tab change
 		}
 	}
 	else
 	{
 		showContinents.Unselect();
-		//TODO close continents page
 	}
 		
 	if (UI::CheckMouseInBounds(mousePos, addEntry.rect))
@@ -78,7 +75,7 @@ void TerritoryPage::MouseClick(XMLData& xmlData, sf::RenderWindow& window,
 	}
 	for (int i = 0; i < (int)TerritoryView::COUNT; i++)
 	{
-		if (UI::CheckMouseInBounds(mousePos, territoryViews[i]->rect))
+		if (!showContinents.selected && UI::CheckMouseInBounds(mousePos, territoryViews[i]->rect))
 		{
 			territoryViews[(int)selectedView]->Toggle();
 			selectedView = (TerritoryView)i;
