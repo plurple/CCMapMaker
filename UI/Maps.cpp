@@ -45,7 +45,7 @@ void Maps::Draw(sf::RenderWindow& window, bool isLarge)
     scrollBar.Draw(window);
     for (std::shared_ptr<MapBox> box : mapBoxes)
     {
-        window.draw(box->border);
+        window.draw(*box->border);
     }
     window.setView(window.getDefaultView());
 }
@@ -55,8 +55,8 @@ void Maps::Update(sf::RenderWindow& window, sf::Time timePassed,
 {
     for (int i = mapBoxes.size() - 1; i >= 0;)
     {
-        mapBoxes[i]->border.setPosition(UI::isLarge ? mapBoxes[i]->largePos : mapBoxes[i]->smallPos);
-        if (i < mapBoxes.size() && mapBoxes[i]->border.getScale().lengthSquared() == 0.0f)
+        mapBoxes[i]->border->setPosition(UI::isLarge ? mapBoxes[i]->largePos : mapBoxes[i]->smallPos);
+        if (i < mapBoxes.size() && mapBoxes[i]->border->getScale().lengthSquared() == 0.0f)
         {
             mapBoxes.erase(mapBoxes.begin() + i);
         }     
@@ -88,18 +88,19 @@ void Maps::MoveMap(sf::Vector2f offset)
     smallMap.mapSprite->move(offset);
     for (std::shared_ptr<MapBox> box : mapBoxes)
     {
-        box->border.move(offset);
+        box->border->move(offset);
     }
 }
 
 std::shared_ptr<MapBox> Maps::AddMapBox(sf::Vector2i position)
 {
     std::shared_ptr<MapBox> mapBox = std::make_shared<MapBox>();
-    mapBox->border.setSize( sf::Vector2f{20, 20} );
-    mapBox->border.setPosition(sf::Vector2f{ position + sf::Vector2i{ 3, 24 } });
-    mapBox->border.setFillColor(sf::Color::Transparent);
-    mapBox->border.setOutlineThickness(3.0f);
-    mapBox->border.setOutlineColor(sf::Color::Red);
+    mapBox->border = std::make_shared<sf::RectangleShape>();
+    mapBox->border->setSize( sf::Vector2f{20, 20} );
+    mapBox->border->setPosition(sf::Vector2f{ position + sf::Vector2i{ 3, 24 } });
+    mapBox->border->setFillColor(sf::Color::Transparent);
+    mapBox->border->setOutlineThickness(3.0f);
+    mapBox->border->setOutlineColor(sf::Color::Red);
     mapBoxes.push_back(mapBox);
     return mapBox;
 }

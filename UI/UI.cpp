@@ -152,7 +152,7 @@ void UI::SwapMaps()
 
 void UI::MouseClick(XMLData& xmlData, sf::RenderWindow& window, sf::Vector2i mousePos)
 {
-    if (CheckMouseInBounds(mousePos, mapCheckBox.rect))
+    if (!continentPanel.showPanel && CheckMouseInBounds(mousePos, mapCheckBox.rect))
     {
         SwapMaps();
     }
@@ -180,6 +180,7 @@ void UI::MouseClick(XMLData& xmlData, sf::RenderWindow& window, sf::Vector2i mou
     if (CheckMouseInBounds(continentMouse, continentPanel.panel))
     {
         int index;
+        maps.clicked = true;
         uiPages[(int)selectedPage]->ContinentClick(*this, xmlData, continentPanel, continentMouse, index);
     }
     uiPages[(int)selectedPage]->MouseClick(xmlData, window, mousePos, maps);  

@@ -78,7 +78,7 @@ bool PositionPage::MapClick(UI& ui, XMLData& xmlData, Maps& maps, sf::Vector2i m
 				auto pair = std::dynamic_pointer_cast<PositionPair>(position->positionPairs[i]);
 				if (pair->uiIndex == boxIndex)
 				{
-					maps.mapBoxes[boxIndex]->border.setOutlineColor(sf::Color::White);
+					maps.mapBoxes[boxIndex]->border->setOutlineColor(sf::Color::White);
 					xmlData.positions.at(position->xmlKey)->positions.erase(std::dynamic_pointer_cast<PositionPair>(position->positionPairs[i])->otherXMLKey);
 					position->positionPairs.erase(position->positionPairs.begin() + i);
 					removed = true;
@@ -94,7 +94,7 @@ bool PositionPage::MapClick(UI& ui, XMLData& xmlData, Maps& maps, sf::Vector2i m
 			}
 			else
 			{
-				maps.mapBoxes[boxIndex]->border.setOutlineColor(sf::Color::Blue);
+				maps.mapBoxes[boxIndex]->border->setOutlineColor(sf::Color::Blue);
 				position->AddPositionPair(xmlData, maps, boxIndex, ui.uiPages[(int)UIPageType::Territory]->entries[boxIndex]->xmlKey);
 			}
 			std::dynamic_pointer_cast<sf::RectangleShape>(position->shapes[(int)UIEntry::ShapeTypes::Border])->setSize({ 530, 10 + position->positionPairs.size() * 40.0f });
@@ -131,7 +131,7 @@ void PositionPage::SelectPage()
 	{
 		for (auto pair : std::dynamic_pointer_cast<PositionEntry>(entry)->positionPairs)
 		{
-			std::dynamic_pointer_cast<PositionPair>(pair)->mapBox->border.setOutlineColor(pair->baseColor);
+			std::dynamic_pointer_cast<PositionPair>(pair)->mapBox->border->setOutlineColor(pair->baseColor);
 		}
 	}
 }
@@ -143,7 +143,7 @@ void PositionPage::UnselectPage()
 	{
 		for (auto pair : std::dynamic_pointer_cast<PositionEntry>(entry)->positionPairs)
 		{
-			std::dynamic_pointer_cast<PositionPair>(pair)->mapBox->border.setOutlineColor(sf::Color::White);
+			std::dynamic_pointer_cast<PositionPair>(pair)->mapBox->border->setOutlineColor(sf::Color::White);
 		}
 	}
 }
@@ -251,7 +251,7 @@ void PositionEntry::Unselect()
 
 PositionPair::~PositionPair()
 {
-	mapBox->border.setOutlineColor(sf::Color::White);
+	mapBox->border->setOutlineColor(sf::Color::White);
 }
 
 void PositionPair::CreateEntry(XMLData& xmlData, float entryTop)
@@ -291,7 +291,7 @@ void PositionPair::MouseClick(XMLData& xmlData, sf::Vector2i mousePos, bool mous
 void PositionPair::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
 	UserInput input, bool showCursor)
 {
-	mapBox->border.setOutlineColor(selected ? selectedColor : baseColor);
+	mapBox->border->setOutlineColor(selected ? selectedColor : baseColor);
 	UIEntry::Update(xmlData, window, timePassed, input, showCursor);
 }
 

@@ -114,7 +114,7 @@ bool ContinentPage::MapClick(UI& ui, XMLData& xmlData, Maps& maps, sf::Vector2i 
 				auto pair = std::dynamic_pointer_cast<AdvancedTerritory>(entry->entries[i]);
 				if (pair->uiIndex == boxIndex)
 				{
-					maps.mapBoxes[boxIndex]->border.setOutlineColor(sf::Color::White);
+					maps.mapBoxes[boxIndex]->border->setOutlineColor(sf::Color::White);
 					xmlData.continents.at(entry->xmlKey)->territories.erase(std::dynamic_pointer_cast<AdvancedTerritory>(entry->entries[i])->otherXMLKey);
 					entry->entries.erase(entry->entries.begin() + i);
 					removed = true;
@@ -130,7 +130,7 @@ bool ContinentPage::MapClick(UI& ui, XMLData& xmlData, Maps& maps, sf::Vector2i 
 			}
 			else
 			{
-				maps.mapBoxes[boxIndex]->border.setOutlineColor(sf::Color::Blue);
+				maps.mapBoxes[boxIndex]->border->setOutlineColor(sf::Color::Blue);
 				entry->AddTerritory(xmlData, maps, boxIndex, ui.uiPages[(int)UIPageType::Territory]->entries[boxIndex]->xmlKey);
 			}
 			entry->BorderBoxSize();
@@ -625,10 +625,10 @@ void AdvancedTerritory::SwapView(ContinentView view)
 
 void AdvancedTerritory::Select()
 {
-	mapBox->border.setOutlineColor(selectedColor);
+	mapBox->border->setOutlineColor(selectedColor);
 }
 
 void AdvancedTerritory::Unselect()
 {
-	mapBox->border.setOutlineColor(sf::Color::White);
+	mapBox->border->setOutlineColor(sf::Color::White);
 }

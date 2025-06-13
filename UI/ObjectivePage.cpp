@@ -2,6 +2,7 @@
 #include "UI.h"
 #include "../XML/Objective.h"
 #include "../XML/Territory.h"
+#include "../XML/Continent.h"
 
 ObjectivePage::ObjectivePage(XMLData& xmlData, sf::Vector2f tabPos,
 	sf::Vector2f tabSize, std::string tabLabel, sf::Vector2f buttonBoxSize, 
@@ -77,7 +78,7 @@ bool ObjectivePage::MapClick(UI& ui, XMLData& xmlData, Maps& maps, sf::Vector2i 
 				auto territory = entry->territories[i];
 				if (territory->uiIndex == boxIndex)
 				{
-					maps.mapBoxes[boxIndex]->border.setOutlineColor(sf::Color::White);
+					maps.mapBoxes[boxIndex]->border->setOutlineColor(sf::Color::White);
 					if(isObjective)
 						xmlData.objectives.at(entry->xmlKey)->territories.erase(xmlData.objectives.at(entry->xmlKey)->territories.begin() + i);
 					else
@@ -97,8 +98,80 @@ bool ObjectivePage::MapClick(UI& ui, XMLData& xmlData, Maps& maps, sf::Vector2i 
 			}
 			else
 			{
-				maps.mapBoxes[boxIndex]->border.setOutlineColor(sf::Color::Blue);
+				maps.mapBoxes[boxIndex]->border->setOutlineColor(sf::Color::Blue);
 				entry->AddTerritory(xmlData, maps, boxIndex, ui.uiPages[(int)UIPageType::Territory]->entries[boxIndex]->xmlKey);
+			}
+			entry->BorderBoxSize();
+		}
+		PositionEntries();
+	}
+	else
+	{
+		SwapEntry(selectedEntry, -1);
+		selectedEntry = -1;
+	}
+	return true;
+}
+
+bool ObjectivePage::ContinentClick(UI& ui, XMLData& xmlData, ContinentPanel& panel, sf::Vector2i mousePos, int& continentIndex)
+{
+	if (UIPage::ContinentClick(ui, xmlData, panel, mousePos, continentIndex))
+	{
+		if (selectedEntry == -1)
+		{
+			for (int i = 0; i < entries.size(); i++)
+			{
+				auto entry = std::dynamic_pointer_cast<ObjectiveEntry>(entries[i]);
+				for (int j = 0; j < entry->continents.size(); j++)
+				{
+					auto continent = entry->continents[j];
+					if (continent->uiIndex == continentIndex)
+					{
+						SwapEntry(selectedEntry, i);
+						selectedEntry = i;
+					}
+				}
+			}
+			if (selectedEntry == -1)
+			{
+				AddObjective(xmlData);
+				auto entry = std::dynamic_pointer_cast<ObjectiveEntry>(entries[selectedEntry]);
+				entry->AddContinent(xmlData, panel, continentIndex, ui.uiPages[(int)UIPageType::Continent]->entries[continentIndex]->xmlKey);
+				entry->BorderBoxSize();
+			}
+		}
+		else
+		{
+			auto entry = std::dynamic_pointer_cast<ObjectiveEntry>(entries[selectedEntry]);
+			int i;
+			bool removed = false;
+			for (i = 0; i < entry->continents.size(); i++)
+			{
+				auto continent = entry->continents[i];
+				if (continent->uiIndex == continentIndex)
+				{
+					panel.continents[continentIndex]->box.rect.setOutlineColor(sf::Color::White);
+					if (isObjective)
+						xmlData.objectives.at(entry->xmlKey)->continents.erase(xmlData.objectives.at(entry->xmlKey)->continents.begin() + i);
+					else
+						xmlData.requirements.at(entry->xmlKey)->continents.erase(xmlData.requirements.at(entry->xmlKey)->continents.begin() + i);
+
+					entry->continents.erase(entry->continents.begin() + i);
+					removed = true;
+					break;
+				}
+			}
+			if (removed)
+			{
+				for (int j = i; j < entry->continents.size(); j++)
+				{
+					entry->continents[j]->nameLabel->Move({ 0, -25 });
+				}
+			}
+			else
+			{
+				panel.continents[continentIndex]->box.rect.setOutlineColor(sf::Color::Blue);
+				entry->AddContinent(xmlData, panel, continentIndex, ui.uiPages[(int)UIPageType::Continent]->entries[continentIndex]->xmlKey);
 			}
 			entry->BorderBoxSize();
 		}
@@ -134,7 +207,7 @@ void ObjectiveEntry::CreateEntry(XMLData& xmlData, float entryTop)
 	selectedColor = isObjective ? sf::Color{ 250, 170, 180 } : sf::Color{ 175, 0, 175 };
 
 	territoryPos = { 20, entryTop + 120 };
-	continentPos = { 320, entryTop + 120 };
+	continentPos = { 280, entryTop + 120 };
 
 	std::shared_ptr<sf::RectangleShape> border = 
 		std::make_shared<sf::RectangleShape>( sf::Vector2f{530, 165} );
@@ -162,12 +235,7 @@ void ObjectiveEntry::CreateEntry(XMLData& xmlData, float entryTop)
 	std::shared_ptr<sf::Text> continentLabel = 
 		std::make_shared<sf::Text>(UI::font, "Continents:");
 	continentLabel->setPosition({ 280, entryTop + 84 });
-	labels.push_back(continentLabel);
-	
-	std::shared_ptr<sf::Text> continents = 
-		std::make_shared<sf::Text>(UI::font, "Continent");
-	continents->setPosition({ 280, entryTop + 120 });
-	labels.push_back(continents);	
+	labels.push_back(continentLabel);	
 
 	std::shared_ptr<Objective> data = isObjective ? xmlData.objectives.at(xmlKey) :
 		xmlData.requirements.at(xmlKey);
@@ -194,6 +262,10 @@ void ObjectiveEntry::Draw(sf::RenderWindow& window)
 	{
 		territory->nameLabel->Draw(window);
 	}
+	for (auto continent : continents)
+	{
+		continent->nameLabel->Draw(window);
+	}
 }
 
 void ObjectiveEntry::MouseClick(XMLData& xmlData, sf::Vector2i mousePos, bool mouseOnPage, bool& select)
@@ -202,6 +274,10 @@ void ObjectiveEntry::MouseClick(XMLData& xmlData, sf::Vector2i mousePos, bool mo
 	for (auto territory : territories)
 	{
 		territory->nameLabel->active = mouseOnPage && UI::CheckMouseInBounds(mousePos, territory->nameLabel->box);;
+	}
+	for (auto continent : continents)
+	{
+		continent->nameLabel->active = mouseOnPage && UI::CheckMouseInBounds(mousePos, continent->nameLabel->box);;
 	}
 }
 
@@ -222,6 +298,19 @@ void ObjectiveEntry::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time
 			i--;
 		}
 	}
+	for (int i = 0; i < continents.size(); i++)
+	{
+		if (xmlData.continents.find(continents[i]->xmlKey) != xmlData.continents.end())
+		{
+			continents[i]->nameLabel->Update(window, timePassed, input, showCursor);
+		}
+		else
+		{
+			if (continents.size()) continents.erase(continents.begin() + i);
+			i--;
+		}
+	}
+
 	int numRequired = *boxes[(int)BoxTypes::NumRequired]->number;
 	int potentialRequired = territories.size() + continents.size();
 	if (numRequired > potentialRequired)
@@ -233,10 +322,15 @@ void ObjectiveEntry::MoveEntry(sf::Vector2f offset)
 	UIEntry::MoveEntry(offset);
 
 	territoryPos += offset;
+	continentPos += offset;
 
 	for (auto territory : territories)
 	{
 		territory->nameLabel->Move(offset);
+	}
+	for (auto continent : continents)
+	{
+		continent->nameLabel->Move(offset);
 	}
 }
 
@@ -260,6 +354,31 @@ void ObjectiveEntry::AddTerritory(XMLData& xmlData, Maps& maps, int boxIndex, in
 		*boxes[(int)BoxTypes::NumRequired]->number += 1;
 	}
 	else if(*boxes[(int)BoxTypes::NumRequired]->number == 0)
+		*boxes[(int)BoxTypes::NumRequired]->number = 1;
+}
+
+void ObjectiveEntry::AddContinent(XMLData& xmlData, ContinentPanel& panel, int continentIndex, int otherXMLKey)
+{
+	std::shared_ptr<LinkedData> continent = std::make_shared<LinkedData>();
+	continent->nameLabel = std::make_shared<TextBox>(continentPos + sf::Vector2f{ 0, continents.size() * 25.0f },
+		sf::Vector2f{ 250, 20 });
+	continent->nameLabel->displayText->setCharacterSize(20);
+	continent->nameLabel->baseColor = selectedColor;
+	continent->uiIndex = continentIndex;
+	continent->mapBox = std::make_shared<MapBox>();
+	continent->mapBox->border = 
+		std::make_shared<sf::RectangleShape>(panel.continents[continentIndex]->box.rect);
+	continent->xmlKey = otherXMLKey;
+	continent->nameLabel->text = &xmlData.continents[otherXMLKey]->name;
+	continents.push_back(continent);
+	isObjective ? xmlData.objectives[xmlKey]->continents.push_back(otherXMLKey) :
+		xmlData.requirements[xmlKey]->continents.push_back(otherXMLKey);
+	if (!isObjective && (*boxes[(int)BoxTypes::NumRequired]->number + 1) ==
+		(territories.size() + continents.size()))
+	{
+		*boxes[(int)BoxTypes::NumRequired]->number += 1;
+	}
+	else if (*boxes[(int)BoxTypes::NumRequired]->number == 0)
 		*boxes[(int)BoxTypes::NumRequired]->number = 1;
 }
 

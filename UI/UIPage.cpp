@@ -83,7 +83,7 @@ bool UIPage::MapClick(UI& ui, XMLData& xmlData, Maps& maps, sf::Vector2i mousePo
 	int index = 0;
 	for (std::shared_ptr<MapBox> box : maps.mapBoxes)
 	{
-		if (UI::CheckMouseInBounds(mousePos, box->border))
+		if (UI::CheckMouseInBounds(mousePos, *box->border))
 		{
 			boxIndex = index;
 			return true;

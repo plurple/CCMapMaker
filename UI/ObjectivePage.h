@@ -10,7 +10,6 @@ public:
 		Required,
 		Territories,
 		Continents,
-		ContinentList,
 		NumLabels
 	};
 	enum class BoxTypes
@@ -39,6 +38,7 @@ public:
 	//void Select() override;
 	//void Unselect() override;
 	void AddTerritory(XMLData& xmlData, Maps& maps, int boxIndex, int otherXMLKey);
+	void AddContinent(XMLData& xmlData, ContinentPanel& panel, int continentIndex, int otherXMLKey);
 	void BorderBoxSize() override;
 };
 
@@ -57,6 +57,8 @@ public:
 		sf::Vector2i mousePos, Maps& maps) override;
 	bool MapClick(UI& ui, XMLData& xmlData, Maps& maps,
 		sf::Vector2i mousePos, int& boxIndex) override;
+	bool ContinentClick(UI& ui, XMLData& xmlData, ContinentPanel& panel, 
+		sf::Vector2i mousePos, int& continentIndex);
 	void Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
 		UserInput input, bool showCursor, UIPageType pageType) override;
 

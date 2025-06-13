@@ -15,7 +15,7 @@ struct MapData
 
 struct MapBox
 {
-	sf::RectangleShape border;
+	std::shared_ptr<sf::RectangleShape> border;
 	sf::Vector2f smallPos;
 	sf::Vector2f largePos;
 };
