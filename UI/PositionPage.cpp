@@ -110,7 +110,7 @@ bool PositionPage::MapClick(UI& ui, XMLData& xmlData, Maps& maps, sf::Vector2i m
 }
 
 void PositionPage::Update(XMLData& xmlData, sf::RenderWindow& window, 
-	sf::Time timePassed, UserInput input, bool showCursor, UIPageType pageType)
+	sf::Time timePassed, UserInput& input, bool showCursor, UIPageType pageType)
 {
 	UIPage::Update(xmlData, window, timePassed, input, showCursor, 
 		pageType);
@@ -187,7 +187,7 @@ void PositionEntry::MouseClick(XMLData& xmlData, sf::Vector2i mousePos, bool mou
 }
 
 void PositionEntry::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
-	UserInput input, bool showCursor)
+	UserInput& input, bool showCursor)
 {
 	UIEntry::Update(xmlData, window, timePassed, input, showCursor);
 	MoveEntry({ 0, input.scroll });
@@ -289,7 +289,7 @@ void PositionPair::MouseClick(XMLData& xmlData, sf::Vector2i mousePos, bool mous
 }
 
 void PositionPair::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
-	UserInput input, bool showCursor)
+	UserInput& input, bool showCursor)
 {
 	mapBox->border->setOutlineColor(selected ? selectedColor : baseColor);
 	UIEntry::Update(xmlData, window, timePassed, input, showCursor);

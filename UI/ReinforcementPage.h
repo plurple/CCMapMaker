@@ -26,7 +26,7 @@ public:
 	void Draw(sf::RenderWindow& window) override;
 	void MouseClick(XMLData& xmlData, sf::Vector2i mousePos, bool mouseOnPage, bool& select) override;
 	void Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
-		UserInput input, bool showCursor) override;
+		UserInput& input, bool showCursor) override;
 
 	void MoveEntry(sf::Vector2f offset) override;
 	void Select() override;
@@ -48,7 +48,7 @@ public:
 	void MouseClick(XMLData& xmlData, sf::RenderWindow& window, 
 		sf::Vector2i mousePos, Maps& maps) override;
 	void Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
-		UserInput input, bool showCursor, UIPageType pageType) override;
+		UserInput& input, bool showCursor, UIPageType pageType) override;
 
 	void AddReinforcement(XMLData& xmlData);
 };

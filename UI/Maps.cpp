@@ -51,7 +51,7 @@ void Maps::Draw(sf::RenderWindow& window, bool isLarge)
 }
 
 void Maps::Update(sf::RenderWindow& window, sf::Time timePassed,
-    UserInput input)
+    UserInput& input)
 {
     for (int i = mapBoxes.size() - 1; i >= 0;)
     {
@@ -64,22 +64,23 @@ void Maps::Update(sf::RenderWindow& window, sf::Time timePassed,
     }
     bool mouseOnPage = UI::CheckMouseInBounds(sf::Vector2i(window.mapPixelToCoords(sf::Mouse::getPosition(window), scrollBar.scrollWindow)), mapCanvas);
 
+    float scroll = input.scroll;
     if (!mouseOnPage)
     {
-        input.scroll = 0.0f;
+        scroll = 0.0f;
     }
     else
     {
-        input.scroll *= 7;
+        scroll *= 7;
     }
     scrollBar.MoveBar(sf::Vector2f{largeMap.mapTexture->getSize()});
-    sf::Vector2f scroll = input.verticle ? 
-        sf::Vector2f{ 0, input.scroll } : 
-        sf::Vector2f{ input.scroll, 0} ;
-    scrollBar.Scroll(scroll);
-    scroll.y = scrollBar.currentScroll.y - largeMap.mapSprite->getPosition().y;
-    scroll.x = scrollBar.currentScroll.x - largeMap.mapSprite->getPosition().x;
-    MoveMap(scroll);
+    sf::Vector2f scrollVec = input.verticle ? 
+        sf::Vector2f{ 0, scroll } : 
+        sf::Vector2f{ scroll, 0} ;
+    scrollBar.Scroll(scrollVec);
+    scrollVec.y = scrollBar.currentScroll.y - largeMap.mapSprite->getPosition().y;
+    scrollVec.x = scrollBar.currentScroll.x - largeMap.mapSprite->getPosition().x;
+    MoveMap(scrollVec);
 }
 
 void Maps::MoveMap(sf::Vector2f offset)

@@ -36,7 +36,7 @@ public:
 	Maps();
 	void Draw(sf::RenderWindow& window, bool isLarge);
 	void Update(sf::RenderWindow& window, sf::Time timePassed,
-		UserInput input);
+		UserInput& input);
 
 	void MoveMap(sf::Vector2f offset);
 	std::shared_ptr<MapBox> AddMapBox(sf::Vector2i position);

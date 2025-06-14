@@ -21,7 +21,7 @@ TextBox::TextBox(sf::Vector2f pos, sf::Vector2f boxSize,
 }
 
 void TextBox::Update(sf::RenderWindow& window, sf::Time timePassed, 
-    UserInput input, bool showCursor)
+    UserInput& input, bool showCursor)
 {
     if (active)
     {

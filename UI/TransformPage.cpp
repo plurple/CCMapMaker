@@ -38,9 +38,10 @@ void TransformPage::MouseClick(XMLData& xmlData, sf::RenderWindow& window,
 }
 
 void TransformPage::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
-    UserInput input, bool showCursor, UIPageType pageType) 
+    UserInput& input, bool showCursor, UIPageType pageType) 
 {
 	UIPage::Update(xmlData, window, timePassed, input, showCursor, pageType);
+	PositionEntries();
 }
 
 void TransformPage::AddTransform(XMLData& xmlData)
@@ -139,6 +140,7 @@ void TransformEntry::CreateEntry(XMLData& xmlData, float entryTop)
 	entries.push_back(incOptions);
 
 	Select();
+	BorderBoxSize();
 }
 
 void TransformEntry::Draw(sf::RenderWindow& window)
@@ -186,8 +188,31 @@ void TransformEntry::MouseClick(XMLData& xmlData, sf::Vector2i mousePos, bool mo
 }
 
 void TransformEntry::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
-	UserInput input, bool showCursor)
+	UserInput& input, bool showCursor)
 {
+	if (input.del && selectedCondition != -1)
+	{
+		if (conditions[selectedCondition]->selected)
+		{
+			RemoveCondition(xmlData);
+			input.del = false;
+		}
+		selectedCondition = -1;
+	}
+	if (input.tab && selectedCondition != -1)
+	{
+		int oldCondition = selectedCondition;
+		input.shift ? selectedCondition-- : selectedCondition++;
+
+		if (selectedCondition < 0)
+			selectedCondition = conditions.size() - 1;
+		else if (selectedCondition >= conditions.size())
+			selectedCondition = 0;
+		if (conditions.size() == 0)
+			selectedCondition = -1;
+		SwapCondition(oldCondition, selectedCondition);
+		input.tab = false;
+	}
 	UIEntry::Update(xmlData, window, timePassed, input, showCursor);
 	MoveEntry({ 0, input.scroll });
 
@@ -229,6 +254,19 @@ void TransformEntry::AddCondition(XMLData& xmlData)
 	condition->CreateEntry(xmlData, conditionPos.y + conditions.size() * offset);
 	conditions.push_back(condition);
 
+	BorderBoxSize();
+}
+
+void TransformEntry::RemoveCondition(XMLData& xmlData)
+{
+	conditions[selectedCondition]->Unselect(true);
+	auto transform = xmlData.transforms.at(xmlKey);
+	transform->conditions.erase(selectedCondition);
+	conditions.erase(conditions.begin() + selectedCondition);
+	for (int i = selectedCondition; i < conditions.size(); i++)
+	{
+		conditions[i]->MoveEntry({ 0.0f, -125.0f });
+	}
 	BorderBoxSize();
 }
 
@@ -326,7 +364,7 @@ void ConditionEntry::MouseClick(XMLData& xmlData, sf::Vector2i mousePos, bool mo
 }
 
 void ConditionEntry::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
-	UserInput input, bool showCursor)
+	UserInput& input, bool showCursor)
 {
 	UIEntry::Update(xmlData, window, timePassed, input, showCursor);
 }
@@ -405,7 +443,7 @@ void TransformOption::MouseClick(XMLData& xmlData, sf::Vector2i mousePos, bool m
 }
 
 void TransformOption::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
-	UserInput input, bool showCursor)
+	UserInput& input, bool showCursor)
 {
 	labels[(int)LabelTypes::SelectedOption]->setString(xmlData.GetTransformOptionString(optionType, selectedOption));
 	UIEntry::Update(xmlData, window, timePassed, input, showCursor);

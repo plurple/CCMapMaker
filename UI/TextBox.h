@@ -17,7 +17,7 @@ public:
 	TextBox(sf::Vector2f pos, sf::Vector2f boxSize = { 400, 32 }, std::string* defaultText = nullptr, 
 		int* defaultNum = nullptr);
 	void Update(sf::RenderWindow& window, sf::Time timePassed, 
-		UserInput input, bool showCursor);
+		UserInput& input, bool showCursor);
 	void Draw(sf::RenderWindow& window);
 	void Move(sf::Vector2f offset);
 	void Hide(bool show = false);

@@ -40,7 +40,7 @@ public:
 	virtual void Draw(sf::RenderWindow& window);
 	virtual void MouseClick(XMLData& xmlData, sf::Vector2i mousePos, bool mouseOnPage, bool& select);
 	virtual void Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
-		UserInput input, bool showCursor);
+		UserInput& input, bool showCursor);
 
 	virtual void MoveEntry(sf::Vector2f offset);
 	virtual void Select();
@@ -72,7 +72,7 @@ public:
 	virtual bool MapClick(UI& ui, XMLData& xmlData, Maps& maps, sf::Vector2i mousePos, int& boxIndex);
 	virtual bool ContinentClick(UI& ui, XMLData& xmlData, ContinentPanel& panel, sf::Vector2i mousePos, int& continentIndex);
 	virtual void Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
-		UserInput input, bool showCursor, UIPageType page);
+		UserInput& input, bool showCursor, UIPageType page);
 
 	void AddEntry(XMLData& xmlData, std::shared_ptr<UIEntry> entry);
 	void SwapEntry(int previous, int future);

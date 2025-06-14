@@ -239,7 +239,7 @@ bool ContinentPage::ContinentClick(UI& ui, XMLData& xmlData,
 }
 
 void ContinentPage::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
-	UserInput input, bool showCursor, UIPageType pageType)
+	UserInput& input, bool showCursor, UIPageType pageType)
 {
 	UIPage::Update(xmlData, window, timePassed, input, showCursor, pageType);
 	if (input.alt)
@@ -398,7 +398,7 @@ void ContinentEntry::MouseClick(XMLData& xmlData, sf::Vector2i mousePos, bool mo
 }
 
 void ContinentEntry::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
-	UserInput input, bool showCursor)
+	UserInput& input, bool showCursor)
 {
 	for (int i = 0; i < entries.size(); i++)
 	{
@@ -673,7 +673,7 @@ void BonusLine::MouseClick(XMLData& xmlData, sf::Vector2i mousePos, bool mouseOn
 }
 
 void BonusLine::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
-	UserInput input, bool showCursor)
+	UserInput& input, bool showCursor)
 {
 	UIEntry::Update(xmlData, window, timePassed, input, showCursor);
 }
@@ -780,7 +780,7 @@ void AdvancedTerritory::MouseClick(XMLData& xmlData, sf::Vector2i mousePos, bool
 }
 
 void AdvancedTerritory::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
-	UserInput input, bool showCursor)
+	UserInput& input, bool showCursor)
 {
 	float mult = buttons[(int)ButtonTypes::Multiplier]->selected && shapes[0]->getScale().y;
 	boxes[(int)BoxTypes::FactorBox]->Hide(mult);

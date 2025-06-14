@@ -56,7 +56,7 @@ void ReinforcementPage::MouseClick(XMLData& xmlData, sf::RenderWindow& window,
 }
 
 void ReinforcementPage::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
-    UserInput input, bool showCursor, UIPageType pageType)
+    UserInput& input, bool showCursor, UIPageType pageType)
 {
 	UIPage::Update(xmlData, window, timePassed, input, showCursor, pageType);
 
@@ -138,7 +138,7 @@ void ReinforcementEntry::MouseClick(XMLData& xmlData, sf::Vector2i mousePos, boo
 }
 
 void ReinforcementEntry::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
-	UserInput input, bool showCursor)
+	UserInput& input, bool showCursor)
 {
 	UIEntry::Update(xmlData, window, timePassed, input, showCursor);
 

@@ -37,7 +37,7 @@ public:
 	void Draw(sf::RenderWindow& window) override;
 	void MouseClick(XMLData& xmlData, sf::Vector2i mousePos, bool mouseOnPage, bool& select) override;
 	void Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
-		UserInput input, bool showCursor) override;
+		UserInput& input, bool showCursor) override;
 
 	void MoveEntry(sf::Vector2f offset) override;
 	void SwapView(ContinentView view);
@@ -70,7 +70,7 @@ public:
 	void Draw(sf::RenderWindow& window) override;
 	void MouseClick(XMLData& xmlData, sf::Vector2i mousePos, bool mouseOnPage, bool& select) override;
 	void Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
-		UserInput input, bool showCursor) override;
+		UserInput& input, bool showCursor) override;
 
 	void MoveEntry(sf::Vector2f offset) override;
 };
@@ -119,7 +119,7 @@ public:
 	void Draw(sf::RenderWindow& window) override;
 	void MouseClick(XMLData& xmlData, sf::Vector2i mousePos, bool mouseOnPage, bool& select) override;
 	void Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
-		UserInput input, bool showCursor) override;
+		UserInput& input, bool showCursor) override;
 
 	void MoveEntry(sf::Vector2f offset) override;
 	void SwapView(ContinentView view);
@@ -151,7 +151,7 @@ public:
 	bool ContinentClick(UI& ui, XMLData& xmlData, ContinentPanel& panel,
 		sf::Vector2i mousePos, int& continentIndex) override;
 	void Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
-		UserInput input, bool showCursor, UIPageType pageType) override;
+		UserInput& input, bool showCursor, UIPageType pageType) override;
 
 	void AddContinent(XMLData& xmlData);
 	void SwapView();

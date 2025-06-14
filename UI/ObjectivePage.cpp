@@ -186,7 +186,7 @@ bool ObjectivePage::ContinentClick(UI& ui, XMLData& xmlData, ContinentPanel& pan
 }
 
 void ObjectivePage::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
-    UserInput input, bool showCursor, UIPageType pageType)
+    UserInput& input, bool showCursor, UIPageType pageType)
 {
 	UIPage::Update(xmlData, window, timePassed, input, showCursor, pageType);
 }
@@ -284,7 +284,7 @@ void ObjectiveEntry::MouseClick(XMLData& xmlData, sf::Vector2i mousePos, bool mo
 }
 
 void ObjectiveEntry::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
-	UserInput input, bool showCursor)
+	UserInput& input, bool showCursor)
 {
 	UIEntry::Update(xmlData, window, timePassed, input, showCursor);
 	MoveEntry({ 0, input.scroll});

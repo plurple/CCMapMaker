@@ -214,7 +214,7 @@ bool TerritoryPage::ContinentClick(UI& ui, XMLData& xmlData, ContinentPanel& pan
 }
 
 void TerritoryPage::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
-	UserInput input, bool showCursor, UIPageType pageType)
+	UserInput& input, bool showCursor, UIPageType pageType)
 {
 	if (*input.keyPressed.c_str() == 'x' && (selectedEntry == -1 || !entries[selectedEntry]->boxes[(int)TerritoryEntry::BoxTypes::NameBox]->active))
 	{
@@ -487,7 +487,7 @@ void TerritoryEntry::MouseClick(XMLData& xmlData, sf::Vector2i mousePos, bool mo
 }
 
 void TerritoryEntry::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
-	UserInput input, bool showCursor)
+	UserInput& input, bool showCursor)
 {
 	int& smallxRef = *boxes[(int)BoxTypes::SmallXBox]->number;
 	int& largexRef = *boxes[(int)BoxTypes::LargeXBox]->number;

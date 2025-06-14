@@ -68,19 +68,20 @@ void ContinentPanel::Update(XMLData& xmlData, sf::RenderWindow& window,
     {
         bool mouseOnPage = UI::CheckMouseInBounds(sf::Vector2i(window.mapPixelToCoords(sf::Mouse::getPosition(window), scrollBar.scrollWindow)), panel);
 
+        float scroll = input.scroll;
+
         if (!mouseOnPage)
         {
-            input.scroll = 0.0f;
+            scroll = 0.0f;
         }
         else
         {
-            input.scroll *= 7;
+            scroll *= 7;
         }
         scrollBar.MoveBar(sf::Vector2f{ 0, contentSize });
-        sf::Vector2f scroll = sf::Vector2f{ 0, input.scroll };
-        scrollBar.Scroll(scroll);
-        scroll.y = scrollBar.currentScroll.y - continents[0]->box.rect->getPosition().y;
-        Move(scroll);
+        scrollBar.Scroll({ 0,scroll });
+        scroll = scrollBar.currentScroll.y - continents[0]->box.rect->getPosition().y;
+        Move({ 0,scroll });
     }
 }
 

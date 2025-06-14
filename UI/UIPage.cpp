@@ -111,33 +111,8 @@ bool UIPage::ContinentClick(UI& ui, XMLData& xmlData, ContinentPanel& panel, sf:
 }
 
 void UIPage::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
-	UserInput input, bool showCursor, UIPageType pageType)
+	UserInput& input, bool showCursor, UIPageType pageType)
 {
-	if (input.del && selectedEntry != -1)
-	{
-		if (entries[selectedEntry]->selected)
-		{
-			entries[selectedEntry]->Unselect(true);
-			xmlData.RemoveData(pageType, entries[selectedEntry]->xmlKey);
-			entries.erase(entries.begin() + selectedEntry);
-		}
-		PositionEntries();
-		selectedEntry = -1;		
-	}
-	if (input.tab)
-	{
-		int oldEntry = selectedEntry;
-		input.shift ? selectedEntry-- : selectedEntry++;
-
-		if (selectedEntry < 0)
-			selectedEntry = entries.size() - 1;
-		else if (selectedEntry >= entries.size())
-			selectedEntry = 0;
-		if (entries.size() == 0)
-			selectedEntry = -1;
-		SwapEntry(oldEntry, selectedEntry);
-	}
-
 	mouseOnPage = UI::CheckMouseInBounds(sf::Vector2i(window.mapPixelToCoords(sf::Mouse::getPosition(window), scrollBar.scrollWindow)), page);
 
 	if (!input.verticle || !mouseOnPage)
@@ -163,6 +138,31 @@ void UIPage::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePas
 	{
 		entry->Update(xmlData, window, timePassed, input, showCursor);
 	}
+
+	if (input.del && selectedEntry != -1)
+	{
+		if (entries[selectedEntry]->selected)
+		{
+			entries[selectedEntry]->Unselect(true);
+			xmlData.RemoveData(pageType, entries[selectedEntry]->xmlKey);
+			entries.erase(entries.begin() + selectedEntry);
+		}
+		PositionEntries();
+		selectedEntry = -1;		
+	}
+	if (input.tab)
+	{
+		int oldEntry = selectedEntry;
+		input.shift ? selectedEntry-- : selectedEntry++;
+
+		if (selectedEntry < 0)
+			selectedEntry = entries.size() - 1;
+		else if (selectedEntry >= entries.size())
+			selectedEntry = 0;
+		if (entries.size() == 0)
+			selectedEntry = -1;
+		SwapEntry(oldEntry, selectedEntry);
+	}		
 }
 
 void UIPage::AddEntry(XMLData& xmlData, std::shared_ptr<UIEntry> entry)
@@ -265,7 +265,7 @@ void UIEntry::MouseClick(XMLData& xmlData, sf::Vector2i mousePos, bool mouseOnPa
 }
 
 void UIEntry::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
-	UserInput input, bool showCursor)
+	UserInput& input, bool showCursor)
 {
 	for (std::shared_ptr<TextBox> box : boxes)
 	{
