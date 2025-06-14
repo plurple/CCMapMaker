@@ -1,6 +1,7 @@
 #pragma once
 #include <unordered_map>
 #include <memory>
+#include "Transform.h"
 
 class Transform;
 class Reinforcement;
@@ -53,5 +54,8 @@ public:
 	void RemoveTerritory(int key);
 
 	void RemoveData(UIPageType type, int key);
+
+	std::string GetTransformOptionString(TransformOptionType type, int option);
+	void ChangeTransformOption(TransformOptionType type, int& option, bool plus, bool skipAll = false);
 };
 

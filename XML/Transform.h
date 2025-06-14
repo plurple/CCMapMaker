@@ -1,11 +1,22 @@
 #pragma once
 #include <vector>
+#include <unordered_map>
+
+enum class TransformOptionType
+{
+	When,
+	Who,
+	INC,
+	ConditionType,
+	Operator,
+	COUNT
+};
 
 enum class TransformType
 {
 	Turn,
 	Round,
-	NumTypes
+	COUNT
 };
 
 enum class ApplyTo
@@ -19,7 +30,7 @@ enum class ApplyTo
 	NonTeam,
 	TeamMates,
 	All,
-	NumApplys
+	COUNT
 };
 
 enum class IncType
@@ -27,7 +38,7 @@ enum class IncType
 	Plus,
 	Minus,
 	Independent,
-	NumIncs
+	COUNT
 };
 
 enum class ConditionType
@@ -36,7 +47,7 @@ enum class ConditionType
 	Player,
 	Territory,
 	ArmyCount,
-	NumTypes
+	COUNT
 };
 
 enum class Operators
@@ -49,7 +60,7 @@ enum class Operators
 	LessEquals,
 	In,
 	NotIn,
-	NumOperators
+	COUNT
 };
 
 struct ConditionData
@@ -74,7 +85,7 @@ public:
 	int upper;
 	int lower;
 	bool percentage;
-	std::vector<ConditionData> conditions;
+	std::unordered_map<int, ConditionData> conditions;
 
 	Transform();
 };

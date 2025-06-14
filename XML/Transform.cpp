@@ -9,8 +9,6 @@ Transform::Transform() :
 	lower{ -1 },
 	percentage{ false }
 {
-	ConditionData cond{};
-	conditions.push_back(cond);
 }
 
 //-----------------------------------------------------------

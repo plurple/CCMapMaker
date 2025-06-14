@@ -26,6 +26,7 @@ void TransformPage::MouseClick(XMLData& xmlData, sf::RenderWindow& window,
 	sf::Vector2i mousePos, Maps& maps)
 {
 	UIPage::MouseClick(xmlData, window, mousePos, maps);
+	PositionEntries();
     if (!showContinents.selected && UI::CheckMouseInBounds(mousePos, *addEntry.rect))
     {
 		AddTransform(xmlData);
@@ -56,8 +57,10 @@ void TransformEntry::CreateEntry(XMLData& xmlData, float entryTop)
 	baseColor = sf::Color::Blue;
 	selectedColor = sf::Color{ 60, 120, 240 };
 
+	conditionPos = { 0, entryTop };
+
 	std::shared_ptr<sf::RectangleShape> border = 
-		std::make_shared<sf::RectangleShape>( sf::Vector2f{ 580,288 } );/*size*/
+		std::make_shared<sf::RectangleShape>( sf::Vector2f{ 580,170 } );/*size*/
 	border->setPosition({ 10, entryTop });
 	border->setFillColor(sf::Color::Transparent);
 	border->setOutlineThickness(2.0f);
@@ -117,22 +120,23 @@ void TransformEntry::CreateEntry(XMLData& xmlData, float entryTop)
 	std::shared_ptr<TransformOption> typeOptions = 
 		std::make_shared<TransformOption>(xmlKey);
 	typeOptions->CreateEntry(xmlData, entryTop + 12, 20, 100, 140, 260, "Type:");
+	typeOptions->optionType = TransformOptionType::When;
+	typeOptions->selectedOption = 1;
 	entries.push_back(typeOptions);
 	
 	std::shared_ptr<TransformOption> applyOptions = 
 		std::make_shared<TransformOption>(xmlKey);
 	applyOptions->CreateEntry(xmlData, entryTop + 46, 20, 150, 190, 310, "Apply To:");
+	applyOptions->optionType = TransformOptionType::Who;
+	applyOptions->selectedOption = 3;
 	entries.push_back(applyOptions);
 	
 	std::shared_ptr<TransformOption> incOptions = 
 		std::make_shared<TransformOption>(xmlKey);
 	incOptions->CreateEntry(xmlData, entryTop + 12, 320, 380, 420, 540, "Inc:");
+	incOptions->optionType = TransformOptionType::INC;
+	incOptions->selectedOption = 2;
 	entries.push_back(incOptions);
-	
-	std::shared_ptr<ConditionEntry> condition = 
-		std::make_shared<ConditionEntry>(xmlKey, conditions.size());
-	condition->CreateEntry(xmlData, entryTop);
-	conditions.push_back(condition);
 
 	Select();
 }
@@ -159,11 +163,26 @@ void TransformEntry::MouseClick(XMLData& xmlData, sf::Vector2i mousePos, bool mo
 	if (mouseOnPage && addCondition && UI::CheckMouseInBounds(mousePos, *addCondition->rect))
 	{
 		//todo add a conditions stuff
+		AddCondition(xmlData);
 	}
+	int oldCondition = selectedCondition;
+	int index = 0;
 	for (std::shared_ptr<UIEntry> entry : conditions)
 	{
-		entry->MouseClick(xmlData, mousePos, mouseOnPage, select);
+		bool sel = false;
+		entry->MouseClick(xmlData, mousePos, mouseOnPage, sel);
+		if (sel)
+		{
+			if (index == oldCondition)
+				oldCondition = -1;
+			selectedCondition = index;
+		}
+		index++;
 	}
+	if (oldCondition == selectedCondition)
+		selectedCondition = -1;
+	if (!(oldCondition == -1 && selectedCondition == -1))
+		SwapCondition(oldCondition, selectedCondition);
 }
 
 void TransformEntry::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
@@ -181,22 +200,73 @@ void TransformEntry::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time
 void TransformEntry::MoveEntry(sf::Vector2f offset)
 {
 	UIEntry::MoveEntry(offset);
+
+	conditionPos += offset;
+
 	for (std::shared_ptr<UIEntry> entry : conditions)
 	{
 		entry->MoveEntry(offset);
 	}
 }
 
+void TransformEntry::Select()
+{
+	UIEntry::Select();
+}
+
+void TransformEntry::Unselect(bool white)
+{
+	UIEntry::Unselect();
+}
+
+void TransformEntry::AddCondition(XMLData& xmlData)
+{
+	std::shared_ptr<ConditionEntry> condition =
+		std::make_shared<ConditionEntry>(xmlKey, conditions.size());
+	ConditionData data;
+	xmlData.transforms[xmlKey]->conditions.insert({ conditions.size(), data });
+	float offset = conditions.size() ? 125.0f : 0.0f;
+	condition->CreateEntry(xmlData, conditionPos.y + conditions.size() * offset);
+	conditions.push_back(condition);
+
+	BorderBoxSize();
+}
+
+void TransformEntry::SwapCondition(int previous, int future)
+{
+	if (previous >= 0)
+	{
+		conditions[previous]->Unselect();
+	}
+	if (future >= 0)
+	{
+		conditions[future]->Select();
+	}
+}
+
+void TransformEntry::BorderBoxSize()
+{
+	float borderHeight = 160.0f;
+
+	int numConditions = conditions.size();
+	borderHeight += numConditions ? numConditions * 125.0f : 10.0f;
+	
+	std::dynamic_pointer_cast<sf::RectangleShape>(shapes[(int)UIEntry::ShapeTypes::Border])->setSize({ 530, borderHeight });
+}
+
 //-----------------------------------------------------------
 
 void ConditionEntry::CreateEntry(XMLData& xmlData, float entryTop)
 {
+	selectedColor = sf::Color::Cyan;
+	baseColor = sf::Color::Magenta;
+
 	std::shared_ptr<sf::RectangleShape> border = 
-		std::make_shared<sf::RectangleShape>(sf::Vector2f{ 572,116 } );/*size*/
+		std::make_shared<sf::RectangleShape>(sf::Vector2f{ 522,116 } );/*size*/
 	border->setPosition({ 14, entryTop + 168});
 	border->setFillColor(sf::Color::Transparent);
 	border->setOutlineThickness(2.0f);
-	border->setOutlineColor(sf::Color::Cyan);
+	border->setOutlineColor(baseColor);
 	shapes.push_back(border);
 
 	std::shared_ptr<sf::Text> idLabel = 
@@ -225,16 +295,23 @@ void ConditionEntry::CreateEntry(XMLData& xmlData, float entryTop)
 	std::shared_ptr<TransformOption> typeOptions =
 		std::make_shared<TransformOption>(xmlKey);
 	typeOptions->CreateEntry(xmlData, entryTop + 172, 20, 100, 140, 260, "Type:");
+	typeOptions->optionType = TransformOptionType::ConditionType;
+	typeOptions->selectedOption = 2;
 	entries.push_back(typeOptions);
 
 	std::shared_ptr<TransformOption> operatorOptions =
 		std::make_shared<TransformOption>(xmlKey);
 	operatorOptions->CreateEntry(xmlData, entryTop + 208, 20, 150, 190, 310, "Operator:");
+	operatorOptions->optionType = TransformOptionType::Operator;
+	operatorOptions->selectedOption = 7;
 	entries.push_back(operatorOptions);
 
 	std::shared_ptr<TransformOption> valueOptions = 
 		std::make_shared< TransformOption>(xmlKey);
 	valueOptions->CreateEntry(xmlData, entryTop + 244, 20, 120, 160, 280, "Value:");
+	valueOptions->optionType = TransformOptionType::Who;
+	valueOptions->selectedOption = 7;
+	valueOptions->skipAll = true;
 	entries.push_back(valueOptions);
 }
 
@@ -318,18 +395,19 @@ void TransformOption::MouseClick(XMLData& xmlData, sf::Vector2i mousePos, bool m
 	std::shared_ptr<Button> leftButton = buttons[(int)ButtonTypes::LeftButton];
 	if (UI::CheckMouseInBounds(mousePos, *leftButton->rect))
 	{
-		//todo swap the opttion left
+		xmlData.ChangeTransformOption(optionType, selectedOption, false, skipAll);
 	}
 	std::shared_ptr<Button> rightButton = buttons[(int)ButtonTypes::RightButton];
 	if (UI::CheckMouseInBounds(mousePos, *rightButton->rect))
 	{
-		//todo swap the opttion right
+		xmlData.ChangeTransformOption(optionType, selectedOption, true, skipAll);
 	}
 }
 
 void TransformOption::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
 	UserInput input, bool showCursor)
 {
+	labels[(int)LabelTypes::SelectedOption]->setString(xmlData.GetTransformOptionString(optionType, selectedOption));
 	UIEntry::Update(xmlData, window, timePassed, input, showCursor);
 }
 

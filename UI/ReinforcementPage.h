@@ -29,6 +29,8 @@ public:
 		UserInput input, bool showCursor) override;
 
 	void MoveEntry(sf::Vector2f offset) override;
+	void Select() override;
+	void Unselect(bool white = false) override;
 };
 
 class ReinforcementPage : public UIPage

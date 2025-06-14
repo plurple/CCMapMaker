@@ -156,3 +156,13 @@ void ReinforcementEntry::MoveEntry(sf::Vector2f offset)
 {
 	UIEntry::MoveEntry(offset);
 }
+
+void ReinforcementEntry::Select()
+{
+	UIEntry::Select();
+}
+
+void ReinforcementEntry::Unselect(bool white)
+{
+	UIEntry::Unselect();
+}

@@ -22,8 +22,12 @@ public:
 		RightButton,
 		NumButtons
 	};
+	TransformOptionType optionType;
+	int selectedOption;
+	bool skipAll;
+
 	~TransformOption() {};
-	TransformOption(int insertedKey) : UIEntry{ insertedKey } {};
+	TransformOption(int insertedKey) : UIEntry{ insertedKey }, skipAll{ false }, selectedOption{ 0 }, optionType{ TransformOptionType::ConditionType } {};
 	void CreateEntry(XMLData& xmlData, float entryTop) override;
 	void CreateEntry(XMLData& xmlData, float yCoord, float labelCoord, float leftCoord,
 		float optionCoord, float rightCoord, std::string label);
@@ -105,9 +109,11 @@ public:
 		NumOptions
 	};
 	std::vector<std::shared_ptr<UIEntry>> conditions;
+	sf::Vector2f conditionPos;
+	int selectedCondition;
 
 	~TransformEntry() {};
-	TransformEntry(int insertedKey) : UIEntry{ insertedKey } {};
+	TransformEntry(int insertedKey) : UIEntry{ insertedKey }, selectedCondition{ -1 } {};
 	void CreateEntry(XMLData& xmlData, float entryTop) override;
 
 	void Draw(sf::RenderWindow& window) override;
@@ -116,6 +122,11 @@ public:
 		UserInput input, bool showCursor) override;
 
 	void MoveEntry(sf::Vector2f offset) override;
+	void Select() override;
+	void Unselect(bool white = false) override;
+	void AddCondition(XMLData& xmlData);
+	void SwapCondition(int previous, int future);
+	void BorderBoxSize() override;
 };
 
 class TransformPage : public UIPage

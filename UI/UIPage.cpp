@@ -259,7 +259,8 @@ void UIEntry::MouseClick(XMLData& xmlData, sf::Vector2i mousePos, bool mouseOnPa
 	}
 	for (std::shared_ptr<UIEntry> entry : entries)
 	{
-		entry->MouseClick(xmlData, mousePos, mouseOnPage, select);
+		bool temp;
+		entry->MouseClick(xmlData, mousePos, mouseOnPage, temp);
 	}
 }
 

@@ -5,6 +5,63 @@
 #include "Reinforcement.h"
 #include "Territory.h"
 #include "Transform.h"
+#include <iostream>
+#include "../EnumOperators.hpp"
+
+static const std::vector<std::string> whenStrings =
+{
+	"Turn",
+	"Round"
+};
+
+static const std::vector<std::string> whoStrings =
+{
+	"  Self",
+	" Neutral",
+	" Players",
+	"Opponents",
+	"  Others",
+	"   Team",
+	" Non Team",
+	"Team Mates",
+	"   All",
+};
+
+static const std::vector<std::string> incStrings =
+{
+	"   Plus",
+	"   Minus",
+	"Independent"
+};
+
+static const std::vector<std::string> conditionTypeStrings =
+{
+	"  Round",
+	"  Player",
+	"Territory",
+	"ArmyCount"
+};
+
+static const std::vector<std::string> operatorStrings =
+{
+	"  =",
+	"  !=",
+	"  >",
+	"  >=",
+	"  <",
+	"  <=",
+	"  In",
+	"Not In"
+};
+
+static const std::vector<std::vector<std::string>> enumStrings =
+{
+	whenStrings,
+	whoStrings,
+	incStrings,
+	conditionTypeStrings,
+	operatorStrings
+};
 
 XMLData::XMLData() :
 	minReinforcements{3},
@@ -125,5 +182,54 @@ void XMLData::RemoveData(UIPageType type, int key)
 	case UIPageType::Transform:
 		RemoveTransform(key);
 		break;
+	}
+}
+
+std::string XMLData::GetTransformOptionString(TransformOptionType type, int option)
+{
+	return enumStrings[(int)type][option];
+}
+
+void XMLData::ChangeTransformOption(TransformOptionType type, int& option, bool plus, bool skipAll)
+{
+	switch (type)
+	{
+	case TransformOptionType::When:
+	{
+		TransformType temp = (TransformType)option;
+		plus ? temp++ : temp--;
+		option = (int)temp;
+		break;
+	}
+	case TransformOptionType::Who:
+	{
+		ApplyTo temp = (ApplyTo)option;
+		plus ? temp++ : temp--;
+		if (skipAll && temp == ApplyTo::All)
+			plus ? temp++ : temp--;
+		option = (int)temp;
+		break;
+	}
+	case TransformOptionType::INC:
+	{
+		IncType temp = (IncType)option;
+		plus ? temp++ : temp--;
+		option = (int)temp;
+		break;
+	}
+	case TransformOptionType::ConditionType:
+	{
+		ConditionType temp = (ConditionType)option;
+		plus ? temp++ : temp--;
+		option = (int)temp;
+		break;
+	}
+	case TransformOptionType::Operator:
+	{
+		Operators temp = (Operators)option;
+		plus ? temp++ : temp--;
+		option = (int)temp;
+		break;
+	}
 	}
 }
