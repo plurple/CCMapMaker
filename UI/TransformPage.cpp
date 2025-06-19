@@ -58,7 +58,7 @@ void TransformEntry::CreateEntry(XMLData& xmlData, float entryTop)
 	baseColor = sf::Color::Blue;
 	selectedColor = sf::Color{ 60, 120, 240 };
 
-	conditionPos = { 0, entryTop };
+	conditionPos = { 0, entryTop + 170 };
 
 	std::shared_ptr<sf::RectangleShape> border = 
 		std::make_shared<sf::RectangleShape>( sf::Vector2f{ 580,170 } );/*size*/
@@ -70,71 +70,76 @@ void TransformEntry::CreateEntry(XMLData& xmlData, float entryTop)
 
 	std::shared_ptr<sf::Text> amountLabel = 
 		std::make_shared<sf::Text>(UI::font, "Amount:");
-	amountLabel->setPosition({ 20, entryTop + 92 });
+	amountLabel->setPosition({ 340, entryTop + 8 });
 	labels.push_back(amountLabel);
 	
 	std::shared_ptr<sf::Text> upperLabel = 
 		std::make_shared<sf::Text>(UI::font, "Upper:");
-	upperLabel->setPosition({ 220, entryTop + 92 });
+	upperLabel->setPosition({ 360, entryTop + 50 });
 	labels.push_back(upperLabel);
 	
 	std::shared_ptr<sf::Text> lowerLabel = 
 		std::make_shared<sf::Text>(UI::font, "Lower:");
-	lowerLabel->setPosition({ 380, entryTop + 92 });
+	lowerLabel->setPosition({ 360, entryTop + 92 });
 	labels.push_back(lowerLabel);
 	
 	std::shared_ptr<sf::Text> conditionsLabel = 
 		std::make_shared<sf::Text>(UI::font, "Conditions:");
-	conditionsLabel->setPosition({ 20, entryTop + 128 });
+	conditionsLabel->setPosition({ 20, entryTop + 134 });
 	labels.push_back(conditionsLabel);
 
 	std::shared_ptr<Transform> data = xmlData.transforms.at(xmlKey);
 	std::shared_ptr<TextBox> amountBox = 
-		std::make_shared<TextBox>(sf::Vector2f{ 140, entryTop + 96 }/*position*/,
+		std::make_shared<TextBox>(sf::Vector2f{ 460, entryTop + 12 }/*position*/,
 			sf::Vector2f{ 70, 30 }/*size*/);
 	amountBox->number = &data->amount;
 	boxes.push_back(amountBox);
 	
 	std::shared_ptr<TextBox> upperBox = 
-		std::make_shared<TextBox>(sf::Vector2f{ 320, entryTop + 96 }/*position*/,
-			sf::Vector2f{ 50, 30 }/*size*/);
+		std::make_shared<TextBox>(sf::Vector2f{ 460, entryTop + 54 }/*position*/,
+			sf::Vector2f{ 70, 30 }/*size*/);
 	upperBox->number = &data->upper;
 	boxes.push_back(upperBox);
 	
 	std::shared_ptr<TextBox> lowerBox = 
-		std::make_shared<TextBox>(sf::Vector2f{ 480, entryTop + 96 }/*position*/,
-			sf::Vector2f{ 50, 30 }/*size*/);
+		std::make_shared<TextBox>(sf::Vector2f{ 460, entryTop + 96 }/*position*/,
+			sf::Vector2f{ 70, 30 }/*size*/);
 	lowerBox->number = &data->lower;
 	boxes.push_back(lowerBox);
 
 	std::shared_ptr<Button> percentage = 
-		std::make_shared<Button>(sf::Vector2f{ 540, entryTop + 96 }/*position*/,
+		std::make_shared<Button>(sf::Vector2f{ 290, entryTop + 12 }/*position*/,
 			sf::Vector2f{ 35, 30 }/*size*/, "%");
 	percentage->xmlLink = &data->percentage;
 	buttons.push_back(percentage);
 
 	std::shared_ptr<Button> addCondition = 
-		std::make_shared<Button>(sf::Vector2f{ 200, entryTop + 132 }/*position*/,
-			sf::Vector2f{ 205, 30 }/*size*/, "Add Condition");
+		std::make_shared<Button>(sf::Vector2f{ 180, entryTop + 138 }/*position*/,
+			sf::Vector2f{ 70, 30 }/*size*/, "Add");
 	buttons.push_back(addCondition);
+
+	std::shared_ptr<Button> removeCondition =
+		std::make_shared<Button>(sf::Vector2f{ 270, entryTop + 138 }/*position*/,
+			sf::Vector2f{ 120, 30 }/*size*/, "Remove");
+	buttons.push_back(removeCondition);
 
 	std::shared_ptr<TransformOption> typeOptions = 
 		std::make_shared<TransformOption>(xmlKey);
-	typeOptions->CreateEntry(xmlData, entryTop + 12, 20, 100, 140, 260, "Type:");
+	typeOptions->CreateEntry(xmlData, entryTop + 8, 20, 100, 135, 230, "Type:");
 	typeOptions->optionType = TransformOptionType::When;
 	typeOptions->selectedOption = 1;
 	entries.push_back(typeOptions);
 	
 	std::shared_ptr<TransformOption> applyOptions = 
 		std::make_shared<TransformOption>(xmlKey);
-	applyOptions->CreateEntry(xmlData, entryTop + 46, 20, 150, 190, 310, "Apply To:");
+	applyOptions->CreateEntry(xmlData, entryTop + 50, 20, 110, 145, 300, "Apply:");
 	applyOptions->optionType = TransformOptionType::Who;
 	applyOptions->selectedOption = 3;
 	entries.push_back(applyOptions);
 	
 	std::shared_ptr<TransformOption> incOptions = 
 		std::make_shared<TransformOption>(xmlKey);
-	incOptions->CreateEntry(xmlData, entryTop + 12, 320, 380, 420, 540, "Inc:");
+	incOptions->CreateEntry(xmlData, entryTop + 92, 20, 75, 110, 290, "Inc:");
 	incOptions->optionType = TransformOptionType::INC;
 	incOptions->selectedOption = 2;
 	entries.push_back(incOptions);
@@ -284,7 +289,7 @@ void TransformEntry::SwapCondition(int previous, int future)
 
 void TransformEntry::BorderBoxSize()
 {
-	float borderHeight = 160.0f;
+	float borderHeight = 170.0f;
 
 	int numConditions = conditions.size();
 	borderHeight += numConditions ? numConditions * 125.0f : 10.0f;
@@ -301,7 +306,7 @@ void ConditionEntry::CreateEntry(XMLData& xmlData, float entryTop)
 
 	std::shared_ptr<sf::RectangleShape> border = 
 		std::make_shared<sf::RectangleShape>(sf::Vector2f{ 522,116 } );/*size*/
-	border->setPosition({ 14, entryTop + 168});
+	border->setPosition({ 14, entryTop + 8});
 	border->setFillColor(sf::Color::Transparent);
 	border->setOutlineThickness(2.0f);
 	border->setOutlineColor(baseColor);
@@ -309,44 +314,44 @@ void ConditionEntry::CreateEntry(XMLData& xmlData, float entryTop)
 
 	std::shared_ptr<sf::Text> idLabel = 
 		std::make_shared<sf::Text>(UI::font, "ID:");
-	idLabel->setPosition({ 310, entryTop + 172 });
+	idLabel->setPosition({ 310, entryTop + 12 });
 	labels.push_back(idLabel);
 
 	std::shared_ptr<sf::Text> valueLabel = 
 		std::make_shared<sf::Text>(UI::font, "Value:");
-	valueLabel->setPosition({ 400, entryTop + 208 });
+	valueLabel->setPosition({ 400, entryTop + 48 });
 	labels.push_back(valueLabel);
 
 	std::shared_ptr<Transform> data = xmlData.transforms.at(xmlKey);
 	std::shared_ptr<TextBox> idBox = 
-		std::make_shared<TextBox>(sf::Vector2f{ 370, entryTop + 176 }/*position*/,
+		std::make_shared<TextBox>(sf::Vector2f{ 370, entryTop + 16 }/*position*/,
 			sf::Vector2f{ 50, 30 }/*size*/);
 	idBox->number = &data->conditions[conditionNum].index;
 	boxes.push_back(idBox);
 
 	std::shared_ptr<TextBox> valueBox = 
-		std::make_shared<TextBox>(sf::Vector2f{ 500, entryTop + 208 }/*position*/, 
+		std::make_shared<TextBox>(sf::Vector2f{ 500, entryTop + 48 }/*position*/, 
 			sf::Vector2f{ 50, 30 }/*size*/);
 	valueBox->number = &data->conditions[conditionNum].values[0];
 	boxes.push_back(valueBox);
 
 	std::shared_ptr<TransformOption> typeOptions =
 		std::make_shared<TransformOption>(xmlKey);
-	typeOptions->CreateEntry(xmlData, entryTop + 172, 20, 100, 140, 260, "Type:");
+	typeOptions->CreateEntry(xmlData, entryTop + 12, 20, 100, 140, 260, "Type:");
 	typeOptions->optionType = TransformOptionType::ConditionType;
 	typeOptions->selectedOption = 2;
 	entries.push_back(typeOptions);
 
 	std::shared_ptr<TransformOption> operatorOptions =
 		std::make_shared<TransformOption>(xmlKey);
-	operatorOptions->CreateEntry(xmlData, entryTop + 208, 20, 150, 190, 310, "Operator:");
+	operatorOptions->CreateEntry(xmlData, entryTop + 48, 20, 150, 190, 310, "Operator:");
 	operatorOptions->optionType = TransformOptionType::Operator;
 	operatorOptions->selectedOption = 7;
 	entries.push_back(operatorOptions);
 
 	std::shared_ptr<TransformOption> valueOptions = 
 		std::make_shared< TransformOption>(xmlKey);
-	valueOptions->CreateEntry(xmlData, entryTop + 244, 20, 120, 160, 280, "Value:");
+	valueOptions->CreateEntry(xmlData, entryTop + 84, 20, 120, 160, 280, "Value:");
 	valueOptions->optionType = TransformOptionType::Who;
 	valueOptions->selectedOption = 7;
 	valueOptions->skipAll = true;

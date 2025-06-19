@@ -99,6 +99,7 @@ public:
 	{
 		Percentage,
 		AddCondition,
+		RemoveCondition,
 		NumButtons
 	};
 	enum class EntryTypes
