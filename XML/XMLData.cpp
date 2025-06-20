@@ -16,41 +16,41 @@ static const std::vector<std::string> whenStrings =
 
 static const std::vector<std::string> whoStrings =
 {
-	"  Self",
-	" Neutral",
-	" Players",
-	"Opponents",
-	"  Others",
-	"   Team",
-	" Non Team",
+	"       Self",
+	"    Neutral",
+	"    Players",
+	" Opponents",
+	"    Others",
+	"      Team",
+	"  Non Team",
 	"Team Mates",
-	"   All",
+	"        All"
 };
 
 static const std::vector<std::string> incStrings =
 {
-	"   Plus",
-	"   Minus",
+	"     Plus",
+	"     Minus",
 	"Independent"
 };
 
 static const std::vector<std::string> conditionTypeStrings =
 {
-	"  Round",
-	"  Player",
-	"Territory",
+	"    Round",
+	"    Player",
+	"  Territory",
 	"ArmyCount"
 };
 
 static const std::vector<std::string> operatorStrings =
 {
-	"  =",
-	"  !=",
-	"  >",
-	"  >=",
-	"  <",
-	"  <=",
-	"  In",
+	"    =",
+	"   !=",
+	"    >",
+	"   >=",
+	"    <",
+	"   <=",
+	"   In",
 	"Not In"
 };
 

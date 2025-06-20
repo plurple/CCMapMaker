@@ -38,6 +38,7 @@ public:
 		UserInput& input, bool showCursor) override;
 
 	void MoveEntry(sf::Vector2f offset) override;
+	void Hide(bool show = false);
 };
 
 class ConditionEntry : public UIEntry
@@ -51,7 +52,6 @@ public:
 	};
 	enum class BoxTypes
 	{
-		IDBox,
 		ValueBox,
 		NumBoxes
 	};
@@ -62,6 +62,8 @@ public:
 		Value,
 		NumOptions
 	};
+	LinkedData territoryID;
+	std::vector<LinkedData> Territories;
 	int conditionNum;
 
 	~ConditionEntry() {};
@@ -75,6 +77,7 @@ public:
 		UserInput& input, bool showCursor) override;
 
 	void MoveEntry(sf::Vector2f offset) override;
+	void SwapConditionType(int conditionType);
 };
 
 class TransformEntry : public UIEntry

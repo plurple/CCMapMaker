@@ -132,7 +132,7 @@ void TransformEntry::CreateEntry(XMLData& xmlData, float entryTop)
 	
 	std::shared_ptr<TransformOption> applyOptions = 
 		std::make_shared<TransformOption>(xmlKey);
-	applyOptions->CreateEntry(xmlData, entryTop + 50, 20, 110, 145, 300, "Apply:");
+	applyOptions->CreateEntry(xmlData, entryTop + 50, 20, 110, 145, 315, "Apply:");
 	applyOptions->optionType = TransformOptionType::Who;
 	applyOptions->selectedOption = 3;
 	entries.push_back(applyOptions);
@@ -313,49 +313,45 @@ void ConditionEntry::CreateEntry(XMLData& xmlData, float entryTop)
 	shapes.push_back(border);
 
 	std::shared_ptr<sf::Text> idLabel = 
-		std::make_shared<sf::Text>(UI::font, "ID:");
-	idLabel->setPosition({ 310, entryTop + 12 });
+		std::make_shared<sf::Text>(UI::font, "Territory:");
+	idLabel->setPosition({ 350, entryTop + 12 });
 	labels.push_back(idLabel);
 
 	std::shared_ptr<sf::Text> valueLabel = 
 		std::make_shared<sf::Text>(UI::font, "Value:");
-	valueLabel->setPosition({ 400, entryTop + 48 });
+	valueLabel->setPosition({ 20, entryTop + 84 });
 	labels.push_back(valueLabel);
 
 	std::shared_ptr<Transform> data = xmlData.transforms.at(xmlKey);
-	std::shared_ptr<TextBox> idBox = 
-		std::make_shared<TextBox>(sf::Vector2f{ 370, entryTop + 16 }/*position*/,
-			sf::Vector2f{ 50, 30 }/*size*/);
-	idBox->number = &data->conditions[conditionNum].index;
-	boxes.push_back(idBox);
-
 	std::shared_ptr<TextBox> valueBox = 
-		std::make_shared<TextBox>(sf::Vector2f{ 500, entryTop + 48 }/*position*/, 
-			sf::Vector2f{ 50, 30 }/*size*/);
+		std::make_shared<TextBox>(sf::Vector2f{ 190, entryTop + 88 }/*position*/, 
+			sf::Vector2f{ 70, 30 }/*size*/);
 	valueBox->number = &data->conditions[conditionNum].values[0];
 	boxes.push_back(valueBox);
 
 	std::shared_ptr<TransformOption> typeOptions =
 		std::make_shared<TransformOption>(xmlKey);
-	typeOptions->CreateEntry(xmlData, entryTop + 12, 20, 100, 140, 260, "Type:");
+	typeOptions->CreateEntry(xmlData, entryTop + 12, 20, 100, 135, 290, "Type:");
 	typeOptions->optionType = TransformOptionType::ConditionType;
-	typeOptions->selectedOption = 2;
+	typeOptions->selectedOption = 1;
 	entries.push_back(typeOptions);
 
 	std::shared_ptr<TransformOption> operatorOptions =
 		std::make_shared<TransformOption>(xmlKey);
-	operatorOptions->CreateEntry(xmlData, entryTop + 48, 20, 150, 190, 310, "Operator:");
+	operatorOptions->CreateEntry(xmlData, entryTop + 48, 20, 150, 185, 270, "Operator:");
 	operatorOptions->optionType = TransformOptionType::Operator;
 	operatorOptions->selectedOption = 7;
 	entries.push_back(operatorOptions);
 
 	std::shared_ptr<TransformOption> valueOptions = 
 		std::make_shared< TransformOption>(xmlKey);
-	valueOptions->CreateEntry(xmlData, entryTop + 84, 20, 120, 160, 280, "Value:");
+	valueOptions->CreateEntry(xmlData, entryTop + 84, 20, 110, 145, 315, "Value:");
 	valueOptions->optionType = TransformOptionType::Who;
 	valueOptions->selectedOption = 7;
 	valueOptions->skipAll = true;
 	entries.push_back(valueOptions);
+
+	SwapConditionType(typeOptions->selectedOption);
 }
 
 void ConditionEntry::Draw(sf::RenderWindow& window)
@@ -365,7 +361,13 @@ void ConditionEntry::Draw(sf::RenderWindow& window)
 
 void ConditionEntry::MouseClick(XMLData& xmlData, sf::Vector2i mousePos, bool mouseOnPage, bool& select)
 {
+	int oldConditionType = std::dynamic_pointer_cast<TransformOption>(entries[(int)EntryTypes::Type])->selectedOption;
 	UIEntry::MouseClick(xmlData, mousePos, mouseOnPage, select);
+	int newConditionType = std::dynamic_pointer_cast<TransformOption>(entries[(int)EntryTypes::Type])->selectedOption;
+	if (oldConditionType != newConditionType)
+	{
+		SwapConditionType(newConditionType);
+	}
 }
 
 void ConditionEntry::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
@@ -377,6 +379,20 @@ void ConditionEntry::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time
 void ConditionEntry::MoveEntry(sf::Vector2f offset)
 {
 	UIEntry::MoveEntry(offset);
+}
+
+void ConditionEntry::SwapConditionType(int conditionType)
+{
+	float round = conditionType == (int)ConditionType::Round;
+	float player = conditionType == (int)ConditionType::Player;
+	float army = conditionType == (int)ConditionType::ArmyCount;
+
+	labels[(int)LabelTypes::IDLabel]->setScale({ (float)(player || army), (float)(player || army) });
+	labels[(int)LabelTypes::ValueLabel]->setScale({ (float)!player, (float)!player });
+	labels[(int)LabelTypes::ValueLabel]->setString(round ? "Round #:" : army ? "Stack Size:" : "Territories:");
+	boxes[(int)BoxTypes::ValueBox]->Hide((army||round));
+	std::dynamic_pointer_cast<TransformOption>(entries[(int)EntryTypes::Value])->Hide(player);
+	std::dynamic_pointer_cast<TransformOption>(entries[(int)EntryTypes::Operator])->Hide(!player);
 }
 
 //-----------------------------------------------------------
@@ -457,4 +473,20 @@ void TransformOption::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Tim
 void TransformOption::MoveEntry(sf::Vector2f offset)
 {
 	UIEntry::MoveEntry(offset);
+}
+
+void TransformOption::Hide(bool show)
+{
+	for (int i = 0; i< shapes.size(); i++)
+	{
+		shapes[i]->setScale({ (float)show, (float)show * (i ? 1.0f : -1.0f) });
+	}
+	for (auto label : labels)
+	{
+		label->setScale({ (float)show, (float)show });
+	}
+	for (auto button : buttons)
+	{
+		button->Hide(show);
+	}
 }
