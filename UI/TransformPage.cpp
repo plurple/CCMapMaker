@@ -172,6 +172,12 @@ void TransformEntry::MouseClick(XMLData& xmlData, sf::Vector2i mousePos, bool mo
 		//todo add a conditions stuff
 		AddCondition(xmlData);
 	}
+	std::shared_ptr<Button> removeCondition = buttons[(int)ButtonTypes::RemoveCondition];
+	if (mouseOnPage && removeCondition && UI::CheckMouseInBounds(mousePos, *removeCondition->rect))
+	{
+		//todo add a conditions stuff
+		RemoveCondition(xmlData);
+	}
 	int oldCondition = selectedCondition;
 	int index = 0;
 	for (std::shared_ptr<UIEntry> entry : conditions)
@@ -202,7 +208,6 @@ void TransformEntry::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time
 			RemoveCondition(xmlData);
 			input.del = false;
 		}
-		selectedCondition = -1;
 	}
 	if (input.tab && selectedCondition != -1)
 	{
@@ -264,15 +269,22 @@ void TransformEntry::AddCondition(XMLData& xmlData)
 
 void TransformEntry::RemoveCondition(XMLData& xmlData)
 {
-	conditions[selectedCondition]->Unselect(true);
-	auto transform = xmlData.transforms.at(xmlKey);
-	transform->conditions.erase(selectedCondition);
-	conditions.erase(conditions.begin() + selectedCondition);
-	for (int i = selectedCondition; i < conditions.size(); i++)
+	if (conditions.size())
 	{
-		conditions[i]->MoveEntry({ 0.0f, -125.0f });
+		if (selectedCondition == -1)
+			selectedCondition = conditions.size() - 1;
+
+		conditions[selectedCondition]->Unselect(true);
+		auto transform = xmlData.transforms.at(xmlKey);
+		transform->conditions.erase(selectedCondition);
+		conditions.erase(conditions.begin() + selectedCondition);
+		for (int i = selectedCondition; i < conditions.size(); i++)
+		{
+			conditions[i]->MoveEntry({ 0.0f, -125.0f });
+		}
+		BorderBoxSize();
 	}
-	BorderBoxSize();
+	selectedCondition = -1;
 }
 
 void TransformEntry::SwapCondition(int previous, int future)
@@ -304,6 +316,10 @@ void ConditionEntry::CreateEntry(XMLData& xmlData, float entryTop)
 	selectedColor = sf::Color::Cyan;
 	baseColor = sf::Color::Magenta;
 
+	armyBoxPos = { 150, entryTop + 88 };
+	roundBoxPos = { 180, entryTop + 88 };
+	territoriesPos = { 190, entryTop + 88 };
+
 	std::shared_ptr<sf::RectangleShape> border = 
 		std::make_shared<sf::RectangleShape>(sf::Vector2f{ 522,116 } );/*size*/
 	border->setPosition({ 14, entryTop + 8});
@@ -314,13 +330,23 @@ void ConditionEntry::CreateEntry(XMLData& xmlData, float entryTop)
 
 	std::shared_ptr<sf::Text> idLabel = 
 		std::make_shared<sf::Text>(UI::font, "Territory:");
-	idLabel->setPosition({ 350, entryTop + 12 });
+	idLabel->setPosition({ 380, entryTop + 12 });
 	labels.push_back(idLabel);
 
 	std::shared_ptr<sf::Text> valueLabel = 
 		std::make_shared<sf::Text>(UI::font, "Value:");
 	valueLabel->setPosition({ 20, entryTop + 84 });
 	labels.push_back(valueLabel);
+
+	std::shared_ptr<Button> addValue =
+		std::make_shared<Button>(sf::Vector2f{ 305, entryTop + 52 }/*position*/,
+			sf::Vector2f{ 30, 30 }/*size*/, "+");
+	buttons.push_back(addValue);
+
+	std::shared_ptr<Button> removeValue =
+		std::make_shared<Button>(sf::Vector2f{ 340, entryTop + 52 }/*position*/,
+			sf::Vector2f{ 30, 30 }/*size*/, "-");
+	buttons.push_back(removeValue);
 
 	std::shared_ptr<Transform> data = xmlData.transforms.at(xmlKey);
 	std::shared_ptr<TextBox> valueBox = 
@@ -345,7 +371,7 @@ void ConditionEntry::CreateEntry(XMLData& xmlData, float entryTop)
 
 	std::shared_ptr<TransformOption> valueOptions = 
 		std::make_shared< TransformOption>(xmlKey);
-	valueOptions->CreateEntry(xmlData, entryTop + 84, 20, 110, 145, 315, "Value:");
+	valueOptions->CreateEntry(xmlData, entryTop + 48, 20, 110, 145, 315, "Value:");
 	valueOptions->optionType = TransformOptionType::Who;
 	valueOptions->selectedOption = 7;
 	valueOptions->skipAll = true;
@@ -378,6 +404,10 @@ void ConditionEntry::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time
 
 void ConditionEntry::MoveEntry(sf::Vector2f offset)
 {
+	armyBoxPos += offset;
+	roundBoxPos += offset;
+	territoriesPos += offset;
+
 	UIEntry::MoveEntry(offset);
 }
 
@@ -391,8 +421,12 @@ void ConditionEntry::SwapConditionType(int conditionType)
 	labels[(int)LabelTypes::ValueLabel]->setScale({ (float)!player, (float)!player });
 	labels[(int)LabelTypes::ValueLabel]->setString(round ? "Round #:" : army ? "Stack Size:" : "Territories:");
 	boxes[(int)BoxTypes::ValueBox]->Hide((army||round));
+	sf::Vector2f offset = (army ? roundBoxPos: armyBoxPos) - boxes[(int)BoxTypes::ValueBox]->box.getPosition();
+	boxes[(int)BoxTypes::ValueBox]->Move(offset);
 	std::dynamic_pointer_cast<TransformOption>(entries[(int)EntryTypes::Value])->Hide(player);
 	std::dynamic_pointer_cast<TransformOption>(entries[(int)EntryTypes::Operator])->Hide(!player);
+	buttons[(int)ButtonTypes::AddButton]->Hide((army || round));
+	buttons[(int)ButtonTypes::RemoveButton]->Hide((army || round));
 }
 
 //-----------------------------------------------------------

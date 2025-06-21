@@ -55,6 +55,12 @@ public:
 		ValueBox,
 		NumBoxes
 	};
+	enum class ButtonTypes
+	{
+		AddButton,
+		RemoveButton,
+		NumButtons
+	};
 	enum class EntryTypes
 	{
 		Type,
@@ -62,9 +68,13 @@ public:
 		Value,
 		NumOptions
 	};
+
 	LinkedData territoryID;
 	std::vector<LinkedData> Territories;
 	int conditionNum;
+	sf::Vector2f armyBoxPos;
+	sf::Vector2f roundBoxPos;
+	sf::Vector2f territoriesPos;
 
 	~ConditionEntry() {};
 	ConditionEntry(int insertedKey, int condition) : 
