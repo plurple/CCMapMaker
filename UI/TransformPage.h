@@ -70,7 +70,7 @@ public:
 	};
 
 	LinkedData territoryID;
-	std::vector<LinkedData> Territories;
+	std::vector<LinkedData> territories;
 	int conditionNum;
 	sf::Vector2f armyBoxPos;
 	sf::Vector2f roundBoxPos;
@@ -88,6 +88,7 @@ public:
 
 	void MoveEntry(sf::Vector2f offset) override;
 	void SwapConditionType(int conditionType);
+	void BorderBoxSize(int conditionType);
 };
 
 class TransformEntry : public UIEntry
@@ -125,9 +126,10 @@ public:
 	std::vector<std::shared_ptr<UIEntry>> conditions;
 	sf::Vector2f conditionPos;
 	int selectedCondition;
+	float conditionsHeight;
 
 	~TransformEntry() {};
-	TransformEntry(int insertedKey) : UIEntry{ insertedKey }, selectedCondition{ -1 } {};
+	TransformEntry(int insertedKey) : UIEntry{ insertedKey }, selectedCondition{ -1 }, conditionsHeight{ 0.0f } {};
 	void CreateEntry(XMLData& xmlData, float entryTop) override;
 
 	void Draw(sf::RenderWindow& window) override;
@@ -142,6 +144,7 @@ public:
 	void RemoveCondition(XMLData& xmlData);
 	void SwapCondition(int previous, int future);
 	void BorderBoxSize() override;
+	void PositionConditions();
 };
 
 class TransformPage : public UIPage

@@ -196,6 +196,8 @@ void TransformEntry::MouseClick(XMLData& xmlData, sf::Vector2i mousePos, bool mo
 		selectedCondition = -1;
 	if (!(oldCondition == -1 && selectedCondition == -1))
 		SwapCondition(oldCondition, selectedCondition);
+
+	PositionConditions();
 }
 
 void TransformEntry::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
@@ -264,7 +266,7 @@ void TransformEntry::AddCondition(XMLData& xmlData)
 	condition->CreateEntry(xmlData, conditionPos.y + conditions.size() * offset);
 	conditions.push_back(condition);
 
-	BorderBoxSize();
+	PositionConditions();
 }
 
 void TransformEntry::RemoveCondition(XMLData& xmlData)
@@ -282,7 +284,7 @@ void TransformEntry::RemoveCondition(XMLData& xmlData)
 		{
 			conditions[i]->MoveEntry({ 0.0f, -125.0f });
 		}
-		BorderBoxSize();
+		PositionConditions();
 	}
 	selectedCondition = -1;
 }
@@ -302,11 +304,20 @@ void TransformEntry::SwapCondition(int previous, int future)
 void TransformEntry::BorderBoxSize()
 {
 	float borderHeight = 170.0f;
-
-	int numConditions = conditions.size();
-	borderHeight += numConditions ? numConditions * 125.0f : 10.0f;
-	
+	borderHeight += conditionsHeight ? conditionsHeight : 10.0f;
 	std::dynamic_pointer_cast<sf::RectangleShape>(shapes[(int)UIEntry::ShapeTypes::Border])->setSize({ 530, borderHeight });
+}
+
+void TransformEntry::PositionConditions()
+{
+	conditionsHeight = 10.0f;
+	for (auto condition : conditions)
+	{
+		auto borderBox = std::dynamic_pointer_cast<sf::RectangleShape>(condition->shapes[(int)UIEntry::ShapeTypes::Border]);
+		condition->MoveEntry({ 0, (conditionPos.y + conditionsHeight) - borderBox->getPosition().y });
+		conditionsHeight += borderBox->getSize().y + 6;
+	}
+	BorderBoxSize();
 }
 
 //-----------------------------------------------------------
@@ -427,6 +438,30 @@ void ConditionEntry::SwapConditionType(int conditionType)
 	std::dynamic_pointer_cast<TransformOption>(entries[(int)EntryTypes::Operator])->Hide(!player);
 	buttons[(int)ButtonTypes::AddButton]->Hide((army || round));
 	buttons[(int)ButtonTypes::RemoveButton]->Hide((army || round));
+
+	BorderBoxSize(conditionType);
+}
+
+void ConditionEntry::BorderBoxSize(int conditionType)
+{
+	float borderHeight = 76.0f;
+
+	int numLines = 0;
+
+	switch ((ConditionType)conditionType)
+	{
+	case ConditionType::ArmyCount:
+		numLines = boxes.size(); //need to figure out how many actually fit per line
+		break;
+	case ConditionType::Round:
+		numLines = boxes.size(); //need to figure out how many actually fit per line
+		break;
+	case ConditionType::Territory:
+		numLines = territories.size() ? territories.size() : 1;
+		break;
+	}
+	borderHeight += numLines ? numLines * 40.0f : 10.0f;
+	std::dynamic_pointer_cast<sf::RectangleShape>(shapes[(int)UIEntry::ShapeTypes::Border])->setSize({ 522, borderHeight });
 }
 
 //-----------------------------------------------------------
