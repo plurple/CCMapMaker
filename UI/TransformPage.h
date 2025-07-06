@@ -33,7 +33,8 @@ public:
 		float optionCoord, float rightCoord, std::string label);
 
 	void Draw(sf::RenderWindow& window) override;
-	void MouseClick(XMLData& xmlData, sf::Vector2i mousePos, bool mouseOnPage, bool& select) override;
+	void MouseClick(XMLData& xmlData, sf::Vector2i mousePos, bool mouseOnPage,
+		bool& select, bool mapClicked) override;
 	void Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
 		UserInput& input, bool showCursor) override;
 
@@ -75,6 +76,7 @@ public:
 	sf::Vector2f armyBoxPos;
 	sf::Vector2f roundBoxPos;
 	sf::Vector2f territoriesPos;
+	sf::Vector2f territoryIDPos;
 
 	~ConditionEntry() {};
 	ConditionEntry(int insertedKey, int condition) : 
@@ -82,13 +84,19 @@ public:
 	void CreateEntry(XMLData& xmlData, float entryTop) override;
 
 	void Draw(sf::RenderWindow& window) override;
-	void MouseClick(XMLData& xmlData, sf::Vector2i mousePos, bool mouseOnPage, bool& select) override;
+	void MouseClick(XMLData& xmlData, sf::Vector2i mousePos, bool mouseOnPage, 
+		bool& select, bool mapClicked) override;
+	bool MapClick(UI& ui, XMLData& xmlData, Maps& maps,
+		sf::Vector2i mousePos, int& boxIndex);
 	void Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
 		UserInput& input, bool showCursor) override;
 
 	void MoveEntry(sf::Vector2f offset) override;
 	void SwapConditionType(int conditionType);
 	void BorderBoxSize(int conditionType);
+	void AddTerritoryID(XMLData& xmlData, std::shared_ptr<sf::RectangleShape> border,
+		int boxIndex, int otherXMLKey);
+	void RemoveTerritoryID(XMLData& xmlData);
 };
 
 class TransformEntry : public UIEntry
@@ -133,7 +141,8 @@ public:
 	void CreateEntry(XMLData& xmlData, float entryTop) override;
 
 	void Draw(sf::RenderWindow& window) override;
-	void MouseClick(XMLData& xmlData, sf::Vector2i mousePos, bool mouseOnPage, bool& select) override;
+	void MouseClick(XMLData& xmlData, sf::Vector2i mousePos, bool mouseOnPage, 
+		bool& select, bool mapClicked) override;
 	void Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
 		UserInput& input, bool showCursor) override;
 
@@ -160,6 +169,8 @@ public:
 	void Draw(sf::RenderWindow& window, bool selected) override;
 	void MouseClick(XMLData& xmlData, sf::RenderWindow& window,
 		sf::Vector2i mousePos, Maps& maps) override;
+	bool MapClick(UI& ui, XMLData& xmlData, Maps& maps,
+		sf::Vector2i mousePos, int& boxIndex) override;
 	void Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
 		UserInput& input, bool showCursor, UIPageType pageType) override;
 

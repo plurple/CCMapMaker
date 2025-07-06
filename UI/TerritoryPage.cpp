@@ -448,9 +448,10 @@ void TerritoryEntry::Draw(sf::RenderWindow& window)
 	}
 }	
 
-void TerritoryEntry::MouseClick(XMLData& xmlData, sf::Vector2i mousePos, bool mouseOnPage, bool& select)
+void TerritoryEntry::MouseClick(XMLData& xmlData, sf::Vector2i mousePos,
+	bool mouseOnPage, bool& select, bool mapClicked)
 {
-	UIEntry::MouseClick(xmlData, mousePos, mouseOnPage, select);
+	UIEntry::MouseClick(xmlData, mousePos, mouseOnPage, select, mapClicked);
 
 	std::shared_ptr<Button> killer = buttons[(int)ButtonTypes::Killer];
 	if (killer && mouseOnPage && selectedView == TerritoryView::Extras && 

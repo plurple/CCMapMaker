@@ -270,9 +270,10 @@ void ObjectiveEntry::Draw(sf::RenderWindow& window)
 	}
 }
 
-void ObjectiveEntry::MouseClick(XMLData& xmlData, sf::Vector2i mousePos, bool mouseOnPage, bool& select)
+void ObjectiveEntry::MouseClick(XMLData& xmlData, sf::Vector2i mousePos, 
+	bool mouseOnPage, bool& select, bool mapClicked)
 {
-	UIEntry::MouseClick(xmlData, mousePos, mouseOnPage, select);
+	UIEntry::MouseClick(xmlData, mousePos, mouseOnPage, select, mapClicked);
 	for (auto territory : territories)
 	{
 		territory->nameLabel->Toggle(mouseOnPage && UI::CheckMouseInBounds(mousePos, territory->nameLabel->box));

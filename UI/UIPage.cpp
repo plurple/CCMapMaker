@@ -62,7 +62,7 @@ void UIPage::MouseClick(XMLData& xmlData, sf::RenderWindow& window,
 	for (std::shared_ptr<UIEntry> entry : entries)
 	{
 		bool select = false;
-		entry->MouseClick(xmlData, sf::Vector2i(window.mapPixelToCoords(mousePos, scrollBar.scrollWindow)), mouseOnPage, select);
+		entry->MouseClick(xmlData, sf::Vector2i(window.mapPixelToCoords(mousePos, scrollBar.scrollWindow)), mouseOnPage, select, maps.clicked);
 		if (select)
 		{
 			if (index == oldEntry)
@@ -245,7 +245,8 @@ void UIEntry::Draw(sf::RenderWindow& window)
 	}
 }
 
-void UIEntry::MouseClick(XMLData& xmlData, sf::Vector2i mousePos, bool mouseOnPage, bool& select)
+void UIEntry::MouseClick(XMLData& xmlData, sf::Vector2i mousePos, bool mouseOnPage, 
+	bool& select, bool mapClicked)
 {
 	if (shapes.size())
 	{
@@ -260,7 +261,7 @@ void UIEntry::MouseClick(XMLData& xmlData, sf::Vector2i mousePos, bool mouseOnPa
 	for (std::shared_ptr<UIEntry> entry : entries)
 	{
 		bool temp;
-		entry->MouseClick(xmlData, mousePos, mouseOnPage, temp);
+		entry->MouseClick(xmlData, mousePos, mouseOnPage, temp, mapClicked);
 	}
 }
 

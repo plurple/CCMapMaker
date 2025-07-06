@@ -361,9 +361,10 @@ void ContinentEntry::Draw(sf::RenderWindow& window)
 	}
 }
 
-void ContinentEntry::MouseClick(XMLData& xmlData, sf::Vector2i mousePos, bool mouseOnPage, bool& select)
+void ContinentEntry::MouseClick(XMLData& xmlData, sf::Vector2i mousePos, 
+	bool mouseOnPage, bool& select, bool mapClicked)
 {
-	UIEntry::MouseClick(xmlData, mousePos, mouseOnPage, select);
+	UIEntry::MouseClick(xmlData, mousePos, mouseOnPage, select, mapClicked);
 
 	std::shared_ptr<Button> addBonus = buttons[(int)ButtonTypes::AddBonus];
 	if (mouseOnPage && addBonus && UI::CheckMouseInBounds(mousePos, *addBonus->rect))
@@ -379,7 +380,7 @@ void ContinentEntry::MouseClick(XMLData& xmlData, sf::Vector2i mousePos, bool mo
 	}
 	for (std::shared_ptr<UIEntry> bonus : bonuses)
 	{
-		bonus->MouseClick(xmlData, mousePos, mouseOnPage, select);
+		bonus->MouseClick(xmlData, mousePos, mouseOnPage, select, mapClicked);
 	}
 	if (selectedView == ContinentView::Basic)
 	{
@@ -667,9 +668,10 @@ void BonusLine::Draw(sf::RenderWindow& window)
 	UIEntry::Draw(window);
 }
 
-void BonusLine::MouseClick(XMLData& xmlData, sf::Vector2i mousePos, bool mouseOnPage, bool& select)
+void BonusLine::MouseClick(XMLData& xmlData, sf::Vector2i mousePos, bool mouseOnPage, 
+	bool& select, bool mapClicked)
 {
-	UIEntry::MouseClick(xmlData, mousePos, mouseOnPage, select);
+	UIEntry::MouseClick(xmlData, mousePos, mouseOnPage, select, mapClicked);
 }
 
 void BonusLine::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
@@ -737,7 +739,8 @@ void AdvancedTerritory::Draw(sf::RenderWindow& window)
 	UIEntry::Draw(window);
 }
 
-void AdvancedTerritory::MouseClick(XMLData& xmlData, sf::Vector2i mousePos, bool mouseOnPage, bool& select)
+void AdvancedTerritory::MouseClick(XMLData& xmlData, sf::Vector2i mousePos, bool mouseOnPage, 
+	bool& select, bool mapClicked)
 {
 	if (selectedView == ContinentView::Advanced)
 	{

@@ -1,6 +1,7 @@
 #include "TransformPage.h"
 #include "UI.h"
 #include "../XML/Transform.h"
+#include "../XML/Territory.h"
 
 TransformPage::TransformPage(XMLData& xmlData, sf::Vector2f tabPos,
 	sf::Vector2f tabSize, std::string tabLabel, sf::Vector2f buttonBoxSize,
@@ -35,6 +36,23 @@ void TransformPage::MouseClick(XMLData& xmlData, sf::RenderWindow& window,
 	{
 		//TODO add a transform test function
 	}	
+}
+
+bool TransformPage::MapClick(UI& ui, XMLData& xmlData, Maps& maps, sf::Vector2i mousePos, int& boxIndex)
+{
+	if (UIPage::MapClick(ui, xmlData, maps, mousePos, boxIndex))
+	{
+		if (selectedEntry != -1)
+		{
+			auto entry = std::dynamic_pointer_cast<TransformEntry>(entries[selectedEntry]);
+			if (entry->selectedCondition != -1)
+			{
+				auto condition = std::dynamic_pointer_cast<ConditionEntry>(entry->conditions[entry->selectedCondition]);
+				condition->MapClick(ui, xmlData, maps, mousePos, boxIndex);
+			}
+		}
+	}
+	return true;
 }
 
 void TransformPage::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
@@ -157,9 +175,10 @@ void TransformEntry::Draw(sf::RenderWindow& window)
 	}
 }
 
-void TransformEntry::MouseClick(XMLData& xmlData, sf::Vector2i mousePos, bool mouseOnPage, bool& select)
+void TransformEntry::MouseClick(XMLData& xmlData, sf::Vector2i mousePos, bool mouseOnPage, 
+	bool& select, bool mapClicked)
 {
-	UIEntry::MouseClick(xmlData, mousePos, mouseOnPage, select);
+	UIEntry::MouseClick(xmlData, mousePos, mouseOnPage, select, mapClicked);
 
 	std::shared_ptr<Button> percentage = buttons[(int)ButtonTypes::Percentage];
 	if (mouseOnPage && percentage && UI::CheckMouseInBounds(mousePos, *percentage->rect))
@@ -183,7 +202,7 @@ void TransformEntry::MouseClick(XMLData& xmlData, sf::Vector2i mousePos, bool mo
 	for (std::shared_ptr<UIEntry> entry : conditions)
 	{
 		bool sel = false;
-		entry->MouseClick(xmlData, mousePos, mouseOnPage, sel);
+		entry->MouseClick(xmlData, mousePos, mouseOnPage, sel, mapClicked);
 		if (sel)
 		{
 			if (index == oldCondition)
@@ -192,7 +211,7 @@ void TransformEntry::MouseClick(XMLData& xmlData, sf::Vector2i mousePos, bool mo
 		}
 		index++;
 	}
-	if (oldCondition == selectedCondition)
+	if (!mapClicked && oldCondition == selectedCondition)
 		selectedCondition = -1;
 	if (!(oldCondition == -1 && selectedCondition == -1))
 		SwapCondition(oldCondition, selectedCondition);
@@ -327,9 +346,10 @@ void ConditionEntry::CreateEntry(XMLData& xmlData, float entryTop)
 	selectedColor = sf::Color::Cyan;
 	baseColor = sf::Color::Magenta;
 
-	armyBoxPos = { 150, entryTop + 88 };
-	roundBoxPos = { 180, entryTop + 88 };
-	territoriesPos = { 190, entryTop + 88 };
+	armyBoxPos = { 150, entryTop + 100 };
+	roundBoxPos = { 180, entryTop + 100 };
+	territoriesPos = { 190, entryTop + 100 };
+	territoryIDPos = { 380, entryTop + 65 };	
 
 	std::shared_ptr<sf::RectangleShape> border = 
 		std::make_shared<sf::RectangleShape>(sf::Vector2f{ 522,116 } );/*size*/
@@ -346,22 +366,22 @@ void ConditionEntry::CreateEntry(XMLData& xmlData, float entryTop)
 
 	std::shared_ptr<sf::Text> valueLabel = 
 		std::make_shared<sf::Text>(UI::font, "Value:");
-	valueLabel->setPosition({ 20, entryTop + 84 });
+	valueLabel->setPosition({ 20, entryTop + 96 });
 	labels.push_back(valueLabel);
 
 	std::shared_ptr<Button> addValue =
-		std::make_shared<Button>(sf::Vector2f{ 305, entryTop + 52 }/*position*/,
+		std::make_shared<Button>(sf::Vector2f{ 305, entryTop + 58 }/*position*/,
 			sf::Vector2f{ 30, 30 }/*size*/, "+");
 	buttons.push_back(addValue);
 
 	std::shared_ptr<Button> removeValue =
-		std::make_shared<Button>(sf::Vector2f{ 340, entryTop + 52 }/*position*/,
+		std::make_shared<Button>(sf::Vector2f{ 340, entryTop + 58 }/*position*/,
 			sf::Vector2f{ 30, 30 }/*size*/, "-");
 	buttons.push_back(removeValue);
 
 	std::shared_ptr<Transform> data = xmlData.transforms.at(xmlKey);
 	std::shared_ptr<TextBox> valueBox = 
-		std::make_shared<TextBox>(sf::Vector2f{ 190, entryTop + 88 }/*position*/, 
+		std::make_shared<TextBox>(sf::Vector2f{ 190, entryTop + 100 }/*position*/, 
 			sf::Vector2f{ 70, 30 }/*size*/);
 	valueBox->number = &data->conditions[conditionNum].values[0];
 	boxes.push_back(valueBox);
@@ -375,14 +395,14 @@ void ConditionEntry::CreateEntry(XMLData& xmlData, float entryTop)
 
 	std::shared_ptr<TransformOption> operatorOptions =
 		std::make_shared<TransformOption>(xmlKey);
-	operatorOptions->CreateEntry(xmlData, entryTop + 48, 20, 150, 185, 270, "Operator:");
+	operatorOptions->CreateEntry(xmlData, entryTop + 54, 20, 150, 185, 270, "Operator:");
 	operatorOptions->optionType = TransformOptionType::Operator;
 	operatorOptions->selectedOption = 7;
 	entries.push_back(operatorOptions);
 
 	std::shared_ptr<TransformOption> valueOptions = 
 		std::make_shared< TransformOption>(xmlKey);
-	valueOptions->CreateEntry(xmlData, entryTop + 48, 20, 110, 145, 315, "Value:");
+	valueOptions->CreateEntry(xmlData, entryTop + 54, 20, 110, 145, 315, "Value:");
 	valueOptions->optionType = TransformOptionType::Who;
 	valueOptions->selectedOption = 7;
 	valueOptions->skipAll = true;
@@ -394,23 +414,55 @@ void ConditionEntry::CreateEntry(XMLData& xmlData, float entryTop)
 void ConditionEntry::Draw(sf::RenderWindow& window)
 {
 	UIEntry::Draw(window);
+	if(territoryID.uiIndex != -1)
+		territoryID.nameLabel->Draw(window);
 }
 
-void ConditionEntry::MouseClick(XMLData& xmlData, sf::Vector2i mousePos, bool mouseOnPage, bool& select)
+void ConditionEntry::MouseClick(XMLData& xmlData, sf::Vector2i mousePos, 
+	bool mouseOnPage, bool& select, bool mapClicked)
 {
 	int oldConditionType = std::dynamic_pointer_cast<TransformOption>(entries[(int)EntryTypes::Type])->selectedOption;
-	UIEntry::MouseClick(xmlData, mousePos, mouseOnPage, select);
+	UIEntry::MouseClick(xmlData, mousePos, mouseOnPage, select, mapClicked);
 	int newConditionType = std::dynamic_pointer_cast<TransformOption>(entries[(int)EntryTypes::Type])->selectedOption;
 	if (oldConditionType != newConditionType)
 	{
 		SwapConditionType(newConditionType);
 	}
+	if (territoryID.uiIndex != -1)
+		territoryID.nameLabel->active = mouseOnPage && UI::CheckMouseInBounds(mousePos, territoryID.nameLabel->box);
+}
+
+bool ConditionEntry::MapClick(UI& ui, XMLData& xmlData, Maps& maps, sf::Vector2i mousePos, int& boxIndex)
+{
+	switch ((ConditionType)std::dynamic_pointer_cast<TransformOption>(entries[(int)EntryTypes::Type])->selectedOption)
+	{
+	case ConditionType::Player:
+	case ConditionType::ArmyCount:
+		AddTerritoryID(xmlData, maps.mapBoxes[boxIndex]->border, boxIndex, ui.uiPages[(int)UIPageType::Territory]->entries[boxIndex]->xmlKey);
+		break;
+	case ConditionType::Territory:
+		//add a territory or remove it if already selected
+		break;
+	}
+	return true;
 }
 
 void ConditionEntry::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
 	UserInput& input, bool showCursor)
 {
 	UIEntry::Update(xmlData, window, timePassed, input, showCursor);
+
+	if (territoryID.uiIndex != -1)
+	{
+		if (xmlData.territories.find(territoryID.xmlKey) != xmlData.territories.end())
+		{
+			territoryID.nameLabel->Update(window, timePassed, input, showCursor);
+		}
+		else
+		{
+			RemoveTerritoryID(xmlData);
+		}
+	}
 }
 
 void ConditionEntry::MoveEntry(sf::Vector2f offset)
@@ -418,6 +470,7 @@ void ConditionEntry::MoveEntry(sf::Vector2f offset)
 	armyBoxPos += offset;
 	roundBoxPos += offset;
 	territoriesPos += offset;
+	territoryIDPos += offset;
 
 	UIEntry::MoveEntry(offset);
 }
@@ -429,6 +482,8 @@ void ConditionEntry::SwapConditionType(int conditionType)
 	float army = conditionType == (int)ConditionType::ArmyCount;
 
 	labels[(int)LabelTypes::IDLabel]->setScale({ (float)(player || army), (float)(player || army) });
+	if(territoryID.uiIndex != -1)
+		territoryID.nameLabel->Hide((float)(player || army));
 	labels[(int)LabelTypes::ValueLabel]->setScale({ (float)!player, (float)!player });
 	labels[(int)LabelTypes::ValueLabel]->setString(round ? "Round #:" : army ? "Stack Size:" : "Territories:");
 	boxes[(int)BoxTypes::ValueBox]->Hide((army||round));
@@ -444,7 +499,7 @@ void ConditionEntry::SwapConditionType(int conditionType)
 
 void ConditionEntry::BorderBoxSize(int conditionType)
 {
-	float borderHeight = 76.0f;
+	float borderHeight = 86.0f;
 
 	int numLines = 0;
 
@@ -460,8 +515,39 @@ void ConditionEntry::BorderBoxSize(int conditionType)
 		numLines = territories.size() ? territories.size() : 1;
 		break;
 	}
-	borderHeight += numLines ? numLines * 40.0f : 10.0f;
+	borderHeight += numLines ? numLines * 45.0f : 5.0f;
 	std::dynamic_pointer_cast<sf::RectangleShape>(shapes[(int)UIEntry::ShapeTypes::Border])->setSize({ 522, borderHeight });
+}
+
+void ConditionEntry::AddTerritoryID(XMLData& xmlData, std::shared_ptr<sf::RectangleShape> border,
+	int boxIndex, int otherXMLKey)
+{
+	if (territoryID.uiIndex == boxIndex)
+	{
+		RemoveTerritoryID(xmlData);
+	}
+	else
+	{
+		territoryID.uiIndex = boxIndex;
+		territoryID.mapBox = std::make_shared<MapBox>();
+		territoryID.nameLabel = std::make_shared<TextBox>(territoryIDPos, sf::Vector2f{ 150, 20 });
+		territoryID.nameLabel->displayText->setCharacterSize(20);
+		territoryID.nameLabel->baseColor = sf::Color::Magenta;
+		territoryID.mapBox->border = border;
+		territoryID.mapBox->border->setOutlineColor(sf::Color::Magenta);
+		territoryID.xmlKey = otherXMLKey;
+		territoryID.nameLabel->text = &xmlData.territories.at(otherXMLKey)->name;
+		xmlData.transforms[xmlKey]->conditions[conditionNum].index = otherXMLKey;
+	}	
+}
+
+void ConditionEntry::RemoveTerritoryID(XMLData& xmlData)
+{
+	territoryID.uiIndex = -1;
+	territoryID.xmlKey = -1;
+	territoryID.mapBox->border->setOutlineColor(sf::Color::White);
+	xmlData.transforms[xmlKey]->conditions[conditionNum].index = -1;
+	territoryID.mapBox->border = nullptr;
 }
 
 //-----------------------------------------------------------
@@ -516,9 +602,10 @@ void TransformOption::Draw(sf::RenderWindow& window)
 	UIEntry::Draw(window);
 }
 
-void TransformOption::MouseClick(XMLData& xmlData, sf::Vector2i mousePos, bool mouseOnPage, bool& select)
+void TransformOption::MouseClick(XMLData& xmlData, sf::Vector2i mousePos, 
+	bool mouseOnPage, bool& select, bool mapClicked)
 {
-	UIEntry::MouseClick(xmlData, mousePos, mouseOnPage, select);
+	UIEntry::MouseClick(xmlData, mousePos, mouseOnPage, select, mapClicked);
 
 	std::shared_ptr<Button> leftButton = buttons[(int)ButtonTypes::LeftButton];
 	if (UI::CheckMouseInBounds(mousePos, *leftButton->rect))

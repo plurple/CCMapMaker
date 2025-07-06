@@ -132,9 +132,10 @@ void ReinforcementEntry::Draw(sf::RenderWindow& window)
 	UIEntry::Draw(window);
 }
 
-void ReinforcementEntry::MouseClick(XMLData& xmlData, sf::Vector2i mousePos, bool mouseOnPage, bool& select)
+void ReinforcementEntry::MouseClick(XMLData& xmlData, sf::Vector2i mousePos, 
+	bool mouseOnPage, bool& select, bool mapClicked)
 {
-	UIEntry::MouseClick(xmlData, mousePos, mouseOnPage, select);
+	UIEntry::MouseClick(xmlData, mousePos, mouseOnPage, select, mapClicked);
 }
 
 void ReinforcementEntry::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
