@@ -361,7 +361,7 @@ void TerritoryEntry::CreateEntry(XMLData& xmlData, float entryTop)
 
 	std::shared_ptr<Territory> data = xmlData.territories.at(xmlKey);
 	sf::Vector2f mapBoxPos = mapBox->border->getPosition();
-	data->largePos = UI::isLarge ? sf::Vector2i{ mapBoxPos } : sf::Vector2i{ Maps::ConvertSmall(mapBoxPos.x, true), Maps::ConvertSmall(mapBoxPos.y, false) };
+	data->largePos = UI::isLarge ? sf::Vector2i{ mapBoxPos } : sf::Vector2i{ Maps::ConvertLarge(mapBoxPos.x, true), Maps::ConvertLarge(mapBoxPos.y, false) };
 	data->smallPos = UI::isLarge ? sf::Vector2i{ Maps::ConvertSmall(mapBoxPos.x, true), Maps::ConvertSmall(mapBoxPos.y, false)} : sf::Vector2i{ mapBoxPos };
 
 	std::shared_ptr<TextBox> nameBox =
