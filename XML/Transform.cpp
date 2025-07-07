@@ -19,5 +19,5 @@ ConditionData::ConditionData() :
 	oper{ Operators::Equals },
 	valueOption{ ApplyTo::Self }
 {
-	values.push_back(-1);
+	values.insert({ 0,-1 });
 }

@@ -70,7 +70,7 @@ public:
 	int index;
 	Operators oper;
 	ApplyTo valueOption;
-	std::vector<int> values;
+	std::unordered_map<int, int> values;
 
 	ConditionData();
 };

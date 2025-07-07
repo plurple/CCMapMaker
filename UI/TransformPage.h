@@ -71,7 +71,7 @@ public:
 	};
 
 	LinkedData territoryID;
-	std::vector<LinkedData> territories;
+	std::vector<std::shared_ptr<LinkedData>> territories;
 	int conditionNum;
 	sf::Vector2f armyBoxPos;
 	sf::Vector2f roundBoxPos;
@@ -97,6 +97,9 @@ public:
 	void AddTerritoryID(XMLData& xmlData, std::shared_ptr<sf::RectangleShape> border,
 		int boxIndex, int otherXMLKey);
 	void RemoveTerritoryID(XMLData& xmlData);
+	void AddTerritory(XMLData& xmlData, std::shared_ptr<sf::RectangleShape> border,
+		int boxIndex, int otherXMLKey);
+	void RemoveTerritory(XMLData& xmlData, int index);
 };
 
 class TransformEntry : public UIEntry

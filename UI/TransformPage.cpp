@@ -383,7 +383,7 @@ void ConditionEntry::CreateEntry(XMLData& xmlData, float entryTop)
 	std::shared_ptr<TextBox> valueBox = 
 		std::make_shared<TextBox>(sf::Vector2f{ 190, entryTop + 100 }/*position*/, 
 			sf::Vector2f{ 70, 30 }/*size*/);
-	valueBox->number = &data->conditions[conditionNum].values[0];
+	valueBox->number = &data->conditions[conditionNum].values.at(0);
 	boxes.push_back(valueBox);
 
 	std::shared_ptr<TransformOption> typeOptions =
@@ -416,6 +416,14 @@ void ConditionEntry::Draw(sf::RenderWindow& window)
 	UIEntry::Draw(window);
 	if(territoryID.uiIndex != -1)
 		territoryID.nameLabel->Draw(window);
+	ConditionType optionType = (ConditionType)std::dynamic_pointer_cast<TransformOption>(entries[(int)EntryTypes::Type])->selectedOption;
+	if (optionType == ConditionType::Territory)
+	{
+		for (auto territory : territories)
+		{
+			territory->nameLabel->Draw(window);
+		}
+	}
 }
 
 void ConditionEntry::MouseClick(XMLData& xmlData, sf::Vector2i mousePos, 
@@ -430,6 +438,14 @@ void ConditionEntry::MouseClick(XMLData& xmlData, sf::Vector2i mousePos,
 	}
 	if (territoryID.uiIndex != -1)
 		territoryID.nameLabel->active = mouseOnPage && UI::CheckMouseInBounds(mousePos, territoryID.nameLabel->box);
+	ConditionType optionType = (ConditionType)std::dynamic_pointer_cast<TransformOption>(entries[(int)EntryTypes::Type])->selectedOption;
+	if (optionType == ConditionType::Territory)
+	{
+		for (auto territory : territories)
+		{
+			territory->nameLabel->active = mouseOnPage && UI::CheckMouseInBounds(mousePos, territory->nameLabel->box);
+		}
+	}
 }
 
 bool ConditionEntry::MapClick(UI& ui, XMLData& xmlData, Maps& maps, sf::Vector2i mousePos, int& boxIndex)
@@ -441,8 +457,46 @@ bool ConditionEntry::MapClick(UI& ui, XMLData& xmlData, Maps& maps, sf::Vector2i
 		AddTerritoryID(xmlData, maps.mapBoxes[boxIndex]->border, boxIndex, ui.uiPages[(int)UIPageType::Territory]->entries[boxIndex]->xmlKey);
 		break;
 	case ConditionType::Territory:
-		//add a territory or remove it if already selected
+	{
+		int i;
+		bool removed = false;
+		for (i = 0; i < territories.size(); i++)
+		{
+			auto territory = std::dynamic_pointer_cast<LinkedData>(territories[i]);
+			if (territory->uiIndex == boxIndex)
+			{
+				if (i == 0)
+					RemoveTerritory(xmlData, i);
+				else				
+					xmlData.transforms.at(xmlKey)->conditions.at(conditionNum).values.erase(std::dynamic_pointer_cast<LinkedData>(territories[i])->xmlKey);
+				
+				maps.mapBoxes[boxIndex]->border->setOutlineColor(sf::Color::White);
+				territories.erase(territories.begin() + i);
+				removed = true;				
+				break;
+			}
+		}
+		if (removed)
+		{
+			for (int j = i; j < territories.size(); j++)
+			{
+				territories[j]->nameLabel->Move({ 0, -30 });
+			}
+		}
+		else
+		{
+			Operators oper = (Operators)std::dynamic_pointer_cast<TransformOption>(entries[(int)EntryTypes::Operator])->selectedOption;
+
+			if (territories.size() && oper != Operators::In && oper != Operators::NotIn)
+			{
+				RemoveTerritory(xmlData, 0);
+				territories.erase(territories.begin());
+			}
+
+			AddTerritory(xmlData, maps.mapBoxes[boxIndex]->border, boxIndex, ui.uiPages[(int)UIPageType::Territory]->entries[boxIndex]->xmlKey);
+		}
 		break;
+	}
 	}
 	return true;
 }
@@ -463,6 +517,27 @@ void ConditionEntry::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time
 			RemoveTerritoryID(xmlData);
 		}
 	}
+	ConditionType optionType = (ConditionType)std::dynamic_pointer_cast<TransformOption>(entries[(int)EntryTypes::Type])->selectedOption;
+	if (optionType == ConditionType::Territory)
+	{
+		for (int i = 0; i < territories.size(); i++)
+		{
+			if (xmlData.territories.find(territories[i]->xmlKey) != xmlData.territories.end())
+			{
+				territories[i]->nameLabel->Update(window, timePassed, input, showCursor);
+			}
+			else if(territories[i]->xmlKey != -1)
+			{
+				if(i == 0)
+					RemoveTerritory(xmlData, i);
+				else
+				{
+					xmlData.transforms.at(xmlKey)->conditions.at(conditionNum).values.erase(std::dynamic_pointer_cast<LinkedData>(territories[i])->xmlKey);
+				}
+				territories.erase(territories.begin() + i);
+			}
+		}
+	}
 }
 
 void ConditionEntry::MoveEntry(sf::Vector2f offset)
@@ -473,6 +548,16 @@ void ConditionEntry::MoveEntry(sf::Vector2f offset)
 	territoryIDPos += offset;
 
 	UIEntry::MoveEntry(offset);
+	if(territoryID.uiIndex != -1)
+		territoryID.nameLabel->Move(offset);
+	ConditionType optionType = (ConditionType)std::dynamic_pointer_cast<TransformOption>(entries[(int)EntryTypes::Type])->selectedOption;
+	if (optionType == ConditionType::Territory)
+	{
+		for (auto territory : territories)
+		{
+			territory->nameLabel->Move(offset);
+		}
+	}
 }
 
 void ConditionEntry::SwapConditionType(int conditionType)
@@ -537,7 +622,7 @@ void ConditionEntry::AddTerritoryID(XMLData& xmlData, std::shared_ptr<sf::Rectan
 		territoryID.mapBox->border->setOutlineColor(sf::Color::Magenta);
 		territoryID.xmlKey = otherXMLKey;
 		territoryID.nameLabel->text = &xmlData.territories.at(otherXMLKey)->name;
-		xmlData.transforms[xmlKey]->conditions[conditionNum].index = otherXMLKey;
+		xmlData.transforms.at(xmlKey)->conditions.at(conditionNum).index = otherXMLKey;
 	}	
 }
 
@@ -546,10 +631,39 @@ void ConditionEntry::RemoveTerritoryID(XMLData& xmlData)
 	territoryID.uiIndex = -1;
 	territoryID.xmlKey = -1;
 	territoryID.mapBox->border->setOutlineColor(sf::Color::White);
-	xmlData.transforms[xmlKey]->conditions[conditionNum].index = -1;
+	xmlData.transforms.at(xmlKey)->conditions.at(conditionNum).index = -1;
 	territoryID.mapBox->border = nullptr;
 }
 
+void ConditionEntry::AddTerritory(XMLData& xmlData, std::shared_ptr<sf::RectangleShape> border,
+	int boxIndex, int otherXMLKey)
+{
+	std::shared_ptr<LinkedData> territory = std::make_shared<LinkedData>();
+	territory->uiIndex = boxIndex;
+	territory->mapBox = std::make_shared<MapBox>();
+	territory->nameLabel = std::make_shared<TextBox>(territoriesPos + sf::Vector2f{ 0, territories.size() * 30.0f },
+		sf::Vector2f{ 150, 20 });
+	territory->nameLabel->displayText->setCharacterSize(20);
+	territory->nameLabel->baseColor = sf::Color::Magenta;
+	territory->mapBox->border = border;
+	territory->mapBox->border->setOutlineColor(sf::Color::Magenta);
+	territory->xmlKey = otherXMLKey;
+	territory->nameLabel->text = &xmlData.territories.at(otherXMLKey)->name;
+	xmlData.transforms[xmlKey]->conditions[conditionNum].values.insert_or_assign(territories.size(), otherXMLKey); 
+	territories.push_back(territory);
+}
+
+void ConditionEntry::RemoveTerritory(XMLData& xmlData, int index)
+{
+	if (territories.size())
+	{
+		territories[index]->uiIndex = -1;
+		territories[index]->xmlKey = -1;
+		territories[index]->mapBox->border->setOutlineColor(sf::Color::White);
+		xmlData.transforms.at(xmlKey)->conditions.at(conditionNum).values.at(index) = -1;
+		territories[index]->mapBox->border = nullptr;
+	}
+}
 //-----------------------------------------------------------
 
 void TransformOption::CreateEntry(XMLData& xmlData, float entryTop)
