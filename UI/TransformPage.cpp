@@ -346,8 +346,8 @@ void ConditionEntry::CreateEntry(XMLData& xmlData, float entryTop)
 	selectedColor = sf::Color::Cyan;
 	baseColor = sf::Color::Magenta;
 
-	armyBoxPos = { 150, entryTop + 100 };
-	roundBoxPos = { 180, entryTop + 100 };
+	roundBoxPos = { 150, entryTop + 100 };
+	armyBoxPos = { 180, entryTop + 100 };
 	territoriesPos = { 190, entryTop + 100 };
 	territoryIDPos = { 380, entryTop + 65 };	
 
@@ -430,12 +430,38 @@ void ConditionEntry::MouseClick(XMLData& xmlData, sf::Vector2i mousePos,
 	bool mouseOnPage, bool& select, bool mapClicked)
 {
 	int oldConditionType = std::dynamic_pointer_cast<TransformOption>(entries[(int)EntryTypes::Type])->selectedOption;
+	int oldOperatorType = std::dynamic_pointer_cast<TransformOption>(entries[(int)EntryTypes::Operator])->selectedOption;
 	UIEntry::MouseClick(xmlData, mousePos, mouseOnPage, select, mapClicked);
 	int newConditionType = std::dynamic_pointer_cast<TransformOption>(entries[(int)EntryTypes::Type])->selectedOption;
+	int newOperatorType = std::dynamic_pointer_cast<TransformOption>(entries[(int)EntryTypes::Operator])->selectedOption;
 	if (oldConditionType != newConditionType)
 	{
 		SwapConditionType(newConditionType);
+		//todo empty values
 	}
+	std::shared_ptr<Button> addValue = buttons[(int)ButtonTypes::AddButton];
+	std::shared_ptr<Button> removeValue = buttons[(int)ButtonTypes::RemoveButton];
+	if (oldOperatorType != newOperatorType)
+	{
+		bool ins = (Operators)newOperatorType == Operators::In || (Operators)newOperatorType == Operators::NotIn;
+		addValue->Hide(ins);
+		removeValue->Hide(ins);
+		if (!ins)
+		{
+			//todo check the operator changed and empty the values
+		}
+	}
+	if (mouseOnPage && addValue && UI::CheckMouseInBounds(mousePos, *addValue->rect))
+	{
+		AddValue(xmlData);
+		BorderBoxSize(newConditionType);
+	}
+	if (mouseOnPage && removeValue && UI::CheckMouseInBounds(mousePos, *removeValue->rect))
+	{
+		RemoveValue(xmlData);
+		BorderBoxSize(newConditionType);
+	}
+
 	if (territoryID.uiIndex != -1)
 		territoryID.nameLabel->active = mouseOnPage && UI::CheckMouseInBounds(mousePos, territoryID.nameLabel->box);
 	ConditionType optionType = (ConditionType)std::dynamic_pointer_cast<TransformOption>(entries[(int)EntryTypes::Type])->selectedOption;
@@ -465,12 +491,11 @@ bool ConditionEntry::MapClick(UI& ui, XMLData& xmlData, Maps& maps, sf::Vector2i
 			auto territory = std::dynamic_pointer_cast<LinkedData>(territories[i]);
 			if (territory->uiIndex == boxIndex)
 			{
-				if (i == 0)
+				if(std::dynamic_pointer_cast<LinkedData>(territories[i])->xmlKey == 0)
 					RemoveTerritory(xmlData, i);
-				else				
-					xmlData.transforms.at(xmlKey)->conditions.at(conditionNum).values.erase(std::dynamic_pointer_cast<LinkedData>(territories[i])->xmlKey);
-				
-				maps.mapBoxes[boxIndex]->border->setOutlineColor(sf::Color::White);
+				else
+					xmlData.transforms.at(xmlKey)->conditions.at(conditionNum).values.erase(std::dynamic_pointer_cast<LinkedData>(territories[i])->xmlKey);				
+				maps.mapBoxes[boxIndex]->border->setOutlineColor(sf::Color::White);				
 				territories.erase(territories.begin() + i);
 				removed = true;				
 				break;
@@ -495,6 +520,7 @@ bool ConditionEntry::MapClick(UI& ui, XMLData& xmlData, Maps& maps, sf::Vector2i
 
 			AddTerritory(xmlData, maps.mapBoxes[boxIndex]->border, boxIndex, ui.uiPages[(int)UIPageType::Territory]->entries[boxIndex]->xmlKey);
 		}
+		BorderBoxSize((int)ConditionType::Territory);
 		break;
 	}
 	}
@@ -572,8 +598,11 @@ void ConditionEntry::SwapConditionType(int conditionType)
 	labels[(int)LabelTypes::ValueLabel]->setScale({ (float)!player, (float)!player });
 	labels[(int)LabelTypes::ValueLabel]->setString(round ? "Round #:" : army ? "Stack Size:" : "Territories:");
 	boxes[(int)BoxTypes::ValueBox]->Hide((army||round));
-	sf::Vector2f offset = (army ? roundBoxPos: armyBoxPos) - boxes[(int)BoxTypes::ValueBox]->box.getPosition();
-	boxes[(int)BoxTypes::ValueBox]->Move(offset);
+	sf::Vector2f offset = (army ? armyBoxPos: roundBoxPos) - boxes[(int)BoxTypes::ValueBox]->box.getPosition();
+	for (auto box : boxes)
+	{
+		box->Move(offset);
+	}
 	std::dynamic_pointer_cast<TransformOption>(entries[(int)EntryTypes::Value])->Hide(player);
 	std::dynamic_pointer_cast<TransformOption>(entries[(int)EntryTypes::Operator])->Hide(!player);
 	buttons[(int)ButtonTypes::AddButton]->Hide((army || round));
@@ -591,16 +620,14 @@ void ConditionEntry::BorderBoxSize(int conditionType)
 	switch ((ConditionType)conditionType)
 	{
 	case ConditionType::ArmyCount:
-		numLines = boxes.size(); //need to figure out how many actually fit per line
-		break;
-	case ConditionType::Round:
-		numLines = boxes.size(); //need to figure out how many actually fit per line
+	case ConditionType::Round:		
+		numLines = (((boxes.size() + 1) / 4) + (int)((bool)((boxes.size() + 1) % 4)));
 		break;
 	case ConditionType::Territory:
 		numLines = territories.size() ? territories.size() : 1;
 		break;
 	}
-	borderHeight += numLines ? numLines * 45.0f : 5.0f;
+	borderHeight += numLines ? numLines * 40.0f : 5.0f;
 	std::dynamic_pointer_cast<sf::RectangleShape>(shapes[(int)UIEntry::ShapeTypes::Border])->setSize({ 522, borderHeight });
 }
 
@@ -660,10 +687,42 @@ void ConditionEntry::RemoveTerritory(XMLData& xmlData, int index)
 		territories[index]->uiIndex = -1;
 		territories[index]->xmlKey = -1;
 		territories[index]->mapBox->border->setOutlineColor(sf::Color::White);
-		xmlData.transforms.at(xmlKey)->conditions.at(conditionNum).values.at(index) = -1;
+		xmlData.transforms.at(xmlKey)->conditions.at(conditionNum).values.insert_or_assign(index, -1);
 		territories[index]->mapBox->border = nullptr;
 	}
 }
+
+void ConditionEntry::AddValue(XMLData& xmlData)
+{
+	int num = boxes.size();
+	std::shared_ptr<TextBox> box =
+		std::make_shared<TextBox>(sf::Vector2f{ 190, 100 }/*position*/,
+			sf::Vector2f{ 70, 30 }/*size*/);
+	sf::Vector2f gridPos = sf::Vector2f{ (num % 4) * 80.0f, (num / 4) * 40.0f };
+	ConditionType optionType = (ConditionType)std::dynamic_pointer_cast<TransformOption>(entries[(int)EntryTypes::Type])->selectedOption;
+	sf::Vector2f startPos = optionType == ConditionType::ArmyCount ? armyBoxPos : roundBoxPos;
+	box->box.setPosition(startPos + gridPos);
+	box->displayText->setPosition(startPos + gridPos);
+	xmlData.transforms[xmlKey]->conditions[conditionNum].values.insert_or_assign(num, -1);
+	box->number = &xmlData.transforms[xmlKey]->conditions[conditionNum].values.at(num);
+	boxes.push_back(box);	
+}
+
+void ConditionEntry::RemoveValue(XMLData& xmlData)
+{
+	if (boxes.size() > 1)
+	{
+		auto condition = xmlData.transforms.at(xmlKey)->conditions.at(conditionNum);
+		auto num = boxes.size();
+		condition.values.erase(num);
+		boxes.pop_back();
+	}
+	else
+	{
+		xmlData.transforms.at(xmlKey)->conditions.at(conditionNum).values.insert_or_assign(0, -1);
+	}
+}
+
 //-----------------------------------------------------------
 
 void TransformOption::CreateEntry(XMLData& xmlData, float entryTop)

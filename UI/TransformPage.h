@@ -100,6 +100,8 @@ public:
 	void AddTerritory(XMLData& xmlData, std::shared_ptr<sf::RectangleShape> border,
 		int boxIndex, int otherXMLKey);
 	void RemoveTerritory(XMLData& xmlData, int index);
+	void AddValue(XMLData& xmlData);
+	void RemoveValue(XMLData& xmlData);
 };
 
 class TransformEntry : public UIEntry

@@ -115,6 +115,9 @@ void UI::Draw(sf::RenderWindow& window)
 
 bool UI::CheckMouseInBounds(sf::Vector2i mousePos, sf::RectangleShape rect)
 {
+    if (rect.getScale() == sf::Vector2f{ 0,0 }) 
+        return false;
+
     float outlineThickness = rect.getOutlineThickness();
     sf::Vector2f rectPos = rect.getPosition() - sf::Vector2f{outlineThickness, outlineThickness};
     sf::Vector2f rectSize = rect.getSize() + sf::Vector2f{ outlineThickness * 2, outlineThickness * 2 };
