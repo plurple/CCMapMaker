@@ -54,9 +54,9 @@ int main()
                     input.up = KeyPressed->scancode == sf::Keyboard::Scancode::Up;
                     input.down = KeyPressed->scancode == sf::Keyboard::Scancode::Down;
                     input.shift = KeyPressed->shift;
+                    input.ctrl = KeyPressed->control;
+                    input.alt = KeyPressed->alt;
                     input.tab = KeyPressed->scancode == sf::Keyboard::Scancode::Tab;
-                    input.ctrl = KeyPressed->scancode == sf::Keyboard::Scancode::LControl;
-                    input.alt = KeyPressed->scancode == sf::Keyboard::Scancode::LAlt;
                 }
             }
         }

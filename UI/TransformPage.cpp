@@ -408,7 +408,7 @@ void ConditionEntry::CreateEntry(XMLData& xmlData, float entryTop)
 	valueOptions->skipAll = true;
 	entries.push_back(valueOptions);
 
-	SwapConditionType(typeOptions->selectedOption);
+	SwapConditionType(typeOptions->selectedOption, operatorOptions->selectedOption);
 }
 
 void ConditionEntry::Draw(sf::RenderWindow& window)
@@ -436,19 +436,22 @@ void ConditionEntry::MouseClick(XMLData& xmlData, sf::Vector2i mousePos,
 	int newOperatorType = std::dynamic_pointer_cast<TransformOption>(entries[(int)EntryTypes::Operator])->selectedOption;
 	if (oldConditionType != newConditionType)
 	{
-		SwapConditionType(newConditionType);
-		//todo empty values
+		SwapConditionType(newConditionType, newOperatorType);
+		ResetValues(xmlData, newConditionType);
 	}
 	std::shared_ptr<Button> addValue = buttons[(int)ButtonTypes::AddButton];
 	std::shared_ptr<Button> removeValue = buttons[(int)ButtonTypes::RemoveButton];
 	if (oldOperatorType != newOperatorType)
 	{
 		bool ins = (Operators)newOperatorType == Operators::In || (Operators)newOperatorType == Operators::NotIn;
-		addValue->Hide(ins);
-		removeValue->Hide(ins);
+		if (newConditionType != (int)ConditionType::Territory)
+		{
+			addValue->Hide(ins);
+			removeValue->Hide(ins);
+		}
 		if (!ins)
 		{
-			//todo check the operator changed and empty the values
+			ResetValues(xmlData, newConditionType);
 		}
 	}
 	if (mouseOnPage && addValue && UI::CheckMouseInBounds(mousePos, *addValue->rect))
@@ -586,7 +589,7 @@ void ConditionEntry::MoveEntry(sf::Vector2f offset)
 	}
 }
 
-void ConditionEntry::SwapConditionType(int conditionType)
+void ConditionEntry::SwapConditionType(int conditionType, int operatorType)
 {
 	float round = conditionType == (int)ConditionType::Round;
 	float player = conditionType == (int)ConditionType::Player;
@@ -605,9 +608,13 @@ void ConditionEntry::SwapConditionType(int conditionType)
 	}
 	std::dynamic_pointer_cast<TransformOption>(entries[(int)EntryTypes::Value])->Hide(player);
 	std::dynamic_pointer_cast<TransformOption>(entries[(int)EntryTypes::Operator])->Hide(!player);
-	buttons[(int)ButtonTypes::AddButton]->Hide((army || round));
-	buttons[(int)ButtonTypes::RemoveButton]->Hide((army || round));
 
+	bool ins = (Operators)operatorType == Operators::In || (Operators)operatorType == Operators::NotIn;
+	if (ins)
+	{
+		buttons[(int)ButtonTypes::AddButton]->Hide((army || round));
+		buttons[(int)ButtonTypes::RemoveButton]->Hide((army || round));
+	}
 	BorderBoxSize(conditionType);
 }
 
@@ -721,6 +728,31 @@ void ConditionEntry::RemoveValue(XMLData& xmlData)
 	{
 		xmlData.transforms.at(xmlKey)->conditions.at(conditionNum).values.insert_or_assign(0, -1);
 	}
+}
+
+void ConditionEntry::ResetValues(XMLData& xmlData, int conditionType)
+{
+	switch ((ConditionType)conditionType)
+	{
+	case ConditionType::ArmyCount:
+	case ConditionType::Round:
+		for (auto box : boxes)
+		{
+			RemoveValue(xmlData);
+		}
+		break;
+	case ConditionType::Territory:
+		for (int i = territories.size() - 1; i >= 0; i--)
+		{
+			if (std::dynamic_pointer_cast<LinkedData>(territories[i])->xmlKey == 0)
+				RemoveTerritory(xmlData, i);
+			else
+				xmlData.transforms.at(xmlKey)->conditions.at(conditionNum).values.erase(std::dynamic_pointer_cast<LinkedData>(territories[i])->xmlKey);
+			territories.erase(territories.begin() + i);
+		}
+		break;
+	}
+	BorderBoxSize(conditionType);
 }
 
 //-----------------------------------------------------------

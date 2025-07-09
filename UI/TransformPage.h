@@ -92,7 +92,7 @@ public:
 		UserInput& input, bool showCursor) override;
 
 	void MoveEntry(sf::Vector2f offset) override;
-	void SwapConditionType(int conditionType);
+	void SwapConditionType(int conditionType, int operatorType);
 	void BorderBoxSize(int conditionType);
 	void AddTerritoryID(XMLData& xmlData, std::shared_ptr<sf::RectangleShape> border,
 		int boxIndex, int otherXMLKey);
@@ -102,6 +102,7 @@ public:
 	void RemoveTerritory(XMLData& xmlData, int index);
 	void AddValue(XMLData& xmlData);
 	void RemoveValue(XMLData& xmlData);
+	void ResetValues(XMLData& xmlData, int conditionType);
 };
 
 class TransformEntry : public UIEntry
