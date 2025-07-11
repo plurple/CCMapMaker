@@ -7,6 +7,7 @@
 #include "Transform.h"
 #include <iostream>
 #include "../EnumOperators.hpp"
+#include "tinyxml2.h"
 
 static const std::vector<std::string> whenStrings =
 {
@@ -232,4 +233,92 @@ void XMLData::ChangeTransformOption(TransformOptionType type, int& option, bool 
 		break;
 	}
 	}
+}
+
+void XMLData::SaveXML()
+{
+	tinyxml2::XMLDocument doc;
+	doc.InsertFirstChild(doc.NewDeclaration());
+	
+	const char* awesomeMsg = "This XML was made using Plurple's amazing CC Map Maker";
+	tinyxml2::XMLComment* awesome = doc.NewComment(awesomeMsg);
+	doc.InsertEndChild(awesome);
+
+	tinyxml2::XMLElement* map = doc.NewElement("map");
+	doc.InsertEndChild(map);
+
+	int i = 0;
+	for (auto territory : territories)
+	{
+		tinyxml2::XMLElement* terr = doc.NewElement("territory");
+		map->InsertEndChild(terr);
+		std::string comment = "territory " + std::to_string(i);
+		tinyxml2::XMLComment* terrNum = doc.NewComment(comment.c_str());
+		terr->InsertEndChild(terrNum);
+		tinyxml2::XMLElement* name = doc.NewElement("name");
+		name->SetText(territory.second->name.c_str());
+		terr->InsertEndChild(name);
+		tinyxml2::XMLElement* borders = doc.NewElement("borders");
+		terr->InsertEndChild(borders);
+		for (auto border : territory.second->borders)
+		{
+			tinyxml2::XMLElement* bord = doc.NewElement("border");
+			bord->SetText(territories.at(border.territory)->name.c_str());
+			if (border.condition >= 0)
+			{
+				auto condition = border.conditionIsContintent ? 
+					continents.at(border.condition)->name.c_str() : 
+					territories.at(border.condition)->name.c_str();
+				bord->SetAttribute("condition", condition);
+			}
+			borders->InsertEndChild(bord);
+		}
+		if (territory.second->bombardments.size())
+		{
+			tinyxml2::XMLElement* bombardments = doc.NewElement("bombardments");
+			terr->InsertEndChild(bombardments);
+			for (auto bombardement : territory.second->bombardments)
+			{
+				tinyxml2::XMLElement* bomb = doc.NewElement("bombardment");
+				bomb->SetText(territories.at(bombardement)->name.c_str());
+				bombardments->InsertEndChild(bomb);
+			}
+		}
+		tinyxml2::XMLElement* coords = doc.NewElement("coordinates");
+		terr->InsertEndChild(coords);
+		tinyxml2::XMLElement* smallx = doc.NewElement("smallx");
+		smallx->SetText(territory.second->smallPos.x);
+		coords->InsertEndChild(smallx);
+		tinyxml2::XMLElement* smally = doc.NewElement("smally");
+		smally->SetText(territory.second->smallPos.y);
+		coords->InsertEndChild(smally);
+		tinyxml2::XMLElement* largex = doc.NewElement("largex");
+		largex->SetText(territory.second->largePos.x);
+		coords->InsertEndChild(largex);
+		tinyxml2::XMLElement* largey = doc.NewElement("largey");
+		largey->SetText(territory.second->largePos.y);
+		coords->InsertEndChild(largey);
+
+		if (territory.second->neutral != -1)
+		{
+			tinyxml2::XMLElement* neutral = doc.NewElement("neutral");
+			if (territory.second->killer)
+				neutral->SetAttribute("killer", "yes");
+			neutral->SetText(territory.second->neutral);
+			terr->InsertEndChild(neutral);
+		}
+		if (territory.second->bonus != -1)
+		{
+			tinyxml2::XMLElement* bonus = doc.NewElement("bonus");
+			bonus->SetText(territory.second->bonus);
+			terr->InsertEndChild(bonus);
+		}
+
+		i++;
+	}
+
+	tinyxml2::XMLComment* awesome1 = doc.NewComment(awesomeMsg);
+	doc.InsertEndChild(awesome1);
+
+	doc.SaveFile("Output.xml");
 }

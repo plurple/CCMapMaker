@@ -57,5 +57,6 @@ public:
 
 	std::string GetTransformOptionString(TransformOptionType type, int option);
 	void ChangeTransformOption(TransformOptionType type, int& option, bool plus, bool skipAll = false);
+	void SaveXML();
 };
 

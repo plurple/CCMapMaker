@@ -201,7 +201,11 @@ void UI::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
     {
         SwapMaps();
     }
-    if (input.ctrl)
+    if (*input.keyPressed.c_str() == 's')
+    {
+        xmlData.SaveXML();
+    }
+    else if (input.ctrl)
     {
         UIPageType newPage = selectedPage;
         input.shift ? newPage-- : newPage++;
