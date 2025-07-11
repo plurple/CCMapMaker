@@ -237,6 +237,7 @@ void XMLData::ChangeTransformOption(TransformOptionType type, int& option, bool 
 
 void XMLData::SaveXML()
 {
+	int i = 0;
 	tinyxml2::XMLDocument doc;
 	doc.InsertFirstChild(doc.NewDeclaration());
 	
@@ -247,7 +248,229 @@ void XMLData::SaveXML()
 	tinyxml2::XMLElement* map = doc.NewElement("map");
 	doc.InsertEndChild(map);
 
-	int i = 0;
+	if (minReinforcements != 3)
+	{
+		tinyxml2::XMLElement* minreinforcement = doc.NewElement("minreinforcement");
+		minreinforcement->SetText(minReinforcements);
+		map->InsertEndChild(minreinforcement);
+	}
+
+	i = 0;
+	if (transforms.size())
+	{
+		//do this shit
+		for (auto transform : transforms)
+		{
+			i++;
+		}
+	}
+
+	if (reinforcements.size())
+	{
+		tinyxml2::XMLElement* reins = doc.NewElement("reinforcements");
+		map->InsertEndChild(reins);
+		for (auto reinforcment : reinforcements)
+		{
+			tinyxml2::XMLElement* rein = doc.NewElement("reinforcement");
+			reins->InsertEndChild(rein);
+			tinyxml2::XMLElement* lower = doc.NewElement("lower");
+			lower->SetText(reinforcment.second->lower);
+			rein->InsertEndChild(lower);
+			tinyxml2::XMLElement* upper = doc.NewElement("upper");
+			upper->SetText(reinforcment.second->upper);
+			rein->InsertEndChild(upper);
+			tinyxml2::XMLElement* divisor = doc.NewElement("divisor");
+			divisor->SetText(reinforcment.second->divisor);
+			rein->InsertEndChild(divisor);
+		}
+	}
+
+	i = 0;
+	if (positions.size())
+	{
+		tinyxml2::XMLElement* poss = doc.NewElement("positions");
+		if (maxPositions != -1)
+		{
+			poss->SetAttribute("max", maxPositions);
+		}
+		map->InsertEndChild(poss);
+		for (auto position : positions)
+		{
+			tinyxml2::XMLElement* pos = doc.NewElement("position");
+			poss->InsertEndChild(pos);
+			std::string comment = "position " + std::to_string(i);
+			tinyxml2::XMLComment* posNum = doc.NewComment(comment.c_str());
+			pos->InsertEndChild(posNum);
+			for (auto posPair : position.second->positions)
+			{
+				tinyxml2::XMLElement* terr = doc.NewElement("territory");
+				terr->SetText(territories.at(posPair.first)->name.c_str());
+				if (posPair.second != 3)
+					terr->SetAttribute("start", posPair.second);
+				pos->InsertEndChild(terr);
+			}
+			i++;
+		}
+	}
+
+	i = 0;
+	for (auto requirement : requirements)
+	{
+		tinyxml2::XMLElement* req = doc.NewElement("requirement");
+		map->InsertEndChild(req);
+		std::string comment = "requirement " + std::to_string(i);
+		tinyxml2::XMLComment* reqNum = doc.NewComment(comment.c_str());
+		req->InsertEndChild(reqNum);
+		tinyxml2::XMLElement* name = doc.NewElement("name");
+		name->SetText(requirement.second->name.c_str());
+		req->InsertEndChild(name);
+
+		tinyxml2::XMLElement* components = doc.NewElement("components");
+		req->InsertEndChild(components);
+		for (auto territory : requirement.second->territories)
+		{
+			tinyxml2::XMLElement* terr = doc.NewElement("territory");
+			terr->SetText(territories.at(territory)->name.c_str());
+			components->InsertEndChild(terr);
+		}
+		for (auto continent : requirement.second->continents)
+		{
+			tinyxml2::XMLElement* con = doc.NewElement("continent");
+			con->SetText(continents.at(continent)->name.c_str());
+			components->InsertEndChild(con);
+		}
+
+		if (requirement.second->numRequired != -1 &&
+			requirement.second->numRequired != 1 )
+		{
+			tinyxml2::XMLElement* required = doc.NewElement("required");
+			required->SetText(requirement.second->numRequired);
+			req->InsertEndChild(required);
+		}
+	}
+
+	i = 0;
+	for (auto objective : objectives)
+	{
+		tinyxml2::XMLElement* obj = doc.NewElement("objective");
+		map->InsertEndChild(obj);
+		std::string comment = "objective " + std::to_string(i);
+		tinyxml2::XMLComment* objNum = doc.NewComment(comment.c_str());
+		obj->InsertEndChild(objNum);
+		tinyxml2::XMLElement* name = doc.NewElement("name");
+		name->SetText(objective.second->name.c_str());
+		obj->InsertEndChild(name);
+
+		tinyxml2::XMLElement* components = doc.NewElement("components");
+		obj->InsertEndChild(components);
+		for (auto territory : objective.second->territories)
+		{
+			tinyxml2::XMLElement* terr = doc.NewElement("territory");
+			terr->SetText(territories.at(territory)->name.c_str());
+			components->InsertEndChild(terr);
+		}
+		for (auto continent : objective.second->continents)
+		{
+			tinyxml2::XMLElement* con = doc.NewElement("continent");
+			con->SetText(continents.at(continent)->name.c_str());
+			components->InsertEndChild(con);
+		}
+
+		if (objective.second->numRequired != -1 &&
+			objective.second->numRequired !=
+			(objective.second->territories.size() +
+				objective.second->continents.size()))
+		{
+			tinyxml2::XMLElement* required = doc.NewElement("required");
+			required->SetText(objective.second->numRequired);
+			obj->InsertEndChild(required);
+		}
+	}
+
+	i = 0;
+	for (auto continent : continents)
+	{
+		tinyxml2::XMLElement* cont = doc.NewElement("continent");
+		map->InsertEndChild(cont);
+		std::string comment = "continent " + std::to_string(i);
+		tinyxml2::XMLComment* contNum = doc.NewComment(comment.c_str());
+		cont->InsertEndChild(contNum);
+		tinyxml2::XMLElement* name = doc.NewElement("name");
+		name->SetText(continent.second->name.c_str());
+		cont->InsertEndChild(name);
+		if (continent.second->bonuses.size() > 1)
+		{
+			tinyxml2::XMLElement* bonuses = doc.NewElement("bonuses");
+			cont->InsertEndChild(bonuses);
+		
+			for (auto bonus : continent.second->bonuses)
+			{
+				tinyxml2::XMLElement* bon = doc.NewElement("bonus");
+				bon->SetText(bonus.second.bonusAmount);
+				if (bonus.second.numRequired > 0)
+				{
+					bon->SetAttribute("required", bonus.second.numRequired);
+				}
+				bonuses->InsertEndChild(bon);
+			}
+		}
+		else
+		{
+			tinyxml2::XMLElement* bon = doc.NewElement("bonus");
+			bon->SetText(continent.second->bonuses.at(0).bonusAmount);
+			if (continent.second->bonuses.at(0).numRequired > 0)
+			{
+				bon->SetAttribute("required", continent.second->bonuses.at(0).numRequired);
+			}
+			cont->InsertEndChild(bon);
+		}
+
+		tinyxml2::XMLElement* components = doc.NewElement("components");
+		cont->InsertEndChild(components);
+		
+		for (auto territory : continent.second->territories)
+		{
+			tinyxml2::XMLElement* terr = doc.NewElement("territory");
+			terr->SetText(territories.at(territory.first)->name.c_str());
+			if (territory.second.blocker)
+				terr->SetAttribute("type", "blocker");
+			else if (territory.second.mandatory)
+				terr->SetAttribute("type", "mandatory");
+			else if (territory.second.multiplier)
+			{
+				terr->SetAttribute("type", "multiplier");
+				terr->SetAttribute("factor", territory.second.factor);
+			}
+			components->InsertEndChild(terr);
+		}
+		for (auto continent : continent.second->continents)
+		{
+			tinyxml2::XMLElement* con = doc.NewElement("continent");
+			con->SetText(continents.at(continent)->name.c_str());
+			components->InsertEndChild(con);
+		}
+		/*if (continent.second->required != -1)
+		{
+			tinyxml2::XMLElement* required = doc.NewElement("required");
+			required->SetText(continent.second->required);
+			cont->InsertEndChild(required);
+		}*/
+
+		if (continent.second->overrides.size())
+		{
+			tinyxml2::XMLElement* overrides = doc.NewElement("overrides");
+			cont->InsertEndChild(overrides);
+			for (auto over : continent.second->overrides)
+			{
+				tinyxml2::XMLElement* overr = doc.NewElement("override");
+				overr->SetText(continents.at(over)->name.c_str());
+				overrides->InsertEndChild(overr);
+			}
+		}
+		i++;
+	}
+
+	i = 0;
 	for (auto territory : territories)
 	{
 		tinyxml2::XMLElement* terr = doc.NewElement("territory");
