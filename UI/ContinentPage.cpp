@@ -354,9 +354,9 @@ void ContinentEntry::Draw(sf::RenderWindow& window)
 	}
 	if (selectedView == ContinentView::Overrides)
 	{
-		for (std::shared_ptr<LinkedData> continent : overrides)
+		for (std::shared_ptr<LinkedData> over : overrides)
 		{
-			continent->nameLabel->Draw(window);
+			over->nameLabel->Draw(window);
 		}
 	}
 }
@@ -391,9 +391,9 @@ void ContinentEntry::MouseClick(XMLData& xmlData, sf::Vector2i mousePos,
 	}
 	if (selectedView == ContinentView::Overrides)
 	{
-		for (std::shared_ptr<LinkedData> continent : overrides)
+		for (std::shared_ptr<LinkedData> over : overrides)
 		{
-			continent->nameLabel->Toggle(mouseOnPage && UI::CheckMouseInBounds(mousePos, continent->nameLabel->box));
+			over->nameLabel->Toggle(mouseOnPage && UI::CheckMouseInBounds(mousePos, over->nameLabel->box));
 		}
 	}
 }
@@ -452,6 +452,10 @@ void ContinentEntry::MoveEntry(sf::Vector2f offset)
 	for (std::shared_ptr<LinkedData> continent : continents)
 	{
 		continent->nameLabel->Move(offset);
+	}
+	for (std::shared_ptr<LinkedData> over : overrides)
+	{
+		over->nameLabel->Move(offset);
 	}
 	for (std::shared_ptr<UIEntry> bonus : bonuses)
 	{
