@@ -84,6 +84,7 @@ public:
 	{
 		NameLabel,
 		BonusesLabel,
+		RequiredLabel,
 		TerritoryLabel,
 		ContinentsLabel,
 		FactorLabel,
@@ -98,6 +99,7 @@ public:
 	enum class BoxTypes
 	{
 		NameBox,
+		RequiredBox,
 		NumBoxes
 	};
 	enum class EntryTypes

@@ -273,8 +273,8 @@ void ContinentEntry::CreateEntry(XMLData& xmlData, float entryTop)
 	baseColor = sf::Color{ 255, 170, 0 };
 	selectedColor = sf::Color{ 200, 120, 0 };
 
-	territoryPos = { 20, entryTop + 84 };
-	continentPos = { 280, entryTop + 84 };
+	territoryPos = { 20, entryTop + 122 };
+	continentPos = { 280, entryTop + 122 };
 	bonusPos = { 20, entryTop + 46 };
 
 	std::shared_ptr<sf::RectangleShape> border = 
@@ -294,6 +294,11 @@ void ContinentEntry::CreateEntry(XMLData& xmlData, float entryTop)
 		std::make_shared<sf::Text>(UI::font, "Bonuses:");
 	bonusesLabel->setPosition({ 20, entryTop + 46 });
 	labels.push_back(bonusesLabel);
+
+	std::shared_ptr<sf::Text> requiredLabel =
+		std::make_shared<sf::Text>(UI::font, "Required:");
+	requiredLabel->setPosition({ 20, entryTop + 84 });
+	labels.push_back(requiredLabel);
 	
 	std::shared_ptr<sf::Text> territoryLabel = 
 		std::make_shared<sf::Text>(UI::font, "Territories:");
@@ -309,7 +314,7 @@ void ContinentEntry::CreateEntry(XMLData& xmlData, float entryTop)
 
 	std::shared_ptr<sf::Text> factorLabel =
 		std::make_shared<sf::Text>(UI::font, "Factor:");
-	factorLabel->setPosition({ 370, entryTop + 84 });
+	factorLabel->setPosition({ 370, entryTop + 122 });
 	labels.push_back(factorLabel);
 
 	std::shared_ptr<Button> addBonus = 
@@ -328,6 +333,12 @@ void ContinentEntry::CreateEntry(XMLData& xmlData, float entryTop)
 			sf::Vector2f{ 410, 30 }/*size*/);
 	nameBox->text = &data->name;
 	boxes.push_back(nameBox);
+
+	std::shared_ptr<TextBox> requiredBox =
+		std::make_shared<TextBox>(sf::Vector2f{ 160, entryTop + 88 }/*position*/,
+			sf::Vector2f{ 70, 30 }/*size*/);
+	requiredBox->number = &data->required;
+	boxes.push_back(requiredBox);
 
 	AddBonus(xmlData);
 
@@ -603,6 +614,8 @@ void ContinentEntry::BonusMove(sf::Vector2f offset)
 	labels[(int)LabelTypes::TerritoryLabel]->move(offset);
 	labels[(int)LabelTypes::ContinentsLabel]->move(offset);
 	labels[(int)LabelTypes::FactorLabel]->move(offset);
+	labels[(int)LabelTypes::RequiredLabel]->move(offset);
+	boxes[(int)BoxTypes::RequiredBox]->Move(offset);
 
 	for (auto continent : continents)
 	{
@@ -623,7 +636,7 @@ void ContinentEntry::BonusMove(sf::Vector2f offset)
 
 void ContinentEntry::BorderBoxSize()
 {
-	float borderHeight = 36.0f + 80.0f + (bonuses.size() - 1) * 40.0f;
+	float borderHeight = 36.0f + 120.0f + (bonuses.size() - 1) * 40.0f;
 	if (selectedView == ContinentView::Overrides)
 	{
 		int numOverrides = overrides.size();
@@ -658,6 +671,8 @@ void BonusLine::CreateEntry(XMLData& xmlData, float entryTop)
 		std::make_shared<TextBox>(sf::Vector2f{ 230, entryTop + 4 }, 
 			sf::Vector2f{ 50, 30 });
 	bonusBox->number = &data->bonuses.at(bonusNum).bonusAmount;
+	bonusBox->allowNegative = true;
+	bonusBox->RemoveNumber();
 	boxes.push_back(bonusBox);
 
 	std::shared_ptr<TextBox> requiredBox = 
@@ -735,6 +750,7 @@ void AdvancedTerritory::CreateEntry(XMLData& xmlData, float entryTop)
 			sf::Vector2f{ 60, 20 }/*size*/, new std::string("1.0"));
 	factor->displayText->setCharacterSize(20);
 	//factor->number = &data->territories.at(otherXMLKey).factor;
+	//factor->allowNegative = true;
 	boxes.push_back(factor);
 }
 

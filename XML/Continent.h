@@ -34,6 +34,7 @@ public:
 	std::unordered_map<int, AdvancedData> territories;
 	std::vector<int> continents;
 	std::vector<int> overrides;
+	int required;
 
 	Continent();
 	int AddBonus();

@@ -408,6 +408,8 @@ void TerritoryEntry::CreateEntry(XMLData& xmlData, float entryTop)
 		std::make_shared<TextBox>(sf::Vector2f{ 120, entryTop + 134 }/*position*/,
 			sf::Vector2f{ 65, 30 }/*size*/);
 	bonusBox->number = &data->bonus;
+	bonusBox->allowNegative = true;
+	bonusBox->RemoveNumber();
 	boxes.push_back(bonusBox);
 
 	std::shared_ptr<Button> killer = 

@@ -449,12 +449,12 @@ void XMLData::SaveXML()
 			con->SetText(continents.at(continent)->name.c_str());
 			components->InsertEndChild(con);
 		}
-		/*if (continent.second->required != -1)
+		if (continent.second->required != -1)
 		{
 			tinyxml2::XMLElement* required = doc.NewElement("required");
 			required->SetText(continent.second->required);
 			cont->InsertEndChild(required);
-		}*/
+		}
 
 		if (continent.second->overrides.size())
 		{
@@ -530,7 +530,7 @@ void XMLData::SaveXML()
 			neutral->SetText(territory.second->neutral);
 			terr->InsertEndChild(neutral);
 		}
-		if (territory.second->bonus != -1)
+		if (territory.second->bonus != 0)
 		{
 			tinyxml2::XMLElement* bonus = doc.NewElement("bonus");
 			bonus->SetText(territory.second->bonus);

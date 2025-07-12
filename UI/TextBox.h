@@ -10,6 +10,7 @@ public:
 	std::string* text;
 	int* number;
 	bool active;
+	bool allowNegative;
 	sf::Color activeColor;
 	sf::Color baseColor;
 

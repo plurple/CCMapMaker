@@ -111,18 +111,24 @@ void TransformEntry::CreateEntry(XMLData& xmlData, float entryTop)
 		std::make_shared<TextBox>(sf::Vector2f{ 460, entryTop + 12 }/*position*/,
 			sf::Vector2f{ 70, 30 }/*size*/);
 	amountBox->number = &data->amount;
+	amountBox->allowNegative = true;
+	amountBox->RemoveNumber();
 	boxes.push_back(amountBox);
 	
 	std::shared_ptr<TextBox> upperBox = 
 		std::make_shared<TextBox>(sf::Vector2f{ 460, entryTop + 54 }/*position*/,
 			sf::Vector2f{ 70, 30 }/*size*/);
 	upperBox->number = &data->upper;
+	upperBox->allowNegative = true;
+	upperBox->RemoveNumber();
 	boxes.push_back(upperBox);
 	
 	std::shared_ptr<TextBox> lowerBox = 
 		std::make_shared<TextBox>(sf::Vector2f{ 460, entryTop + 96 }/*position*/,
 			sf::Vector2f{ 70, 30 }/*size*/);
 	lowerBox->number = &data->lower;
+	lowerBox->allowNegative = true;
+	lowerBox->RemoveNumber();
 	boxes.push_back(lowerBox);
 
 	std::shared_ptr<Button> percentage = 

@@ -8,7 +8,8 @@ TextBox::TextBox(sf::Vector2f pos, sf::Vector2f boxSize,
 	text{defaultText},
     number{defaultNumber},
     baseColor{sf::Color::White},
-    activeColor{ sf::Color::White }
+    activeColor{ sf::Color::White },
+    allowNegative{false}
 {
 	box.setPosition(pos);
 	box.setFillColor(sf::Color::Black);
@@ -37,6 +38,8 @@ void TextBox::Update(sf::RenderWindow& window, sf::Time timePassed,
                 AddNumber(input.keyPressed);
             if (input.backSpace)
                 RemoveNumber();
+            if (*input.keyPressed.c_str() == '-' && allowNegative)
+                *number = -*number;
         }
         if (input.enter)
             Unselect();       
@@ -47,7 +50,7 @@ void TextBox::Update(sf::RenderWindow& window, sf::Time timePassed,
     std::string currentText = "";
     if (text)
         currentText = *text;
-    else if(number && *number != -1)
+    else if(number && (*number != -1 || allowNegative))
         currentText = std::to_string(*number);
 
     displayText->setString(currentText + (active && showCursor ? '|' : ' '));
@@ -78,23 +81,30 @@ bool TextBox::IsNumber(char key)
 
 void TextBox::AddNumber(std::string key)
 {
-    std::string temp = *number == -1 ? "" : std::to_string(*number);
+    std::string temp = *number == -1 && !allowNegative ? "" : std::to_string(*number);
     temp += key;
     *number = std::stoi(temp);
     if (*number > 9999)
         *number = 9999;
+    if (allowNegative && *number < -9999)
+        *number = -9999;
 }
 
 void TextBox::RemoveNumber()
 {
     if ((*number == -1) || (*number >= 0 && *number <= 9))
     {
-        *number = -1;
+        if (allowNegative)
+            *number = 0;
+        else
+            *number = -1;
     }
     else
     {
         std::string temp = std::to_string(*number);
         temp.pop_back();
+        if (temp == "-")
+            temp = "0";
         *number = std::stoi(temp);
     }
 }

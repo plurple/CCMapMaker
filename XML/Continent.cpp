@@ -2,7 +2,8 @@
 
 Continent::Continent() :
 	name{""},
-	bonusKey{0}
+	bonusKey{0},
+	required{-1}
 {}
 
 int Continent::AddBonus()
