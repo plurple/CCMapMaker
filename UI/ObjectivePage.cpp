@@ -377,7 +377,7 @@ void ObjectiveEntry::AddTerritory(XMLData& xmlData, Maps& maps, int boxIndex, in
 	territories.push_back(territory);
 	isObjective ? xmlData.objectives[xmlKey]->territories.push_back(otherXMLKey) : 
 		xmlData.requirements[xmlKey]->territories.push_back(otherXMLKey);
-	if (!isObjective && (*boxes[(int)BoxTypes::NumRequired]->number + 1) ==
+	if (isObjective && (*boxes[(int)BoxTypes::NumRequired]->number + 1) ==
 		(territories.size() + continents.size()))
 	{
 		*boxes[(int)BoxTypes::NumRequired]->number += 1;
@@ -401,7 +401,7 @@ void ObjectiveEntry::AddContinent(XMLData& xmlData, ContinentPanel& panel, int c
 	continents.push_back(continent);
 	isObjective ? xmlData.objectives[xmlKey]->continents.push_back(otherXMLKey) :
 		xmlData.requirements[xmlKey]->continents.push_back(otherXMLKey);
-	if (!isObjective && (*boxes[(int)BoxTypes::NumRequired]->number + 1) ==
+	if (isObjective && (*boxes[(int)BoxTypes::NumRequired]->number + 1) ==
 		(territories.size() + continents.size()))
 	{
 		*boxes[(int)BoxTypes::NumRequired]->number += 1;
