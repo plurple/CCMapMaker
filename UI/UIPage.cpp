@@ -143,9 +143,7 @@ void UIPage::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePas
 	{
 		if (entries[selectedEntry]->selected)
 		{
-			entries[selectedEntry]->Unselect(true);
-			xmlData.RemoveData(pageType, entries[selectedEntry]->xmlKey);
-			entries.erase(entries.begin() + selectedEntry);
+			DeleteEntry(xmlData, pageType, selectedEntry);
 		}
 		PositionEntries();
 		selectedEntry = -1;		
@@ -163,6 +161,13 @@ void UIPage::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePas
 			selectedEntry = -1;
 		SwapEntry(oldEntry, selectedEntry);
 	}		
+}
+
+void UIPage::DeleteEntry(XMLData& xmlData, UIPageType pageType, int entry)
+{
+	entries[entry]->Unselect(true);
+	xmlData.RemoveData(pageType, entries[entry]->xmlKey);
+	entries.erase(entries.begin() + entry);
 }
 
 void UIPage::AddEntry(XMLData& xmlData, std::shared_ptr<UIEntry> entry)
@@ -268,6 +273,10 @@ void UIEntry::MouseClick(XMLData& xmlData, sf::Vector2i mousePos, bool mouseOnPa
 void UIEntry::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
 	UserInput& input, bool showCursor)
 {
+	for (auto button : buttons)
+	{
+		button->Update();
+	}
 	for (std::shared_ptr<TextBox> box : boxes)
 	{
 		box->Update(window, timePassed, input, showCursor);

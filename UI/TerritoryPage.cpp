@@ -136,8 +136,7 @@ bool TerritoryPage::MapClick(UI& ui, XMLData& xmlData, Maps& maps, sf::Vector2i 
 						maps.mapBoxes[boxIndex]->border->setOutlineColor(sf::Color::Blue);
 						border->AddBorder(xmlData, maps, boxIndex, entries[boxIndex]->xmlKey);
 					}
-					std::dynamic_pointer_cast<sf::RectangleShape>(border->shapes[(int)UIEntry::ShapeTypes::Border])->setSize({ 530, 140 + border->territories.size() * 25.0f });
-
+					border->BorderBoxSize();
 					break;
 				}
 				case TerritoryView::Bombardments:
@@ -158,7 +157,7 @@ bool TerritoryPage::MapClick(UI& ui, XMLData& xmlData, Maps& maps, sf::Vector2i 
 					}
 					if (removed)
 					{
-						for (int j = i; j < bomb->territories.size(); j++)
+						for (int j = i; j < bomb->bombardments.size(); j++)
 						{
 							bomb->bombardments[j]->nameLabel->Move({ 0, -25 });
 						}
@@ -168,7 +167,7 @@ bool TerritoryPage::MapClick(UI& ui, XMLData& xmlData, Maps& maps, sf::Vector2i 
 						maps.mapBoxes[boxIndex]->border->setOutlineColor(sf::Color::Green);
 						bomb->AddBombardment(xmlData, maps, boxIndex, entries[boxIndex]->xmlKey);
 					}
-					std::dynamic_pointer_cast<sf::RectangleShape>(bomb->shapes[(int)UIEntry::ShapeTypes::Border])->setSize({ 530, 140 + bomb->bombardments.size() * 25.0f });
+					bomb->BorderBoxSize();
 					break;
 				}
 				case TerritoryView::Conditions:
@@ -622,10 +621,7 @@ void TerritoryEntry::SwapView(TerritoryView view)
 	float extra = selectedView == TerritoryView::Extras;
 	float condition = selectedView == TerritoryView::Conditions;
 
-	float borderHeight = 140.0f;
-	borderHeight += extra ? 35.0f : bombardment ? bombardments.size() * 25.0f : territories.size() * 25.0f;
-
-	std::dynamic_pointer_cast<sf::RectangleShape>(shapes[(int)ShapeTypes::Border])->setSize({530, borderHeight});
+	BorderBoxSize();
 	labels[(int)LabelTypes::ConnectionLabel]->setString(bombardment ? "Bombardments:" : "Borders:");
 	labels[(int)LabelTypes::ConnectionLabel]->setFillColor(bombardment ? sf::Color::Green : sf::Color::Red);
 	labels[(int)LabelTypes::ConditionLabel]->setScale({ condition,condition });
@@ -722,14 +718,17 @@ void TerritoryEntry::AddBombardment(XMLData& xmlData, Maps& maps, int boxIndex, 
 }
 
 void TerritoryEntry::AddCondition(XMLData& xmlData, std::shared_ptr<sf::RectangleShape> border, 
-	int boxIndex, int otherXMLKey, bool isContinent)
+	int boxIndex, int otherXMLKey, bool isContinent, int borderIndex)
 {
-	int borderIndex = 0;
-	for (auto border : territories)
+	if (borderIndex == -1)
 	{
-		if (border->nameLabel->active)
-			break;
-		borderIndex++;
+		borderIndex = 0;
+		for (auto border : territories)
+		{
+			if (border->nameLabel->active)
+				break;
+			borderIndex++;
+		}
 	}
 	if (borderIndex < conditions.size())
 	{
@@ -763,4 +762,14 @@ void TerritoryEntry::RemoveCondition(XMLData& xmlData, int borderIndex)
 	condition->mapBox->border->setOutlineColor(sf::Color::White);
 	xmlData.territories[xmlKey]->borders[borderIndex].condition = -1;
 	condition->mapBox->border = nullptr;
+}
+
+void TerritoryEntry::BorderBoxSize()
+{
+	float bombardment = selectedView == TerritoryView::Bombardments;
+	float extra = selectedView == TerritoryView::Extras;
+	float borderHeight = 140.0f;
+	borderHeight += extra ? 35.0f : bombardment ? bombardments.size() * 25.0f : territories.size() * 25.0f;
+
+	std::dynamic_pointer_cast<sf::RectangleShape>(shapes[(int)ShapeTypes::Border])->setSize({ 530, borderHeight });
 }

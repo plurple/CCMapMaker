@@ -16,8 +16,8 @@ MapData::MapData(std::string fileName) : filePath{ fileName }, mapTexture{nullpt
 }
 
 Maps::Maps() :
-    largeMap("C:/Users/Matthew/Documents/Conquer club/map xml/Feudal Legend/FeudalLegendLarge.png"),
-    smallMap("C:/Users/Matthew/Documents/Conquer club/map xml/Feudal Legend/FeudalLegendSmall.png"),
+    largeMap("C:/Users/Matthew/Documents/Conquer club/map xml/Conquistadores/ConquistadoresLarge.png"),
+    smallMap("C:/Users/Matthew/Documents/Conquer club/map xml/Conquistadores/ConquistadoresSmall.png"),
     mapCanvas{ {UI::windowSize.x-600.0f,UI::windowSize.y-0.0f } },
     scrollBar(sf::View{ mapCanvas.getGlobalBounds() }, { mapCanvas.getSize().x - 40, 50 }/*position*/, 
         { 30, mapCanvas.getSize().y - 100 }/*size*/, { 50, mapCanvas.getSize().y - 40 }/*position*/,

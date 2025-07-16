@@ -75,10 +75,10 @@ public:
 	void AddBorder(XMLData& xmlData, Maps& maps, int boxIndex, int otherXMLKey);
 	void AddBombardment(XMLData& xmlData, Maps& maps, int boxIndex, int otherXMLKey);
 	void AddCondition(XMLData& xmlData, std::shared_ptr<sf::RectangleShape> border, 
-		int boxIndex, int otherXMLKey, bool isContinent);
+		int boxIndex, int otherXMLKey, bool isContinent, int borderIndex = -1);
 	void RemoveCondition(XMLData& xmlData, int borderIndex);
+	void BorderBoxSize() override;
 };
-
 
 class TerritoryPage : public UIPage
 {

@@ -201,11 +201,15 @@ void UI::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
     {
         SwapMaps();
     }
-    if (*input.keyPressed.c_str() == 's')
+    if (*input.keyPressed.c_str() == '*' && input.shift)
     {
         xmlData.SaveXML();
     }
-    else if (input.ctrl)
+    if (*input.keyPressed.c_str() == '+' && input.shift)
+    {
+        LoadXML(xmlData, maps);
+    }
+    if (input.ctrl)
     {
         UIPageType newPage = selectedPage;
         input.shift ? newPage-- : newPage++;
@@ -239,4 +243,22 @@ void UI::SwapPage(UIPageType newPage)
     selectedPage = newPage;
     uiPages[(int)selectedPage]->tabButton.Toggle();
     uiPages[(int)selectedPage]->SelectPage();
+}
+
+void UI::LoadXML(XMLData& xmlData, Maps& maps)
+{
+    for (int i = 0; i < uiPages.size(); i++)
+    {
+        auto page = uiPages[i];
+        for (int j = page->entries.size() - 1; j >= 0; j--)
+        {
+            page->DeleteEntry(xmlData, (UIPageType)i, j);
+        }
+        page->selectedEntry = -1;
+    }
+    for (int i = maps.mapBoxes.size() - 1; i >= 0;i--)
+    {
+        maps.mapBoxes.erase(maps.mapBoxes.begin() + i);
+    }
+    xmlData.LoadXML(*this, maps);
 }

@@ -8,6 +8,14 @@
 #include <iostream>
 #include "../EnumOperators.hpp"
 #include "tinyxml2.h"
+#include "../UI/UI.h"
+#include "../UI/UIPage.h"
+#include "../UI/ContinentPage.h"
+#include "../UI/TerritoryPage.h"
+#include "../UI/ObjectivePage.h"
+#include "../UI/ReinforcementPage.h"
+#include "../UI/TransformPage.h"
+#include "../UI/PositionPage.h"
 
 static const std::vector<std::string> whenStrings =
 {
@@ -544,4 +552,117 @@ void XMLData::SaveXML()
 	doc.InsertEndChild(awesome1);
 
 	doc.SaveFile("Output.xml");
+}
+
+void XMLData::LoadXML(UI& ui, Maps& maps)
+{
+	tinyxml2::XMLDocument doc;
+	doc.LoadFile("Output.xml");
+
+	auto terrUIPage = std::dynamic_pointer_cast<TerritoryPage>(ui.uiPages[(int)UIPageType::Territory]);
+
+	tinyxml2::XMLElement* map = doc.FirstChildElement("map");
+
+	std::unordered_map<std::string, int> territoryToIndex;
+	int i = 0;
+	for (tinyxml2::XMLElement* terrElem = map->FirstChildElement("territory");
+		terrElem != nullptr;
+		terrElem = terrElem->NextSiblingElement("territory"))
+	{
+		int terrKey = nextKey.at((int)UIPageType::Territory);
+		terrUIPage->AddTerritory(*this, maps.AddMapBox({ 0, 0 }));
+
+		auto territory = territories.at(terrKey);
+		
+		auto name = terrElem->FirstChildElement("name");
+		if (name && name->GetText())
+		{
+			territory->name = name->GetText();
+			territoryToIndex.insert({ territory->name, i });
+		}
+
+		auto coords = terrElem->FirstChildElement("coordinates");
+		if (coords)
+		{
+			coords->FirstChildElement("smallx")->QueryIntText(&territory->smallPos.x);
+			coords->FirstChildElement("smally")->QueryIntText(&territory->smallPos.y);
+			coords->FirstChildElement("largex")->QueryIntText(&territory->largePos.x);
+			coords->FirstChildElement("largey")->QueryIntText(&territory->largePos.y);
+		}
+
+		auto neutral = terrElem->FirstChildElement("neutral");
+		if (neutral)
+		{
+			neutral->QueryIntText(&territory->neutral);
+			const char* killer = neutral->Attribute("killer");
+			territory->killer = (killer && strcmp(killer, "yes") == 0);
+		}
+
+		auto bonus = terrElem->FirstChildElement("bonus");
+		if (bonus)
+		{
+			bonus->QueryIntText(&territory->bonus);
+		}
+		i++;
+	}
+
+	for (tinyxml2::XMLElement* terrElem = map->FirstChildElement("territory");
+		terrElem != nullptr;
+		terrElem = terrElem->NextSiblingElement("territory"))
+	{
+		auto name = terrElem->FirstChildElement("name");
+		if (!name || !name->GetText())
+		{
+			continue;
+		}
+
+		int index = territoryToIndex.at(name->GetText());
+		auto terrUI = std::dynamic_pointer_cast<TerritoryEntry>(terrUIPage->entries[index]);
+
+		auto borders = terrElem->FirstChildElement("borders");
+		if (borders)
+		{
+			int j = 0;
+			for (tinyxml2::XMLElement* borderElem = borders->FirstChildElement("border");
+				borderElem != nullptr;
+				borderElem = borderElem->NextSiblingElement("border"))
+			{
+				std::string name = borderElem->GetText();
+				int borderIndex = territoryToIndex.at(name);
+				terrUI->AddBorder(*this, maps, borderIndex, terrUIPage->entries[borderIndex]->xmlKey);
+				const char* condition = borderElem->Attribute("condition");
+				if (condition)
+				{
+					std::string conditionName(condition);
+					if (territoryToIndex.count(conditionName))
+					{
+						int conditionIndex = territoryToIndex.at(conditionName);
+						terrUI->AddCondition(*this, maps.mapBoxes[conditionIndex]->border, conditionIndex, terrUIPage->entries[conditionIndex]->xmlKey, false, j);
+					}
+					/*else if (continentToIndex.count(conditionName))
+					{
+						int conditionIndex = continentToIndex.at(conditionName);
+						terrUI->AddCondition(*this, panel.continents[conditionIndex]->border, conditionIndex, contUIPage->entries[conditionIndex]->xmlKey, true, j);
+					}*/
+				}
+				j++;
+			}
+		}
+
+		auto bombardments = terrElem->FirstChildElement("bombardments");
+		if (bombardments)
+		{
+			for (tinyxml2::XMLElement* bombElem = bombardments->FirstChildElement("bombardment");
+				bombElem != nullptr;
+				bombElem = bombElem->NextSiblingElement("bombardment"))
+			{
+				std::string name = bombElem->GetText();
+				int bombIndex = territoryToIndex.at(name);
+				terrUI->AddBombardment(*this, maps, bombIndex, terrUIPage->entries[bombIndex]->xmlKey);
+			}
+		}
+		terrUI->Unselect(true);
+		terrUI->BorderBoxSize();
+	}
+	terrUIPage->PositionEntries();
 }

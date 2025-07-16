@@ -75,6 +75,8 @@ public:
 	virtual void Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
 		UserInput& input, bool showCursor, UIPageType page);
 
+
+	void DeleteEntry(XMLData& xmlData, UIPageType pageType, int entry);
 	void AddEntry(XMLData& xmlData, std::shared_ptr<UIEntry> entry);
 	void SwapEntry(int previous, int future);
 	void PositionEntries();
