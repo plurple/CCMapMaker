@@ -42,6 +42,6 @@ public:
 		UserInput& input);
 
 	void SwapPage(UIPageType newPage);
-	void LoadXML(XMLData& xmlData, Maps& maps);
+	void LoadXML(XMLData& xmlData, Maps& maps, ContinentPanel& panel);
 };
 

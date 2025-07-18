@@ -11,6 +11,7 @@ class Continent;
 class Territory;
 class UI;
 class Maps;
+class ContinentPanel;
 
 enum class UIPageType
 {
@@ -60,6 +61,6 @@ public:
 	std::string GetTransformOptionString(TransformOptionType type, int option);
 	void ChangeTransformOption(TransformOptionType type, int& option, bool plus, bool skipAll = false);
 	void SaveXML();
-	void LoadXML(UI& ui, Maps& maps);
+	void LoadXML(UI& ui, Maps& maps, ContinentPanel& panel);
 };
 

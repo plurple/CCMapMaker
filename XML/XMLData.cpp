@@ -554,16 +554,23 @@ void XMLData::SaveXML()
 	doc.SaveFile("Output.xml");
 }
 
-void XMLData::LoadXML(UI& ui, Maps& maps)
+void XMLData::LoadXML(UI& ui, Maps& maps, ContinentPanel& panel)
 {
 	tinyxml2::XMLDocument doc;
 	doc.LoadFile("Output.xml");
 
 	auto terrUIPage = std::dynamic_pointer_cast<TerritoryPage>(ui.uiPages[(int)UIPageType::Territory]);
+	auto contUIPage = std::dynamic_pointer_cast<ContinentPage>(ui.uiPages[(int)UIPageType::Continent]);
+	auto objUIPage = std::dynamic_pointer_cast<ObjectivePage>(ui.uiPages[(int)UIPageType::Objective]);
+	auto reqUIPage = std::dynamic_pointer_cast<ObjectivePage>(ui.uiPages[(int)UIPageType::Requirements]);
+	auto reinUIPage = std::dynamic_pointer_cast<ReinforcementPage>(ui.uiPages[(int)UIPageType::Reinforcement]);
+	auto posUIPage = std::dynamic_pointer_cast<PositionPage>(ui.uiPages[(int)UIPageType::Position]);
+	auto transUIPage = std::dynamic_pointer_cast<TransformPage>(ui.uiPages[(int)UIPageType::Transform]);
 
 	tinyxml2::XMLElement* map = doc.FirstChildElement("map");
 
 	std::unordered_map<std::string, int> territoryToIndex;
+	std::unordered_map<std::string, int> continentToIndex;
 	int i = 0;
 	for (tinyxml2::XMLElement* terrElem = map->FirstChildElement("territory");
 		terrElem != nullptr;
@@ -606,6 +613,138 @@ void XMLData::LoadXML(UI& ui, Maps& maps)
 		i++;
 	}
 
+	i = 0;
+	for (tinyxml2::XMLElement* contElem = map->FirstChildElement("continent");
+		contElem != nullptr;
+		contElem = contElem->NextSiblingElement("continent"))
+	{
+		int contKey = nextKey.at((int)UIPageType::Continent);
+		contUIPage->AddContinent(*this);
+
+		auto continent = continents.at(contKey);
+		auto contUI = std::dynamic_pointer_cast<ContinentEntry>(contUIPage->entries[i]);
+		panel.AddContinent(contKey, continent, continents.size()-1);
+
+		auto name = contElem->FirstChildElement("name");
+		if (name && name->GetText())
+		{
+			continent->name = name->GetText();
+			continentToIndex.insert({ continent->name, i });
+		}
+
+		auto bonuses = contElem->FirstChildElement("bonuses");
+		if (bonuses)
+		{
+			int j = 0;
+			tinyxml2::XMLElement* bonusElem = bonuses->FirstChildElement("bonus");
+			bonusElem->QueryIntText(&continent->bonuses.at(j).bonusAmount);
+			bonusElem->QueryIntAttribute("required", &continent->bonuses.at(j).numRequired);			
+				
+			j++;
+			for (bonusElem = bonusElem->NextSiblingElement("bonus");
+				bonusElem != nullptr;
+				bonusElem = bonusElem->NextSiblingElement("bonus"))
+			{
+				contUI->AddBonus(*this);
+				bonusElem->QueryIntAttribute("required", &continent->bonuses.at(j).numRequired);
+				j++;
+			}
+		}
+		else
+		{
+			auto bonus = contElem->FirstChildElement("bonus");
+			if (bonus)
+			{
+				bonus->QueryIntText(&continent->bonuses.at(0).bonusAmount);
+				bonus->QueryIntAttribute("required", &continent->bonuses.at(0).numRequired);
+			}
+		}
+		
+		auto requirement = contElem->FirstChildElement("required");
+		if (requirement)
+		{
+			requirement->QueryIntText(&continent->required);
+		}
+
+		i++;
+	}
+
+	for (tinyxml2::XMLElement* contElem = map->FirstChildElement("continent");
+		contElem != nullptr;
+		contElem = contElem->NextSiblingElement("continent"))
+	{
+		auto name = contElem->FirstChildElement("name");
+		if (!name || !name->GetText())
+		{
+			continue;
+		}
+
+		int index = continentToIndex.at(name->GetText());
+		auto contUI = std::dynamic_pointer_cast<ContinentEntry>(contUIPage->entries[index]);
+
+		auto components = contElem->FirstChildElement("components");
+		if (components)
+		{
+			int j = 0;
+			for (tinyxml2::XMLElement* terrElem = components->FirstChildElement("territory");
+				terrElem != nullptr;
+				terrElem = terrElem->NextSiblingElement("territory"))
+			{
+				std::string name = terrElem->GetText();
+				int terrIndex = territoryToIndex.at(name);
+				contUI->AddTerritory(*this, maps, terrIndex, terrUIPage->entries[terrIndex]->xmlKey);
+				auto terrEntry = std::dynamic_pointer_cast<AdvancedTerritory>(contUI->entries[j]);
+				const char* type = terrElem->Attribute("type");
+				if (type)
+				{
+					if (strcmp(type, "blocker") == 0)
+					{
+						terrEntry->buttons[(int)AdvancedTerritory::ButtonTypes::Blocker]->Select();
+					}
+					else if (strcmp(type, "mandatory") == 0)
+					{
+						terrEntry->buttons[(int)AdvancedTerritory::ButtonTypes::Mandatory]->Select();
+					}
+					else if (strcmp(type, "multiplier") == 0)
+					{
+						terrEntry->buttons[(int)AdvancedTerritory::ButtonTypes::Multiplier]->Select();
+						terrElem->QueryIntAttribute("factor", terrEntry->boxes[(int)AdvancedTerritory::BoxTypes::FactorBox]->number);
+					}
+				}
+				j++;
+			}
+			j = 0;
+			for (tinyxml2::XMLElement* contComp = components->FirstChildElement("continent");
+				contComp != nullptr;
+				contComp = contComp->NextSiblingElement("continent"))
+			{
+				std::string name = contComp->GetText();
+				int contIndex = continentToIndex.at(name);
+				contUI->AddContinent(*this, panel, contIndex, contUIPage->entries[contIndex]->xmlKey, false);
+				j++;
+			}
+		}
+
+		auto overrides = contElem->FirstChildElement("overrides");
+		if (overrides)
+		{
+			int j = 0;
+			for (tinyxml2::XMLElement* overElem = overrides->FirstChildElement("override");
+				overElem != nullptr;
+				overElem = overElem->NextSiblingElement("override"))
+			{
+				std::string name = overElem->GetText();
+				int overIndex = continentToIndex.at(name);
+				contUI->AddContinent(*this, panel, overIndex, contUIPage->entries[overIndex]->xmlKey, true);
+				j++;
+			}
+		}
+
+		contUI->Unselect(true);
+		contUI->BorderBoxSize();
+	}
+	contUIPage->PositionEntries();
+
 	for (tinyxml2::XMLElement* terrElem = map->FirstChildElement("territory");
 		terrElem != nullptr;
 		terrElem = terrElem->NextSiblingElement("territory"))
@@ -639,11 +778,11 @@ void XMLData::LoadXML(UI& ui, Maps& maps)
 						int conditionIndex = territoryToIndex.at(conditionName);
 						terrUI->AddCondition(*this, maps.mapBoxes[conditionIndex]->border, conditionIndex, terrUIPage->entries[conditionIndex]->xmlKey, false, j);
 					}
-					/*else if (continentToIndex.count(conditionName))
+					else if (continentToIndex.count(conditionName))
 					{
 						int conditionIndex = continentToIndex.at(conditionName);
-						terrUI->AddCondition(*this, panel.continents[conditionIndex]->border, conditionIndex, contUIPage->entries[conditionIndex]->xmlKey, true, j);
-					}*/
+						terrUI->AddCondition(*this, panel.continents[conditionIndex]->box.rect, conditionIndex, contUIPage->entries[conditionIndex]->xmlKey, true, j);
+					}
 				}
 				j++;
 			}

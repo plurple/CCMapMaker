@@ -180,7 +180,7 @@ void UI::MouseClick(XMLData& xmlData, sf::RenderWindow& window, sf::Vector2i mou
     }
     sf::Vector2i continentMouse = sf::Vector2i(window.mapPixelToCoords(mousePos, continentPanel.scrollBar.scrollWindow));
     continentPanel.scrollBar.MouseClick(continentMouse);
-    if (CheckMouseInBounds(continentMouse, continentPanel.panel))
+    if (continentPanel.showPanel && CheckMouseInBounds(continentMouse, continentPanel.panel))
     {
         int index;
         maps.clicked = true;
@@ -207,7 +207,7 @@ void UI::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
     }
     if (*input.keyPressed.c_str() == '+' && input.shift)
     {
-        LoadXML(xmlData, maps);
+        LoadXML(xmlData, maps, continentPanel);
     }
     if (input.ctrl)
     {
@@ -245,7 +245,7 @@ void UI::SwapPage(UIPageType newPage)
     uiPages[(int)selectedPage]->SelectPage();
 }
 
-void UI::LoadXML(XMLData& xmlData, Maps& maps)
+void UI::LoadXML(XMLData& xmlData, Maps& maps, ContinentPanel& panel)
 {
     for (int i = 0; i < uiPages.size(); i++)
     {
@@ -260,5 +260,5 @@ void UI::LoadXML(XMLData& xmlData, Maps& maps)
     {
         maps.mapBoxes.erase(maps.mapBoxes.begin() + i);
     }
-    xmlData.LoadXML(*this, maps);
+    xmlData.LoadXML(*this, maps, panel);
 }
