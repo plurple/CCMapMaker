@@ -18,13 +18,17 @@ Button::Button(sf::Vector2f pos, sf::Vector2f dimensions,
 
 void Button::Draw(sf::RenderWindow& window)
 {
-	window.draw(*rect);
-	window.draw(*label);
+	if (rect->getScale().lengthSquared() != 0)
+	{
+		window.draw(*rect);
+		window.draw(*label);
+	}
 }
 
 void Button::Update()
 {
-	*xmlLink ? Select() : Unselect();
+	if(xmlLink)
+		*xmlLink ? Select() : Unselect();
 }
 
 void Button::Select()

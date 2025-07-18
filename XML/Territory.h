@@ -18,7 +18,7 @@ public:
 	std::vector<BorderData> borders;
 	std::vector<int> bombardments;
 	int neutral;
-	int bonus; //todo allow negatives
+	int bonus;
 	bool killer;
 
 	Territory(sf::Vector2f small = { 0,0 }, sf::Vector2f large = { 0,0 });

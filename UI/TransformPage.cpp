@@ -194,13 +194,11 @@ void TransformEntry::MouseClick(XMLData& xmlData, sf::Vector2i mousePos, bool mo
 	std::shared_ptr<Button> addCondition = buttons[(int)ButtonTypes::AddCondition];
 	if (mouseOnPage && addCondition && UI::CheckMouseInBounds(mousePos, *addCondition->rect))
 	{
-		//todo add a conditions stuff
 		AddCondition(xmlData);
 	}
 	std::shared_ptr<Button> removeCondition = buttons[(int)ButtonTypes::RemoveCondition];
 	if (mouseOnPage && removeCondition && UI::CheckMouseInBounds(mousePos, *removeCondition->rect))
 	{
-		//todo add a conditions stuff
 		RemoveCondition(xmlData);
 	}
 	int oldCondition = selectedCondition;
