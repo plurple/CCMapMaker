@@ -34,6 +34,11 @@ int main()
             
             if (focused)
             {
+                if (const auto* mouseButton = event->getIf<sf::Event::MouseButtonPressed>())
+                {
+                    input.mouseLeft = mouseButton->button == sf::Mouse::Button::Left;
+                    input.mouseRight = mouseButton->button == sf::Mouse::Button::Right;
+                }
                 if (const auto* mouseWheelScrolled = event->getIf<sf::Event::MouseWheelScrolled>())
                 {
                     input.verticle = mouseWheelScrolled->wheel == sf::Mouse::Wheel::Vertical;
@@ -63,17 +68,12 @@ int main()
 
         if (focused)
         {
-            static sf::Time mouse_effect_time;
-
             sf::Time clockElapsed = clock.restart();
-            mouse_effect_time += clockElapsed;
 
-            sf::Vector2i mousePos = sf::Mouse::getPosition(window);
-
-            if (mouse_effect_time > sf::seconds(0.3f) && sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
+            if (input.mouseLeft)
             {
                 //TODO add a hover effect to buttons :D
-                mouse_effect_time = sf::Time::Zero;
+                sf::Vector2i mousePos = sf::Mouse::getPosition(window);
                 ui.MouseClick(xmlData, window, mousePos);
             }
 
@@ -82,6 +82,9 @@ int main()
             window.clear();
             ui.Draw(window);
             window.display();
+            float dt = clock.restart().asSeconds();
+            float fps = 1.f / dt;
+            std::cout << "FPS: " << fps << "\n";
         }
     }
 }

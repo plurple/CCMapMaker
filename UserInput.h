@@ -11,6 +11,7 @@ struct UserInput
     float scroll;
     bool right, left, up, down;
     bool shift, tab, ctrl, alt;
+    bool mouseLeft, mouseRight;
 
     UserInput() :
         backSpace{ false },
@@ -26,7 +27,9 @@ struct UserInput
         shift{false},
         tab{false},
         ctrl{false},
-        alt{false}
+        alt{false},
+        mouseLeft{false},
+        mouseRight{false}
     {};
 };
 

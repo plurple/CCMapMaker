@@ -40,9 +40,18 @@ void UIPage::Draw(sf::RenderWindow& window, bool selected)
 		window.draw(buttonBox);
 		addEntry.Draw(window);
 		window.setView(scrollBar.scrollWindow);
+		sf::View view = window.getView();
+		sf::FloatRect viewRect(
+			{ view.getCenter().x - view.getSize().x / 2.f,
+			view.getCenter().y - view.getSize().y / 2.f },
+			{ view.getSize().x,
+			view.getSize().y }
+		);
 		for (std::shared_ptr<UIEntry> entry : entries)
 		{
-			entry->Draw(window);
+			bool onScreen = entry->shapes[0]->getGlobalBounds().findIntersection(viewRect) != std::nullopt;
+			if(onScreen)
+				entry->Draw(window);
 		}
 		window.draw(page);
 		scrollBar.Draw(window);
