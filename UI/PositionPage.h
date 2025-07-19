@@ -53,6 +53,7 @@ public:
 	void AddPositionPair(XMLData& xmlData, Maps& maps, int boxIndex, int otherXMLKey);
 	void Select() override;
 	void Unselect(bool white = false) override;
+	void BorderBoxSize() override;
 };
 
 class PositionPage : public UIPage

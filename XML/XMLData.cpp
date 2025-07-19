@@ -671,6 +671,95 @@ void XMLData::LoadXML(UI& ui, Maps& maps, ContinentPanel& panel)
 		i++;
 	}
 
+	auto minReinforcement = map->FirstChildElement("minreinforcement");
+	if (minReinforcement)
+	{
+		minReinforcement->QueryIntText(&minReinforcements);
+	}
+
+	auto transforms = map->FirstChildElement("transforms");
+	if (transforms)
+	{
+		i = 0;
+		for (tinyxml2::XMLElement* transElem = transforms->FirstChildElement("transform");
+			transElem != nullptr;
+			transElem = transElem->NextSiblingElement("transform"))
+		{
+			//Do this shit
+			//transUI->Unselect(true);
+			//transUI->BorderBoxSize();
+			i++;
+		}
+		transUIPage->PositionEntries();
+	}
+
+	auto reins = map->FirstChildElement("reinforcements");
+	if (reins)
+	{
+		i = 0;
+		for (tinyxml2::XMLElement* reinElem = reins->FirstChildElement("reinforcement");
+			reinElem != nullptr;
+			reinElem = reinElem->NextSiblingElement("reinforcement"))
+		{
+			int reinKey = nextKey.at((int)UIPageType::Requirements);
+			reinUIPage->AddReinforcement(*this);
+
+			auto reinforcement = reinforcements.at(reinKey);
+			auto reinUI = std::dynamic_pointer_cast<ReinforcementEntry>(reinUIPage->entries[i]);
+
+			auto lower = reinElem->FirstChildElement("lower");
+			if (lower)
+			{
+				lower->QueryIntText(&reinforcement->lower);
+			}
+			auto upper = reinElem->FirstChildElement("upper");
+			if (upper)
+			{
+				upper->QueryIntText(&reinforcement->upper);
+			}
+			auto divisor = reinElem->FirstChildElement("divisor");
+			if (divisor)
+			{
+				divisor->QueryIntText(&reinforcement->divisor);
+			}
+			reinUI->Unselect(true);
+			reinUI->BorderBoxSize();
+			i++;
+		}
+		reinUIPage->PositionEntries();
+	}
+
+	auto poss = map->FirstChildElement("positions");
+	if (poss)
+	{
+		poss->QueryIntAttribute("max", &maxPositions);
+		i = 0;
+		for (tinyxml2::XMLElement* posElem = poss->FirstChildElement("position");
+			posElem != nullptr;
+			posElem = posElem->NextSiblingElement("position"))
+		{
+			int posKey = nextKey.at((int)UIPageType::Requirements);
+			posUIPage->AddPosition(*this);
+
+			auto position = positions.at(posKey);
+			auto posUI = std::dynamic_pointer_cast<PositionEntry>(posUIPage->entries[i]);
+
+			for (tinyxml2::XMLElement* terrElem = posElem->FirstChildElement("territory");
+				terrElem != nullptr;
+				terrElem = terrElem->NextSiblingElement("territory"))
+			{
+				std::string name = terrElem->GetText();
+				int terrIndex = territoryToIndex.at(name);
+				posUI->AddPositionPair(*this, maps, terrIndex, terrUIPage->entries[terrIndex]->xmlKey);
+			}
+			
+			posUI->Unselect(true);
+			posUI->BorderBoxSize();
+			i++;
+		}
+		posUIPage->PositionEntries();
+	}
+
 	i = 0;
 	for (tinyxml2::XMLElement* reqElem = map->FirstChildElement("requirement");
 		reqElem != nullptr;

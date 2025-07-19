@@ -97,7 +97,7 @@ bool PositionPage::MapClick(UI& ui, XMLData& xmlData, Maps& maps, sf::Vector2i m
 				maps.mapBoxes[boxIndex]->border->setOutlineColor(sf::Color::Blue);
 				position->AddPositionPair(xmlData, maps, boxIndex, ui.uiPages[(int)UIPageType::Territory]->entries[boxIndex]->xmlKey);
 			}
-			std::dynamic_pointer_cast<sf::RectangleShape>(position->shapes[(int)UIEntry::ShapeTypes::Border])->setSize({ 530, 10 + position->positionPairs.size() * 40.0f });
+			position->BorderBoxSize();
 		}
 		PositionEntries();
 	}
@@ -246,6 +246,11 @@ void PositionEntry::Unselect(bool white)
 	{
 		position->selected = selected;
 	}
+}
+
+void PositionEntry::BorderBoxSize()
+{
+	std::dynamic_pointer_cast<sf::RectangleShape>(shapes[(int)UIEntry::ShapeTypes::Border])->setSize({ 530, 10 + positionPairs.size() * 40.0f });
 }
 
 //-------------------------------------------------------------------------

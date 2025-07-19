@@ -247,6 +247,8 @@ void UI::SwapPage(UIPageType newPage)
 
 void UI::LoadXML(XMLData& xmlData, Maps& maps, ContinentPanel& panel)
 {
+    xmlData.minReinforcements = 3;
+    xmlData.maxPositions = -1;
     for (int i = 0; i < uiPages.size(); i++)
     {
         auto page = uiPages[i];
