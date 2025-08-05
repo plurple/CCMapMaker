@@ -168,7 +168,8 @@ void TransformEntry::CreateEntry(XMLData& xmlData, float entryTop)
 	incOptions->selectedOption = 2;
 	entries.push_back(incOptions);
 
-	Select();
+	int selectedTextbox = -1;
+	Select(selectedTextbox);
 	BorderBoxSize();
 }
 
@@ -186,6 +187,11 @@ void TransformEntry::MouseClick(XMLData& xmlData, sf::Vector2i mousePos, bool mo
 {
 	UIEntry::MouseClick(xmlData, mousePos, mouseOnPage, select, mapClicked);
 
+	for (auto entry : entries)
+	{
+		auto option = std::dynamic_pointer_cast<TransformOption>(entry);
+		xmlData.UpdateTransformOption(xmlKey, option->optionType, option->selectedOption, option->skipAll);
+	}
 	std::shared_ptr<Button> percentage = buttons[(int)ButtonTypes::Percentage];
 	if (mouseOnPage && percentage && UI::CheckMouseInBounds(mousePos, *percentage->rect))
 	{
@@ -269,14 +275,14 @@ void TransformEntry::MoveEntry(sf::Vector2f offset)
 	}
 }
 
-void TransformEntry::Select()
+void TransformEntry::Select(int& selectedTextbox)
 {
-	UIEntry::Select();
+	UIEntry::Select(selectedTextbox);
 }
 
-void TransformEntry::Unselect(bool white)
+void TransformEntry::Unselect(int& selectedTextbox, bool white)
 {
-	UIEntry::Unselect();
+	UIEntry::Unselect(selectedTextbox);
 }
 
 void TransformEntry::AddCondition(XMLData& xmlData)
@@ -299,7 +305,8 @@ void TransformEntry::RemoveCondition(XMLData& xmlData)
 		if (selectedCondition == -1)
 			selectedCondition = conditions.size() - 1;
 
-		conditions[selectedCondition]->Unselect(true);
+		int selectedTextbox = -1;
+		conditions[selectedCondition]->Unselect(selectedTextbox, true);
 		auto transform = xmlData.transforms.at(xmlKey);
 		transform->conditions.erase(selectedCondition);
 		conditions.erase(conditions.begin() + selectedCondition);
@@ -314,13 +321,14 @@ void TransformEntry::RemoveCondition(XMLData& xmlData)
 
 void TransformEntry::SwapCondition(int previous, int future)
 {
+	int selectedTextbox = -1;
 	if (previous >= 0)
 	{
-		conditions[previous]->Unselect();
+		conditions[previous]->Unselect(selectedTextbox);
 	}
 	if (future >= 0)
 	{
-		conditions[future]->Select();
+		conditions[future]->Select(selectedTextbox);
 	}
 }
 
@@ -457,6 +465,11 @@ void ConditionEntry::MouseClick(XMLData& xmlData, sf::Vector2i mousePos,
 		{
 			ResetValues(xmlData, newConditionType);
 		}
+	}
+	for (auto entry : entries)
+	{
+		auto option = std::dynamic_pointer_cast<TransformOption>(entry);
+		xmlData.UpdateTransformOption(xmlKey, option->optionType, option->selectedOption, option->skipAll, conditionNum);
 	}
 	if (mouseOnPage && addValue && UI::CheckMouseInBounds(mousePos, *addValue->rect))
 	{

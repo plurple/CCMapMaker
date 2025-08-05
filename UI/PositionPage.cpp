@@ -164,7 +164,8 @@ void PositionEntry::CreateEntry(XMLData& xmlData, float entryTop)
 	border->setOutlineColor(sf::Color::Green);
 	shapes.push_back(border);
 
-	Select();
+	int selectedTextbox = -1;
+	Select(selectedTextbox);
 }
 
 void PositionEntry::Draw(sf::RenderWindow& window)
@@ -201,7 +202,8 @@ void PositionEntry::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time 
 		}
 		else
 		{
-			Unselect();
+			int selectedTextbox = -1;
+			Unselect(selectedTextbox);
 			if (positionPairs.size()) positionPairs.erase(positionPairs.begin() + i);
 			i--;
 		}
@@ -230,18 +232,18 @@ void PositionEntry::AddPositionPair(XMLData& xmlData, Maps& maps, int boxIndex, 
 	positionPairs.push_back(pair);
 }
 
-void PositionEntry::Select()
+void PositionEntry::Select(int& selectedTextbox)
 {
-	UIEntry::Select();
+	UIEntry::Select(selectedTextbox);
 	for (auto position : positionPairs)
 	{
 		position->selected = selected;
 	}
 }
 
-void PositionEntry::Unselect(bool white)
+void PositionEntry::Unselect(int& selectedTextbox, bool white)
 {
-	UIEntry::Unselect();
+	UIEntry::Unselect(selectedTextbox);
 	for (auto position : positionPairs)
 	{
 		position->selected = selected;

@@ -153,8 +153,8 @@ public:
 		UserInput& input, bool showCursor) override;
 
 	void MoveEntry(sf::Vector2f offset) override;
-	void Select() override;
-	void Unselect(bool white = false) override;
+	void Select(int& selectedTextbox) override;
+	void Unselect(int& selectedTextbox, bool white = false) override;
 	void AddCondition(XMLData& xmlData);
 	void RemoveCondition(XMLData& xmlData);
 	void SwapCondition(int previous, int future);

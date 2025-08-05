@@ -253,7 +253,8 @@ void ObjectiveEntry::CreateEntry(XMLData& xmlData, float entryTop)
 	numRequiredBox->number = &data->numRequired;
 	boxes.push_back(numRequiredBox);
 
-	Select();
+	int selectedTextbox = -1;
+	Select(selectedTextbox);
 	BorderBoxSize();
 }
 
@@ -337,9 +338,9 @@ void ObjectiveEntry::MoveEntry(sf::Vector2f offset)
 	}
 }
 
-void ObjectiveEntry::Select()
+void ObjectiveEntry::Select(int& selectedTextbox)
 {
-	UIEntry::Select();
+	UIEntry::Select(selectedTextbox);
 	for (auto territory : territories)
 	{
 		territory->mapBox->border->setOutlineColor(selectedColor);
@@ -350,9 +351,9 @@ void ObjectiveEntry::Select()
 	}
 }
 
-void ObjectiveEntry::Unselect(bool white)
+void ObjectiveEntry::Unselect(int& selectedTextbox, bool white)
 {
-	UIEntry::Unselect();
+	UIEntry::Unselect(selectedTextbox);
 	for (auto territory : territories)
 	{
 		territory->mapBox->border->setOutlineColor(white ? sf::Color::White : baseColor);

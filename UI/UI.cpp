@@ -201,11 +201,11 @@ void UI::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
     {
         SwapMaps();
     }
-    if (*input.keyPressed.c_str() == '*' && input.shift)
+    if (*input.keyPressed.c_str() == '+' && input.shift)
     {
         xmlData.SaveXML();
     }
-    if (*input.keyPressed.c_str() == '+' && input.shift)
+    if (*input.keyPressed.c_str() == '*' && input.shift)
     {
         LoadXML(xmlData, maps, continentPanel);
     }

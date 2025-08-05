@@ -174,7 +174,8 @@ void UIPage::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePas
 
 void UIPage::DeleteEntry(XMLData& xmlData, UIPageType pageType, int entry)
 {
-	entries[entry]->Unselect(true);
+	int selectedTextbox = -1;
+	entries[entry]->Unselect(selectedTextbox, true);
 	xmlData.RemoveData(pageType, entries[entry]->xmlKey);
 	entries.erase(entries.begin() + entry);
 }
@@ -185,7 +186,11 @@ void UIPage::AddEntry(XMLData& xmlData, std::shared_ptr<UIEntry> entry)
 	float topBoxY = numEntries ? entries[0]->shapes[0]->getPosition().y : 10.0f;
 	entry->CreateEntry(xmlData, topBoxY + contentSize);
 	contentSize += std::dynamic_pointer_cast<sf::RectangleShape>(entry->shapes[(int)UIEntry::ShapeTypes::Border])->getSize().y + 6.0f;
-	if (selectedEntry != -1) entries[selectedEntry]->Unselect();
+	if (selectedEntry != -1)
+	{
+		int selectedTextbox = -1;
+		entries[selectedEntry]->Unselect(selectedTextbox);
+	}
 	selectedEntry = entries.size();
 	entries.push_back(entry);
 	scrollBar.BarSize({ 0, contentSize });
@@ -195,13 +200,14 @@ void UIPage::AddEntry(XMLData& xmlData, std::shared_ptr<UIEntry> entry)
 
 void UIPage::SwapEntry(int previous, int future)
 {
+	int selectedTextbox = -1;
 	if (previous >= 0)
 	{
-		entries[previous]->Unselect();
+		entries[previous]->Unselect(selectedTextbox);
 	}
 	if (future >= 0)
 	{
-		entries[future]->Select();
+		entries[future]->Select(selectedTextbox);
 		auto entryPos = entries[future]->shapes[(int)UIEntry::ShapeTypes::Border]->getPosition();
 		scrollBar.Scroll({ 0, -entryPos.y + 20 });
 	}
@@ -229,7 +235,8 @@ void UIPage::UnselectPage()
 	selectedEntry = -1;
 	for (auto entry : entries)
 	{
-		entry->Unselect(true);
+		int selectedTextbox = -1;
+		entry->Unselect(selectedTextbox, true);
 	}
 }
 
@@ -320,21 +327,37 @@ void UIEntry::MoveEntry(sf::Vector2f offset)
 	}
 }
 
-void UIEntry::Select()
+void UIEntry::Select(int& selectedTextbox)
 {
 	selected = true;
+	if (selectedTextbox != -1)
+	{
+		boxes[selectedTextbox]->active = true;
+	}
 	shapes[0]->setOutlineThickness(4.0f);
 	shapes[0]->setOutlineColor(selectedColor);
 }
 
-void UIEntry::Unselect(bool white)
+void UIEntry::Unselect(int& selectedTextbox, bool white)
 {
 	selected = false;
+
 	shapes[0]->setOutlineThickness(2.0f);
 	shapes[0]->setOutlineColor(white ? sf::Color::White : baseColor);
+
+	for (int i = 0; i < boxes.size(); i++)
+	{
+		if (boxes[i]->active)
+		{
+			selectedTextbox = i;
+			boxes[i]->active = false;
+			return;
+		}
+	}
 }
 
 void UIEntry::Toggle(bool toggle)
 {
-	toggle ? Select() : Unselect();
+	int selectedTextbox = -1;
+	toggle ? Select(selectedTextbox) : Unselect(selectedTextbox);
 }

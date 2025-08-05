@@ -51,8 +51,8 @@ public:
 
 	void MoveEntry(sf::Vector2f offset) override;
 	void AddPositionPair(XMLData& xmlData, Maps& maps, int boxIndex, int otherXMLKey);
-	void Select() override;
-	void Unselect(bool white = false) override;
+	void Select(int& selectedTextbox) override;
+	void Unselect(int& selectedtextbox, bool white = false) override;
 	void BorderBoxSize() override;
 };
 

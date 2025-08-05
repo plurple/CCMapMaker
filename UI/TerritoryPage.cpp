@@ -422,7 +422,8 @@ void TerritoryEntry::CreateEntry(XMLData& xmlData, float entryTop)
 	bombardmentsPos = { 20, entryTop + 134 };
 
 	SwapView(selectedView);
-	Select();
+	int selectedTextbox = -1;
+	Select(selectedTextbox);
 }
 
 void TerritoryEntry::Draw(sf::RenderWindow& window)
@@ -523,7 +524,11 @@ void TerritoryEntry::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time
 			}
 			else
 			{
-				if (bombardments.size()) bombardments.erase(bombardments.begin() + i);
+				if (bombardments.size())
+				{
+					xmlData.territories.at(xmlKey)->bombardments.erase(xmlData.territories.at(xmlKey)->bombardments.begin() + i);
+					bombardments.erase(bombardments.begin() + i);
+				}
 				i--;
 			}
 
@@ -550,8 +555,13 @@ void TerritoryEntry::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time
 			}
 			else
 			{
-				if(territories.size()) territories.erase(territories.begin() + i);
-				if(conditions.size()) conditions.erase(conditions.begin() + i);
+				if (territories.size())
+				{
+					xmlData.territories.at(xmlKey)->borders.erase(xmlData.territories.at(xmlKey)->borders.begin() + i);
+					territories.erase(territories.begin() + i);
+				}
+				if(conditions.size())
+					conditions.erase(conditions.begin() + i);
 				i--;
 			}
 		}
@@ -633,14 +643,15 @@ void TerritoryEntry::SwapView(TerritoryView view)
 	boxes[(int)BoxTypes::NeutralBox]->Hide(extra);
 	if (selected)
 	{
-		Unselect();
-		Select();
+		int selectedTextbox = -1;
+		Unselect(selectedTextbox);
+		Select(selectedTextbox);
 	}
 }
 
-void TerritoryEntry::Select()
+void TerritoryEntry::Select(int& selectedTextbox)
 {
-	UIEntry::Select();
+	UIEntry::Select(selectedTextbox);
 	mapBox->border->setOutlineColor(sf::Color::Blue);
 	if (selectedView == TerritoryView::Bombardments)
 	{
@@ -659,9 +670,9 @@ void TerritoryEntry::Select()
 	//todo colour the map boxes properly for conditions.
 }
 
-void TerritoryEntry::Unselect(bool white)
+void TerritoryEntry::Unselect(int& selectedTextbox, bool white)
 {
-	UIEntry::Unselect();
+	UIEntry::Unselect(selectedTextbox);
 	mapBox->border->setOutlineColor(sf::Color::White);
 	for (auto border : territories)
 	{

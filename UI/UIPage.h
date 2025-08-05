@@ -44,8 +44,8 @@ public:
 		UserInput& input, bool showCursor);
 
 	virtual void MoveEntry(sf::Vector2f offset);
-	virtual void Select();
-	virtual void Unselect(bool white = false);
+	virtual void Select(int& selectedTextbox);
+	virtual void Unselect(int& selectedTextbox, bool white = false);
 	void Toggle(bool toggle);
 	virtual void BorderBoxSize() {};
 };

@@ -124,7 +124,8 @@ void ReinforcementEntry::CreateEntry(XMLData& xmlData, float entryTop)
 	divisorBox->number = &data->divisor;
 	boxes.push_back(divisorBox);
 
-	Select();
+	int selectedTextbox = -1;
+	Select(selectedTextbox);
 }
 
 void ReinforcementEntry::Draw(sf::RenderWindow& window)
@@ -158,12 +159,12 @@ void ReinforcementEntry::MoveEntry(sf::Vector2f offset)
 	UIEntry::MoveEntry(offset);
 }
 
-void ReinforcementEntry::Select()
+void ReinforcementEntry::Select(int& selectedTextbox)
 {
-	UIEntry::Select();
+	UIEntry::Select(selectedTextbox);
 }
 
-void ReinforcementEntry::Unselect(bool white)
+void ReinforcementEntry::Unselect(int& selectedTexbox, bool white)
 {
-	UIEntry::Unselect();
+	UIEntry::Unselect(selectedTexbox);
 }

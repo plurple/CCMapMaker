@@ -36,8 +36,8 @@ public:
 		UserInput& input, bool showCursor) override;
 
 	void MoveEntry(sf::Vector2f offset);
-	void Select() override;
-	void Unselect(bool white = false) override;
+	void Select(int& selectedTextbox) override;
+	void Unselect(int& selectedTextbox, bool white = false) override;
 	void AddTerritory(XMLData& xmlData, Maps& maps, int boxIndex, int otherXMLKey);
 	void AddContinent(XMLData& xmlData, ContinentPanel& panel, int continentIndex, int otherXMLKey);
 	void BorderBoxSize() override;

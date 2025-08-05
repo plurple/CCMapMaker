@@ -344,7 +344,8 @@ void ContinentEntry::CreateEntry(XMLData& xmlData, float entryTop)
 
 	BorderBoxSize();
 	SwapView(selectedView);
-	Select();
+	int selectedTextbox = -1;
+	Select(selectedTextbox);
 }
 
 void ContinentEntry::Draw(sf::RenderWindow& window)
@@ -496,17 +497,18 @@ void ContinentEntry::SwapView(ContinentView view)
 	}
 	if (selected)
 	{
-		Unselect();
-		Select();
+		int selectedTextbox = -1;
+		Unselect(selectedTextbox);
+		Select(selectedTextbox);
 	}
 }
 
-void ContinentEntry::Select()
+void ContinentEntry::Select(int& selectedTextbox)
 {
-	UIEntry::Select();
+	UIEntry::Select(selectedTextbox);
 	for (auto entry : entries)
 	{
-		entry->Select();
+		entry->Select(selectedTextbox);
 	}
 	if (selectedView != ContinentView::Overrides)
 	{
@@ -524,12 +526,12 @@ void ContinentEntry::Select()
 	}
 }
 
-void ContinentEntry::Unselect(bool white)
+void ContinentEntry::Unselect(int& selectedTextbox, bool white)
 {
-	UIEntry::Unselect();
+	UIEntry::Unselect(selectedTextbox);
 	for (auto entry : entries)
 	{
-		entry->Unselect(white);
+		entry->Unselect(selectedTextbox, white);
 	}	
 	for (auto continent : continents)
 	{
@@ -829,12 +831,14 @@ void AdvancedTerritory::SwapView(ContinentView view)
 	boxes[(int)BoxTypes::FactorBox]->Hide(advancedView);
 }
 
-void AdvancedTerritory::Select()
+void AdvancedTerritory::Select(int& selectedTextbox)
 {
+	UIEntry::Select(selectedTextbox);
 	mapBox->border->setOutlineColor(selectedColor);
 }
 
-void AdvancedTerritory::Unselect(bool white)
+void AdvancedTerritory::Unselect(int& selectedTextbox, bool white)
 {
+	UIEntry::Unselect(selectedTextbox);
 	mapBox->border->setOutlineColor(white ? sf::Color::White : baseColor);
 }

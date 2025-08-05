@@ -556,6 +556,11 @@ void XMLData::SaveXML()
 
 void XMLData::LoadXML(UI& ui, Maps& maps, ContinentPanel& panel)
 {
+	for (auto key : nextKey)
+	{
+		key = 0;
+	}
+	
 	tinyxml2::XMLDocument doc;
 	doc.LoadFile("Output.xml");
 
@@ -722,7 +727,8 @@ void XMLData::LoadXML(UI& ui, Maps& maps, ContinentPanel& panel)
 			{
 				divisor->QueryIntText(&reinforcement->divisor);
 			}
-			reinUI->Unselect(true);
+			int selectedTextbox = -1;
+			reinUI->Unselect(selectedTextbox, true);
 			reinUI->BorderBoxSize();
 			i++;
 		}
@@ -738,7 +744,7 @@ void XMLData::LoadXML(UI& ui, Maps& maps, ContinentPanel& panel)
 			posElem != nullptr;
 			posElem = posElem->NextSiblingElement("position"))
 		{
-			int posKey = nextKey.at((int)UIPageType::Requirements);
+			int posKey = nextKey.at((int)UIPageType::Position);
 			posUIPage->AddPosition(*this);
 
 			auto position = positions.at(posKey);
@@ -752,8 +758,8 @@ void XMLData::LoadXML(UI& ui, Maps& maps, ContinentPanel& panel)
 				int terrIndex = territoryToIndex.at(name);
 				posUI->AddPositionPair(*this, maps, terrIndex, terrUIPage->entries[terrIndex]->xmlKey);
 			}
-			
-			posUI->Unselect(true);
+			int selectedTextbox = -1;
+			posUI->Unselect(selectedTextbox, true);
 			posUI->BorderBoxSize();
 			i++;
 		}
@@ -803,7 +809,8 @@ void XMLData::LoadXML(UI& ui, Maps& maps, ContinentPanel& panel)
 		{
 			required->QueryIntText(&requirement->numRequired);
 		}
-		reqUI->Unselect(true);
+		int selectedTextbox = -1;
+		reqUI->Unselect(selectedTextbox, true);
 		reqUI->BorderBoxSize();
 		i++;
 	}
@@ -852,7 +859,8 @@ void XMLData::LoadXML(UI& ui, Maps& maps, ContinentPanel& panel)
 		{
 			required->QueryIntText(&objective->numRequired);
 		}
-		objUI->Unselect(true);
+		int selectedTextbox = -1;
+		objUI->Unselect(selectedTextbox, true);
 		objUI->BorderBoxSize();
 		i++;
 	}
@@ -929,7 +937,8 @@ void XMLData::LoadXML(UI& ui, Maps& maps, ContinentPanel& panel)
 			}
 		}
 
-		contUI->Unselect(true);
+		int selectedTextbox = -1;
+		contUI->Unselect(selectedTextbox, true);
 		contUI->BorderBoxSize();
 	}
 	contUIPage->PositionEntries();
@@ -989,7 +998,8 @@ void XMLData::LoadXML(UI& ui, Maps& maps, ContinentPanel& panel)
 				terrUI->AddBombardment(*this, maps, bombIndex, terrUIPage->entries[bombIndex]->xmlKey);
 			}
 		}
-		terrUI->Unselect(true);
+		int selectedTextbox = -1;
+		terrUI->Unselect(selectedTextbox, true);
 		terrUI->BorderBoxSize();
 	}
 	terrUIPage->PositionEntries();
