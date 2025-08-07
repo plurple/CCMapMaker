@@ -4,6 +4,8 @@
 #include "UI/TextBox.h"
 #include "UserInput.h"
 #include "XML/XMLData.h"
+#include <sstream>
+#include <iomanip>
 
 int main()
 {
@@ -15,6 +17,8 @@ int main()
 
     bool focused = true;
 
+    float dt = 0.0f;
+    float fps = 0.0f;
 
     while (window.isOpen())
     {
@@ -78,13 +82,20 @@ int main()
             }
 
             ui.Update(xmlData, window, clockElapsed, input);
+            
+            //std::cout << "FPS: " << fps << "\n";
+            std::ostringstream ss;
+            ss << std::fixed << std::setprecision(2) << fps;
+            sf::Text fpsCounter = sf::Text(ui.font, ss.str(), 15);
+            fpsCounter.setPosition({ UI::windowSize.x *0.5f+100.0f, 10.0f });
 
             window.clear();
             ui.Draw(window);
+            window.draw(fpsCounter);
             window.display();
-            float dt = clock.restart().asSeconds();
-            float fps = 1.f / dt;
-            std::cout << "FPS: " << fps << "\n";
+
+            dt = clock.restart().asSeconds();
+            fps = 1.f / dt;
         }
     }
 }

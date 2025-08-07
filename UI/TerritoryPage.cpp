@@ -3,13 +3,16 @@
 #include "../XML/Territory.h"
 #include "../XML/Continent.h"
 #include "../EnumOperators.hpp"
+#include <iostream>
+#include <unordered_set>
 
 TerritoryPage::TerritoryPage(XMLData& xmlData, sf::Vector2f tabPos,
 	sf::Vector2f tabSize, std::string tabLabel, sf::Vector2f buttonBoxSize,
 	bool& continentPanel):
 	UIPage(tabPos, tabSize, tabLabel, buttonBoxSize, continentPanel),
 	selectedView{ TerritoryView::Borders },
-	linkCoordinates({ 1296, 260 }, { 240, 30 }, "Link Coordinates", true)
+	linkCoordinates({ 1296, 260 }, { 240, 30 }, "Link Coordinates", true),
+	oneWay({ 1225, 215 }, { 60, 30 }, "1?", false)
 {
 	std::shared_ptr<Button> borders = 
 		std::make_shared<Button>(sf::Vector2f{ 1066, 170 }, 
@@ -43,6 +46,7 @@ void TerritoryPage::Draw(sf::RenderWindow& window, bool selected)
 		if(selectedView == TerritoryView::Conditions)
 			showContinents.Draw(window);
 		linkCoordinates.Draw(window);
+		oneWay.Draw(window);
 		for (int i = 0; i < (int)TerritoryView::COUNT; i++)
 		{
 			territoryViews[i]->Draw(window);
@@ -57,6 +61,10 @@ void TerritoryPage::MouseClick(XMLData& xmlData, sf::RenderWindow& window,
 	if (UI::CheckMouseInBounds(mousePos, *linkCoordinates.rect))
 	{
 		linkCoordinates.Toggle();
+	}
+	if (UI::CheckMouseInBounds(mousePos, *oneWay.rect))
+	{
+		CheckHalfBorders(xmlData);
 	}
 	if (showContinents.selected || selectedView == TerritoryView::Conditions)
 	{
@@ -246,6 +254,39 @@ void TerritoryPage::SwapView()
 		std::dynamic_pointer_cast<TerritoryEntry>(entry)->SwapView(selectedView);
 	}
 	PositionEntries();
+}
+
+void TerritoryPage::CheckHalfBorders(XMLData& xmlData)
+{
+	std::unordered_set<uint64_t> checkedPairs;
+
+	for (auto entry : entries)
+	{
+		auto territory = std::dynamic_pointer_cast<TerritoryEntry>(entry);
+		for (auto border : territory->territories)
+		{
+			uint64_t key = (static_cast<uint64_t>(std::min(territory->xmlKey, border->xmlKey)) << 32) | std::max(territory->xmlKey, border->xmlKey);
+			if (!checkedPairs.insert(key).second)
+				continue;
+			bool bidirectional = false;
+			auto borderTerritory = xmlData.territories.at(border->xmlKey);			
+			for (auto bordersBorder : borderTerritory->borders)
+			{
+				if (territory->xmlKey == bordersBorder.territory)
+				{
+					bidirectional = true;
+					break;
+				}
+			}
+
+			if (!bidirectional)
+			{
+				std::cout << "one way border from: " << 
+					*territory->boxes[(int)TerritoryEntry::BoxTypes::NameBox]->text << 
+					" to: " << borderTerritory->name << "\n";
+			}
+		}
+	}
 }
 
 //-----------------------------------------------------------

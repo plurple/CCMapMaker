@@ -84,6 +84,7 @@ class TerritoryPage : public UIPage
 {
 public:
 	Button linkCoordinates;
+	Button oneWay;
 	std::vector<std::shared_ptr<Button>> territoryViews;
 	TerritoryView selectedView;
 
@@ -102,5 +103,6 @@ public:
 
 	void AddTerritory(XMLData& xmlData, std::shared_ptr<MapBox> mapBox);
 	void SwapView();
+	void CheckHalfBorders(XMLData& xmlData);
 };
 

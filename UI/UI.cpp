@@ -219,7 +219,7 @@ void UI::Update(XMLData& xmlData, sf::RenderWindow& window, sf::Time timePassed,
     static sf::Time text_effect_time;
     text_effect_time += timePassed;
 
-    if (text_effect_time >= sf::seconds(0.5f))
+    if (text_effect_time >= sf::seconds(0.05f))
     {
         showCursor = !showCursor;
         text_effect_time = sf::Time::Zero;
