@@ -26,6 +26,7 @@ public:
 	MapData largeMap;
 	MapData smallMap;
 	sf::RectangleShape mapCanvas;
+	sf::RenderTexture boxTexture;
 	ScrollBar scrollBar;
 	std::vector<std::shared_ptr<MapBox>> mapBoxes;
 	static float widthRatio;
@@ -42,4 +43,5 @@ public:
 	std::shared_ptr<MapBox> AddMapBox(sf::Vector2i position);
 	static int ConvertLarge(int small, bool width);
 	static int ConvertSmall(int large, bool width);
+	void UpdateBoxes();
 };

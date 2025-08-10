@@ -16,17 +16,18 @@ MapData::MapData(std::string fileName) : filePath{ fileName }, mapTexture{nullpt
 }
 
 Maps::Maps() :
-    //largeMap("C:/Users/Matthew/Documents/Conquer club/map xml/Fibonacci Snail/FibonacciSnailLarge.png"),
-    //smallMap("C:/Users/Matthew/Documents/Conquer club/map xml/Fibonacci Snail/FibonacciSnailSmall.png"),
+    largeMap("C:/Users/Matthew/Documents/Conquer club/map xml/Fibonacci Snail/FibonacciSnailLarge.png"),
+    smallMap("C:/Users/Matthew/Documents/Conquer club/map xml/Fibonacci Snail/FibonacciSnailSmall.png"),
     //largeMap("C:/Users/Matthew/Documents/Conquer club/map xml/Conquistadores/ConquistadoresLarge15.png"),
     //smallMap("C:/Users/Matthew/Documents/Conquer club/map xml/Conquistadores/ConquistadoresSmall15.png"),
-    largeMap("C:/Users/Matthew/Documents/Conquer club/map xml/Feudal Legend/FeudalLegendLarge2.png"),
-    smallMap("C:/Users/Matthew/Documents/Conquer club/map xml/Feudal Legend/FeudalLegendSmall2.png"),
+    //largeMap("C:/Users/Matthew/Documents/Conquer club/map xml/Feudal Legend/FeudalLegendLarge2.png"),
+    //smallMap("C:/Users/Matthew/Documents/Conquer club/map xml/Feudal Legend/FeudalLegendSmall2.png"),
     mapCanvas{ {UI::windowSize.x-600.0f,UI::windowSize.y-0.0f } },
     scrollBar(sf::View{ mapCanvas.getGlobalBounds() }, { mapCanvas.getSize().x - 40, 50 }/*position*/, 
         { 30, mapCanvas.getSize().y - 100 }/*size*/, { 50, mapCanvas.getSize().y - 40 }/*position*/,
         { mapCanvas.getSize().x - 150, 30 }/*size*/, true, true),
-    clicked{false}
+    clicked{false},
+    boxTexture{ {UI::windowSize.x - 600,UI::windowSize.y - 0 } }
 {
     mapCanvas.setPosition({ 0, 0 });
     mapCanvas.setFillColor(sf::Color::Transparent);
@@ -47,10 +48,8 @@ void Maps::Draw(sf::RenderWindow& window, bool isLarge)
     window.draw(mapCanvas);
     window.draw(isLarge ? *largeMap.mapSprite : *smallMap.mapSprite);
     scrollBar.Draw(window);
-    for (std::shared_ptr<MapBox> box : mapBoxes)
-    {
-        window.draw(*box->border);
-    }
+    sf::Sprite boxSprite(boxTexture.getTexture());
+    window.draw(boxSprite);
     window.setView(window.getDefaultView());
 }
 
@@ -59,10 +58,16 @@ void Maps::Update(sf::RenderWindow& window, sf::Time timePassed,
 {
     for (int i = mapBoxes.size() - 1; i >= 0;)
     {
-        mapBoxes[i]->border->setPosition(UI::isLarge ? mapBoxes[i]->largePos : mapBoxes[i]->smallPos);
+        auto borderPos = mapBoxes[i]->border->getPosition();
+        if (UI::isLarge ? borderPos != mapBoxes[i]->largePos : borderPos != mapBoxes[i]->smallPos)
+        {
+            mapBoxes[i]->border->setPosition(UI::isLarge ? mapBoxes[i]->largePos : mapBoxes[i]->smallPos);
+            UpdateBoxes();
+        }
         if (i < mapBoxes.size() && mapBoxes[i]->border->getScale().lengthSquared() == 0.0f)
         {
             mapBoxes.erase(mapBoxes.begin() + i);
+            UpdateBoxes();
         }     
         i--;
     }
@@ -107,6 +112,7 @@ std::shared_ptr<MapBox> Maps::AddMapBox(sf::Vector2i position)
     mapBox->border->setOutlineThickness(3.0f);
     mapBox->border->setOutlineColor(sf::Color::Red);
     mapBoxes.push_back(mapBox);
+    UpdateBoxes();
     return mapBox;
 }
 
@@ -118,4 +124,14 @@ int Maps::ConvertLarge(int small, bool width)
 int Maps::ConvertSmall(int large, bool width)
 {
     return large * (width ? widthRatio : heightRatio);
+}
+
+void Maps::UpdateBoxes()
+{
+    boxTexture.clear(sf::Color::Transparent);
+    for (std::shared_ptr<MapBox> box : mapBoxes)
+    {
+        boxTexture.draw(*box->border);
+    }
+    boxTexture.display();
 }

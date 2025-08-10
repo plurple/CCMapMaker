@@ -17,7 +17,7 @@ int main()
 
     bool focused = true;
 
-    float dt = 0.0f;
+    sf::Time dt;
     float fps = 0.0f;
 
     while (window.isOpen())
@@ -72,8 +72,6 @@ int main()
 
         if (focused)
         {
-            sf::Time clockElapsed = clock.restart();
-
             if (input.mouseLeft)
             {
                 //TODO add a hover effect to buttons :D
@@ -81,7 +79,7 @@ int main()
                 ui.MouseClick(xmlData, window, mousePos);
             }
 
-            ui.Update(xmlData, window, clockElapsed, input);
+            ui.Update(xmlData, window, dt, input);
             
             //std::cout << "FPS: " << fps << "\n";
             std::ostringstream ss;
@@ -94,8 +92,8 @@ int main()
             window.draw(fpsCounter);
             window.display();
 
-            dt = clock.restart().asSeconds();
-            fps = 1.f / dt;
+            dt = clock.restart();
+            fps = 1.f / dt.asSeconds();
         }
     }
 }

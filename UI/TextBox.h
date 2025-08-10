@@ -7,6 +7,7 @@ class TextBox
 public:
 	sf::RectangleShape box;
 	std::shared_ptr<sf::Text> displayText;
+	std::string lastDisplayedText;
 	std::string* text;
 	int* number;
 	bool active;

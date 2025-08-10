@@ -26,34 +26,43 @@ void TextBox::Update(sf::RenderWindow& window, sf::Time timePassed,
 {
     if (active)
     {
-        if (text)
+        if (!input.keyPressed.empty())
         {
-            *text += input.keyPressed;
-            if (input.backSpace && !text->empty())
-                text->pop_back();
+            if (text)
+            {
+                *text += input.keyPressed;
+                if (input.backSpace && !text->empty())
+                    text->pop_back();
+            }
+            else if (number)
+            {
+                if (IsNumber(*input.keyPressed.c_str()))
+                    AddNumber(input.keyPressed);
+                if (input.backSpace)
+                    RemoveNumber();
+                if (*input.keyPressed.c_str() == '-' && allowNegative)
+                    *number = -*number;
+            }
+            if (input.enter)
+                Unselect();
         }
-        else if (number)
-        {
-            if (IsNumber(*input.keyPressed.c_str()))
-                AddNumber(input.keyPressed);
-            if (input.backSpace)
-                RemoveNumber();
-            if (*input.keyPressed.c_str() == '-' && allowNegative)
-                *number = -*number;
-        }
-        if (input.enter)
-            Unselect();       
     }
     else
         box.setOutlineColor(baseColor);
 
-    std::string currentText = "";
+    std::string newText = "";
     if (text)
-        currentText = *text;
+        newText = *text;
     else if(number && (*number != -1 || allowNegative))
-        currentText = std::to_string(*number);
+        newText = std::to_string(*number);
 
-    displayText->setString(currentText + (active && showCursor ? '|' : ' '));
+    newText += (active && showCursor ? '|' : ' ');
+
+    if (newText != lastDisplayedText)
+    {
+        displayText->setString(newText);
+        lastDisplayedText = newText;
+    }
 }
 
 void TextBox::Draw(sf::RenderWindow& window)

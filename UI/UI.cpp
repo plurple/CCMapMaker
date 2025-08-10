@@ -177,6 +177,7 @@ void UI::MouseClick(XMLData& xmlData, sf::RenderWindow& window, sf::Vector2i mou
         int index;
         maps.clicked = true;
         uiPages[(int)selectedPage]->MapClick(*this, xmlData, maps, mapMouse, index);
+        maps.UpdateBoxes();
     }
     sf::Vector2i continentMouse = sf::Vector2i(window.mapPixelToCoords(mousePos, continentPanel.scrollBar.scrollWindow));
     continentPanel.scrollBar.MouseClick(continentMouse);
