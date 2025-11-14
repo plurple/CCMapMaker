@@ -25,27 +25,24 @@ void TextBox::Update(sf::RenderWindow& window, sf::Time timePassed,
     UserInput& input, bool showCursor)
 {
     if (active)
-    {
-        if (!input.keyPressed.empty())
+    {        
+        if (text)
         {
-            if (text)
-            {
-                *text += input.keyPressed;
-                if (input.backSpace && !text->empty())
-                    text->pop_back();
-            }
-            else if (number)
-            {
-                if (IsNumber(*input.keyPressed.c_str()))
-                    AddNumber(input.keyPressed);
-                if (input.backSpace)
-                    RemoveNumber();
-                if (*input.keyPressed.c_str() == '-' && allowNegative)
-                    *number = -*number;
-            }
-            if (input.enter)
-                Unselect();
+            *text += input.keyPressed;
+            if (input.backSpace && !text->empty())
+                text->pop_back();
         }
+        else if (number)
+        {
+            if (IsNumber(*input.keyPressed.c_str()))
+                AddNumber(input.keyPressed);
+            if (input.backSpace)
+                RemoveNumber();
+            if (*input.keyPressed.c_str() == '-' && allowNegative)
+                *number = -*number;
+        }
+        if (input.enter)
+            Unselect();
     }
     else
         box.setOutlineColor(baseColor);
