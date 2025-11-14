@@ -16,8 +16,10 @@ MapData::MapData(std::string fileName) : filePath{ fileName }, mapTexture{nullpt
 }
 
 Maps::Maps() :
-    largeMap("C:/Users/Matthew/Documents/Conquer club/map xml/Fibonacci Snail/FibonacciSnailLarge.png"),
-    smallMap("C:/Users/Matthew/Documents/Conquer club/map xml/Fibonacci Snail/FibonacciSnailSmall.png"),
+    largeMap("E:/mattg/Documents/Conquer Club/Fibonacci Snail/FibonacciSnailLarge.png"),
+    smallMap("E:/mattg/Documents/Conquer Club/Fibonacci Snail/FibonacciSnailSmall.png"),
+    //largeMap("C:/Users/Matthew/Documents/Conquer club/map xml/Fibonacci Snail/FibonacciSnailLarge.png"),
+    //smallMap("C:/Users/Matthew/Documents/Conquer club/map xml/Fibonacci Snail/FibonacciSnailSmall.png"),
     //largeMap("C:/Users/Matthew/Documents/Conquer club/map xml/Conquistadores/ConquistadoresLarge15.png"),
     //smallMap("C:/Users/Matthew/Documents/Conquer club/map xml/Conquistadores/ConquistadoresSmall15.png"),
     //largeMap("C:/Users/Matthew/Documents/Conquer club/map xml/Feudal Legend/FeudalLegendLarge2.png"),
