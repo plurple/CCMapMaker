@@ -33,6 +33,6 @@ public:
 
 	void BarSize(sf::Vector2f contentSize);
 	void MoveBar(sf::Vector2f contentSize);
-	void Scroll(sf::Vector2f offset);
+	void Scroll(sf::Vector2f offset, sf::Vector2f bonus = { 0,0 });
 };
 

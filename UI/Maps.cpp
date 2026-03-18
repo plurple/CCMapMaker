@@ -67,9 +67,9 @@ void Maps::Update(sf::RenderWindow& window, sf::Time timePassed,
     for (int i = mapBoxes.size() - 1; i >= 0;)
     {
         auto borderPos = mapBoxes[i]->border->getPosition();
-        if (UI::isLarge ? borderPos != mapBoxes[i]->largePos : borderPos != mapBoxes[i]->smallPos)
+        if (UI::isLarge ? borderPos != mapBoxes[i]->largePos + scrollBar.currentScroll : borderPos != mapBoxes[i]->smallPos + scrollBar.currentScroll)
         {
-            mapBoxes[i]->border->setPosition(UI::isLarge ? mapBoxes[i]->largePos : mapBoxes[i]->smallPos);
+            mapBoxes[i]->border->setPosition(UI::isLarge ? mapBoxes[i]->largePos + scrollBar.currentScroll : mapBoxes[i]->smallPos + scrollBar.currentScroll);
             UpdateBoxes();
         }
         if (i < mapBoxes.size() && mapBoxes[i]->border->getScale().lengthSquared() == 0.0f)
@@ -78,6 +78,15 @@ void Maps::Update(sf::RenderWindow& window, sf::Time timePassed,
             UpdateBoxes();
         }     
         i--;
+    }
+
+    static sf::Time updateBoxesTime;
+    updateBoxesTime += timePassed;
+
+    if (updateBoxesTime >= sf::seconds(0.5f))
+    {
+        updateBoxesTime = sf::Time::Zero;
+        UpdateBoxes();
     }
     bool mouseOnPage = UI::CheckMouseInBounds(sf::Vector2i(window.mapPixelToCoords(sf::Mouse::getPosition(window), scrollBar.scrollWindow)), mapCanvas);
 
@@ -94,7 +103,7 @@ void Maps::Update(sf::RenderWindow& window, sf::Time timePassed,
     sf::Vector2f scrollVec = input.verticle ? 
         sf::Vector2f{ 0, scroll } : 
         sf::Vector2f{ scroll, 0} ;
-    scrollBar.Scroll(scrollVec);
+    scrollBar.Scroll(scrollVec, { 50, 50 });
     scrollVec.y = scrollBar.currentScroll.y - largeMap.mapSprite->getPosition().y;
     scrollVec.x = scrollBar.currentScroll.x - largeMap.mapSprite->getPosition().x;
     MoveMap(scrollVec);
@@ -108,6 +117,8 @@ void Maps::MoveMap(sf::Vector2f offset)
     {
         box->border->move(offset);
     }
+    if(offset != sf::Vector2f{0.0f, 0.0f})
+        UpdateBoxes();
 }
 
 std::shared_ptr<MapBox> Maps::AddMapBox(sf::Vector2i position)
@@ -115,7 +126,7 @@ std::shared_ptr<MapBox> Maps::AddMapBox(sf::Vector2i position)
     std::shared_ptr<MapBox> mapBox = std::make_shared<MapBox>();
     mapBox->border = std::make_shared<sf::RectangleShape>();
     mapBox->border->setSize( sf::Vector2f{20, 20} );
-    mapBox->border->setPosition(sf::Vector2f{ position + sf::Vector2i{ 3, 24 } });
+    mapBox->border->setPosition(sf::Vector2f{ position  + sf::Vector2i{ 3, 24 } } - scrollBar.currentScroll);
     mapBox->border->setFillColor(sf::Color::Transparent);
     mapBox->border->setOutlineThickness(3.0f);
     mapBox->border->setOutlineColor(sf::Color::Red);

@@ -160,7 +160,7 @@ void ScrollBar::MoveBar(sf::Vector2f contentSize)
 	}
 }
 
-void ScrollBar::Scroll(sf::Vector2f offset)
+void ScrollBar::Scroll(sf::Vector2f offset, sf::Vector2f bonus)
 {
 	currentScroll += offset;
 	if (currentScroll.x > minScroll.x)
@@ -171,12 +171,12 @@ void ScrollBar::Scroll(sf::Vector2f offset)
 	{
 		currentScroll.y = minScroll.y;
 	}
-	if (currentScroll.x < maxScroll.x * -1)
+	if (currentScroll.x < (maxScroll.x + bonus.x) * -1)
 	{
-		currentScroll.x = maxScroll.x*-1;
+		currentScroll.x = ( maxScroll.x + bonus.x) * -1;
 	}
-	if (currentScroll.y < maxScroll.y*-1)
+	if (currentScroll.y < ( maxScroll.y + bonus.y) * -1)
 	{
-		currentScroll.y = maxScroll.y*-1;
+		currentScroll.y = ( maxScroll.y + bonus.y) * -1;
 	}
 }
