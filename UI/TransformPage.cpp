@@ -190,7 +190,7 @@ void TransformEntry::MouseClick(XMLData& xmlData, sf::Vector2i mousePos, bool mo
 	for (auto entry : entries)
 	{
 		auto option = std::dynamic_pointer_cast<TransformOption>(entry);
-		xmlData.UpdateTransformOption(xmlKey, option->optionType, option->selectedOption, option->skipAll);
+		//xmlData.UpdateTransformOption(xmlKey, option->optionType, option->selectedOption, option->skipAll);
 	}
 	std::shared_ptr<Button> percentage = buttons[(int)ButtonTypes::Percentage];
 	if (mouseOnPage && percentage && UI::CheckMouseInBounds(mousePos, *percentage->rect))
@@ -469,7 +469,7 @@ void ConditionEntry::MouseClick(XMLData& xmlData, sf::Vector2i mousePos,
 	for (auto entry : entries)
 	{
 		auto option = std::dynamic_pointer_cast<TransformOption>(entry);
-		xmlData.UpdateTransformOption(xmlKey, option->optionType, option->selectedOption, option->skipAll, conditionNum);
+		//xmlData.UpdateTransformOption(xmlKey, option->optionType, option->selectedOption, option->skipAll, conditionNum);
 	}
 	if (mouseOnPage && addValue && UI::CheckMouseInBounds(mousePos, *addValue->rect))
 	{
